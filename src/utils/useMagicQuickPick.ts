@@ -1,9 +1,10 @@
 import type { QuickPick, QuickPickItem } from 'vscode'
-import { QuickPickItemKind, ThemeIcon, window } from 'vscode'
+import { QuickPickItemKind, ThemeIcon, commands, window } from 'vscode'
 import { magics } from '../config'
 import { displayName } from '../generated/meta'
 import type { Magic } from '../types/magic'
 import { logger } from './logger'
+import { sparkMagic } from './magic'
 
 function createMagicQuickPickItemSperator(key: string) {
   return {
@@ -34,11 +35,11 @@ function createMagicQuickPickGrp(key: string, magicGrp: Magic[]): QuickPickItem[
 function createMagicQuickPick() {
   const items: QuickPickItem[] = []
   // 添加临场magic
-  items.push({
-    label: 'edit',
-    description: 'On-site creation',
-    iconPath: new ThemeIcon('edit'),
-  })
+  // items.push({
+  //   label: 'edit',
+  //   description: 'On-site creation',
+  //   iconPath: new ThemeIcon('edit'),
+  // })
   // 组遍历
   Object.entries(magics.value).forEach(([key, magicGrp]) => {
     // 添加magic
@@ -70,15 +71,16 @@ function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>) {
 
   switch (item.label) {
     case 'Customize':
-      logger.info('Customize new magic')
+      commands.executeCommand('workbench.action.openSettings', 'magicWand.magics')
       break
     case 'edit':
       logger.info('Spark a magic: edit')
+      // TODO: 打开一个输入框接受用户输入 并释放
       break
     default: {
       const currentMagic = magicList.find(magic => magic.label === item.label)
       if (currentMagic) {
-        logger.info(`Spark a magic: ${currentMagic.label}`)
+        sparkMagic(currentMagic)
       }
       else {
         window.showErrorMessage('Magic not found')

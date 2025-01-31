@@ -6,9 +6,10 @@
 ## Configurations
 
 <!-- configs -->
-| Key                | Description                                                                               | Type     | Default          |
-| ------------------ | ----------------------------------------------------------------------------------------- | -------- | ---------------- |
-| `magicWand.magics` | Use the object's first-level property for group setting and the second for Magic setting. | `object` | See package.json |
+| Key                             | Description                                                                               | Type     | Default          |
+| ------------------------------- | ----------------------------------------------------------------------------------------- | -------- | ---------------- |
+| `magicWand.magics`              | Use the object's first-level property for group setting and the second for Magic setting. | `object` | See package.json |
+| `magicWand.provider.openRouter` | OpenRouter ApiKey                                                                         | `string` | `""`             |
 <!-- configs -->
 
 ## Commands

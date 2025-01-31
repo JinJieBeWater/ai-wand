@@ -85,8 +85,8 @@
             "Information": [
               {
                 "label": "docs",
-                "description": "为代码添加注释",
-                "prompt": "为代码添加注释",
+                "description": "使用jsDoc注释",
+                "prompt": "保留原本代码的同时对代码进行JSDoc注释",
                 "mode": "insert"
               },
               {
@@ -112,9 +112,13 @@
                 "mode": "ask"
               }
             ]
-
           },
           "description": "Use the object's first-level property for group setting and the second for Magic setting."
+        },
+        "magicWand.provider.openRouter": {
+          "type": "string",
+          "default": "",
+          "description": "OpenRouter ApiKey"
         }
       }
     }
@@ -131,6 +135,12 @@
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "release": "bumpp && nr publish"
+  },
+  "dependencies": {
+    "@openrouter/ai-sdk-provider": "^0.0.6",
+    "ai": "^4.1.13",
+    "ollama-ai-provider": "^1.2.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.26.0",
