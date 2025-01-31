@@ -1,21 +1,21 @@
 {
-  "publisher": "antfu",
-  "name": "ext-name",
-  "displayName": "ext-name",
+  "publisher": "JinJieBeWater",
+  "name": "magic-wand",
+  "displayName": "Magic Wand",
   "version": "0.0.0",
   "private": true,
   "packageManager": "pnpm@9.7.1",
-  "description": "",
+  "description": "Magic Wand is a powerful VS Code extension. Customize your own prompt words easily. With just a shortcut key, summon a menu of prompt words to assist your coding. It integrates seamlessly into the development process, boosting your programming efficiency significantly.",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
   "funding": "https://github.com/sponsors/antfu",
-  "homepage": "https://github.com/antfu/ext-name#readme",
+  "homepage": "https://github.com/JinJieBeWater/magic-wand#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/antfu/ext-name"
+    "url": "https://github.com/antfu/magic-wand"
   },
   "bugs": {
-    "url": "https://github.com/antfu/ext-name/issues"
+    "url": "https://github.com/antfu/magic-wand/issues"
   },
   "sponsor": {
     "url": "https://github.com/sponsors/antfu"
@@ -37,16 +37,86 @@
     "onStartupFinished"
   ],
   "contributes": {
-    "commands": [],
+    "commands": [
+      {
+        "command": "magicWand.menu.showMagics",
+        "title": "Spark a magic",
+        "category": "Magic Wand 🪄✨🔮",
+        "icon": "$(tools)"
+      },
+      {
+        "command": "magicWand.menu.commands-settings",
+        "category": "Magic Wang Settings",
+        "title": "Customize magic wand",
+        "icon": "$(gear)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "magicWand.menu.showMagics",
+        "key": "alt+`"
+      }
+    ],
+    "submenus": [
+      {
+        "label": "Magic Wand 🪄✨🔮",
+        "id": "magicWand.submenu"
+      }
+    ],
+    "menus": {
+      "magicWand.submenu": [
+        {
+          "command": "magicWand.menu.showMagics",
+          "group": "navigation"
+        },
+        {
+          "command": "magicWand.menu.commands-settings",
+          "group": "navigation"
+        }
+      ]
+    },
     "configuration": {
+      "title": "Magic Wand",
       "type": "object",
-      "title": "ext-name",
-      "properties": {}
+      "properties": {
+        "magicWand.magics": {
+          "type": "object",
+          "default": {
+            "Information": {
+              "docs": {
+                "description": "为代码添加注释",
+                "prompt": "为代码添加注释",
+                "mode": "insert"
+              },
+              "Log": {
+                "description": "打印日志",
+                "prompt": "根据选中的代码打印日志",
+                "mode": "edit"
+              }
+            },
+            "Typescript": {
+              "typed": {
+                "description": "为代码补全类型",
+                "prompt": "为代码补全类型",
+                "mode": "edit"
+              }
+            },
+            "Kit": {
+              "Mermaid": {
+                "description": "将代码逻辑转换为Mermaid",
+                "prompt": "将代码逻辑转换为Mermaid",
+                "mode": "ask"
+              }
+            }
+          },
+          "description": "Use the object's first-level property for group setting and the second for Magic setting."
+        }
+      }
     }
   },
   "scripts": {
     "build": "tsup src/index.ts --external vscode",
-    "dev": "nr build --watch",
+    "dev": "nr build --watch --sourcemap",
     "prepare": "nr update",
     "update": "vscode-ext-gen --output src/generated/meta.ts",
     "lint": "eslint .",
