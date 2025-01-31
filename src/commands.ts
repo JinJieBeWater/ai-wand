@@ -1,7 +1,7 @@
 import { window } from 'vscode'
 import { logger } from './utils/logger'
 import { useCms } from './utils/useCms'
-import useMagicQuickPick, { } from './utils/magicQuickPick'
+import useMagicQuickPick, { } from './utils/useMagicQuickPick'
 
 export function initCommands() {
   useCms({

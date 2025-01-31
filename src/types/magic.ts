@@ -4,15 +4,12 @@ export enum MagicMode {
   insert,
 }
 export interface Magic {
+  label: string
   description: string
   prompt: string
   mode: MagicMode
 }
 
-export interface MagicGrp {
-  [key: string]: Magic
-}
-
 export interface Magics {
-  [key: string]: MagicGrp
+  [key: string]: Magic[]
 }
