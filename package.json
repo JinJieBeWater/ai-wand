@@ -85,8 +85,8 @@
             "Information": [
               {
                 "label": "docs",
-                "description": "使用jsDoc注释",
-                "prompt": "保留原本代码的同时对代码进行JSDoc注释",
+                "description": "使用注释",
+                "prompt": "保留原本代码的同时对代码进行注释, 对于定义函数的地方要使用JsDoc, 对于其他地方使用单行注释",
                 "mode": "insert"
               },
               {
@@ -115,10 +115,22 @@
           },
           "description": "Use the object's first-level property for group setting and the second for Magic setting."
         },
-        "magicWand.provider.openRouter": {
+        "magicWand.status.activeProvider": {
+          "type": "string",
+          "default": "openRouter",
+          "description": "Active AI provider",
+          "enum": ["openRouter", "ollama"],
+          "enumDescriptions": ["A unified interface for LLMs. Find the best models & prices for your prompts.", "Get up and running with large language models. "]
+        },
+        "magicWand.provider.openRouterApiKey": {
           "type": "string",
           "default": "",
           "description": "OpenRouter ApiKey"
+        },
+        "magicWand.provider.openRouterModel": {
+          "type": "string",
+          "default": "meta-llama/llama-3.1-405b-instruct:free",
+          "description": "OpenRouter Model"
         }
       }
     }

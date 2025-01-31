@@ -8,7 +8,10 @@ export const config = defineConfigObject<Meta.ScopedConfigKeyTypeMap>(
   Meta.scopedConfigs.defaults,
 )
 
-export const { magics, 'provider.openRouter': openRouterApiKey } = defineConfigs('magicWand', {
+export const { magics, 'provider.openRouterApiKey': openRouterApiKey, 'provider.openRouterModel': openRouterModel, 'status.activeProvider': activeProvider,
+} = defineConfigs('magicWand', {
   'magics': Object as ConfigType<Magics>,
-  'provider.openRouter': String,
+  'provider.openRouterApiKey': String,
+  'provider.openRouterModel': String,
+  'status.activeProvider': String,
 })

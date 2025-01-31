@@ -1,10 +1,10 @@
 import { ollama } from 'ollama-ai-provider'
-import type { CoreMessage } from 'ai'
+import type { CoreMessage, LanguageModelV1 } from 'ai'
 import { TypeValidationError, streamText } from 'ai'
 import { window } from 'vscode'
 import { createOpenRouter } from '@openrouter/ai-sdk-provider'
 import type { Magic } from '../types/magic'
-import { openRouterApiKey } from '../config'
+import { activeProvider, openRouterApiKey, openRouterModel } from '../config'
 import { logger } from './logger'
 
 export async function sparkMagic(magic: Magic) {
@@ -43,8 +43,23 @@ export async function sparkMagic(magic: Magic) {
 
   logger.info('Start to spark magic')
   try {
+    let model: LanguageModelV1
+
+    switch (activeProvider.value) {
+      case 'openRouter':
+        model = openrouter.chat(openRouterModel.value)
+        break
+      case 'ollama':
+        window.showInformationMessage('ollama is adapting')
+        throw new Error('ollama is adapting')
+        break
+      default:
+        window.showErrorMessage('Invalid provider')
+        throw new Error('Invalid provider')
+    }
+
     const result = streamText({
-      model: openrouter.chat('deepseek/deepseek-r1:free'),
+      model,
       messages,
     })
 

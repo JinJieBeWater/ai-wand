@@ -6,10 +6,12 @@
 ## Configurations
 
 <!-- configs -->
-| Key                             | Description                                                                               | Type     | Default          |
-| ------------------------------- | ----------------------------------------------------------------------------------------- | -------- | ---------------- |
-| `magicWand.magics`              | Use the object's first-level property for group setting and the second for Magic setting. | `object` | See package.json |
-| `magicWand.provider.openRouter` | OpenRouter ApiKey                                                                         | `string` | `""`             |
+| Key                                   | Description                                                                               | Type     | Default                                     |
+| ------------------------------------- | ----------------------------------------------------------------------------------------- | -------- | ------------------------------------------- |
+| `magicWand.magics`                    | Use the object's first-level property for group setting and the second for Magic setting. | `object` | See package.json                            |
+| `magicWand.status.activeProvider`     | Active AI provider                                                                        | `string` | `"openRouter"`                              |
+| `magicWand.provider.openRouterApiKey` | OpenRouter ApiKey                                                                         | `string` | `""`                                        |
+| `magicWand.provider.openRouterModel`  | OpenRouter Model                                                                          | `string` | `"meta-llama/llama-3.1-405b-instruct:free"` |
 <!-- configs -->
 
 ## Commands
