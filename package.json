@@ -82,32 +82,37 @@
         "magicWand.magics": {
           "type": "object",
           "default": {
-            "Information": {
-              "docs": {
+            "Information": [
+              {
+                "label": "docs",
                 "description": "为代码添加注释",
                 "prompt": "为代码添加注释",
                 "mode": "insert"
               },
-              "Log": {
+              {
+                "label": "Log",
                 "description": "打印日志",
                 "prompt": "根据选中的代码打印日志",
                 "mode": "edit"
               }
-            },
-            "Typescript": {
-              "typed": {
+            ],
+            "Typescript": [
+              {
+                "label": "typed",
                 "description": "为代码补全类型",
                 "prompt": "为代码补全类型",
                 "mode": "edit"
               }
-            },
-            "Kit": {
-              "Mermaid": {
+            ],
+            "Kit": [
+              {
+                "label": "Mermaid",
                 "description": "将代码逻辑转换为Mermaid",
                 "prompt": "将代码逻辑转换为Mermaid",
                 "mode": "ask"
               }
-            }
+            ]
+
           },
           "description": "Use the object's first-level property for group setting and the second for Magic setting."
         }
