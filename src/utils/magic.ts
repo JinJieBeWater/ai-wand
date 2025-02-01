@@ -1,30 +1,36 @@
-import { ollama } from 'ollama-ai-provider'
-import type { CoreMessage, LanguageModelV1 } from 'ai'
-import { TypeValidationError, streamText } from 'ai'
-import { window } from 'vscode'
-import { createOpenRouter } from '@openrouter/ai-sdk-provider'
+import type { CoreMessage } from 'ai'
+import { TypeValidationError } from 'ai'
+import { Position, Range, Selection, ThemeColor, window, workspace } from 'vscode'
+import { computed, useActiveEditorDecorations, useActiveTextEditor, useEditorDecorations, useEvent, useTextEditorSelection } from 'reactive-vscode'
 import type { Magic } from '../types/magic'
-import { activeProvider, openRouterApiKey, openRouterModel } from '../config'
+import { INSERTED_DECORATION, UNCHANGED_DECORATION, cleanDecorations } from '../ui/decorationType'
+import { createChat } from '../chat'
 import { logger } from './logger'
 
 export async function sparkMagic(magic: Magic) {
-  const editor = window.activeTextEditor
+  const activeTextEditor = window.activeTextEditor
 
-  const file_suffix = editor?.document.fileName.split('.').pop()
-
-  const selection = editor?.selection
-  const code = editor?.document.getText(selection)
-
-  const openrouter = createOpenRouter({
-    apiKey: openRouterApiKey.value,
-  })
-
-  logger.info('openrouter', openRouterApiKey.value)
-
-  if (!code) {
-    window.showErrorMessage('No target code selected')
+  if (!activeTextEditor) {
+    window.showErrorMessage('No active editor')
     return
   }
+
+  const document = activeTextEditor.document
+  const selection = activeTextEditor.selection
+
+  const code = document.getText(selection)
+
+  const file_suffix = activeTextEditor?.document.fileName.split('.').pop()
+
+  const codeEndLineLength = activeTextEditor?.document.lineAt(selection.end).text.length
+  const codeEndLine = codeEndLineLength ? selection.end.line : selection.end.line - 1
+  const codeRange = new Range(selection.start, new Position(codeEndLine, selection.end.character + 1))
+  // 取消选中
+  useActiveEditorDecorations(UNCHANGED_DECORATION, [codeRange])
+
+  logger.info('codeRange', JSON.stringify(codeRange))
+
+  activeTextEditor.selection = new Selection(selection.end, selection.end)
 
   const messages: CoreMessage[] = []
 
@@ -43,50 +49,53 @@ export async function sparkMagic(magic: Magic) {
 
   logger.info('Start to spark magic')
   try {
-    let model: LanguageModelV1
+    // 用于存储完整的响应
+    const fullResponse = `editor.edit((editBuilder) => {
+    // 在当前选中的位置的下方插入内容
+    editBuilder.insert(selection.end, fullResponse);
 
-    switch (activeProvider.value) {
-      case 'openRouter':
-        model = openrouter.chat(openRouterModel.value)
-        break
-      case 'ollama':
-        window.showInformationMessage('ollama is adapting')
-        throw new Error('ollama is adapting')
-        break
-      default:
-        window.showErrorMessage('Invalid provider')
-        throw new Error('Invalid provider')
-    }
+    // 确保选择范围在插入之后正确计算
+    const generatedSelection = new vscode.Selection(selection.end, selection.end.translate(0, fullResponse.length));
 
-    const result = streamText({
-      model,
-      messages,
+    // 设置装饰器
+    editor.setDecorations(PREVIEW_RANGE_DECORATION, [generatedSelection]);
+});`
+
+    // // // 创建 AI 模型实例
+    // const result = createChat(messages)
+    // // // 遍历响应流
+    // for await (const delta of result.textStream) {
+    //   fullResponse += delta
+    //   logger.append(`${delta}`)
+    // }
+
+    // // 预防服务器没有响应
+    // if (fullResponse === '') {
+    //   window.showErrorMessage('No response from the server')
+    //   return
+    // }
+
+    activeTextEditor?.edit((editBuilder) => {
+      const generated = codeEndLineLength ? `\n${fullResponse}` : fullResponse
+
+      // 替换当前选中的内容
+      editBuilder.replace(selection, generated)
+
+      // 设置装饰器
+      useActiveEditorDecorations(INSERTED_DECORATION, [new Range(selection.start, selection.end)])
     })
-
-    let fullResponse = ''
-
-    for await (const delta of result.textStream) {
-      fullResponse += delta
-      // TODO: 替换掉用户选择的内容 使用delta 流式替换
-      logger.append(`${delta}`)
-    }
-
-    if (fullResponse === '') {
-      window.showErrorMessage('No response from the server')
-      return
-    }
-
-    if (selection) {
-      editor?.edit((editBuilder) => {
-        editBuilder.replace(selection, fullResponse)
-        editor?.revealRange(selection)
-      })
-    }
 
     messages.push({
       role: 'assistant',
       content: fullResponse,
     })
+
+    // 保存清空EditorDecorations
+    const onDidChangeDecorations = useEvent(workspace.onDidSaveTextDocument)
+    onDidChangeDecorations(() => {
+      cleanDecorations(activeTextEditor!)
+    })
+    // 撤回清空
   }
   catch (error) {
     if (TypeValidationError.isInstance(error)) {
