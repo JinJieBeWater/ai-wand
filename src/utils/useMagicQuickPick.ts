@@ -3,8 +3,8 @@ import { QuickPickItemKind, ThemeIcon, commands, window } from 'vscode'
 import { magics } from '../config'
 import { displayName } from '../generated/meta'
 import type { Magic } from '../types/magic'
+import { sparkMagic } from '../magic'
 import { logger } from './logger'
-import { sparkMagic } from './magic'
 
 function createMagicQuickPickItemSperator(key: string) {
   return {
