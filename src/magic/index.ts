@@ -5,6 +5,7 @@ import { createMessageButler } from '../AISDK/createMessageButler'
 import { createStreamText } from '../AISDK'
 import { cleanDecorations, setInsertedDecoration, setUnchangedDecoration } from '../editor/setDecoration'
 import { calibrateSelection } from '../editor/calibration'
+import { createGenerateText } from '../AISDK/createGenerateText'
 
 export async function sparkMagic(magic: Magic) {
   const currentTextEditor = window.activeTextEditor
@@ -16,15 +17,7 @@ export async function sparkMagic(magic: Magic) {
   const msgButler = createMessageButler()
   msgButler.addUser(currentSelectedText!, magic.prompt)
 
-  const result = createStreamText({
-    messages: msgButler.messages,
-  })
-
-  let fullResponse: string = ``
-
-  for await (const chunk of result.textStream) {
-    fullResponse += chunk
-  }
+  const fullResponse: string = (await createGenerateText(msgButler.messages)).text
 
   if (fullResponse === '') {
     window.showErrorMessage('No response from the server')
