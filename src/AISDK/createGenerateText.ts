@@ -20,8 +20,8 @@ export async function createGenerateText(messages: CoreMessage[]) {
     return result
   }
   catch (error) {
-    logger.error(error)
-    window.showErrorMessage(JSON.stringify(error))
+    logger.error('createGenerateText', JSON.stringify(error))
+    window.showErrorMessage('createGenerateText', JSON.stringify(error))
     throw error
   }
 }

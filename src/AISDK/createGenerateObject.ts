@@ -28,20 +28,14 @@ async function createGenerateObject({ messages }: CreateGenerateObjectProps) {
       model: getModel(),
       schema,
       messages,
+      mode: 'json',
     })
     return result
   }
   catch (error) {
-    if (APICallError.isInstance(error)) {
-      logger.error(JSON.stringify(error))
-      window.showErrorMessage('API call error')
-      throw error
-    }
-    else {
-      logger.error(error)
-      window.showErrorMessage(JSON.stringify(error))
-      throw error
-    }
+    logger.error('generateObject', JSON.stringify(error))
+    window.showErrorMessage('generateObject', JSON.stringify(error))
+    throw error
   }
 }
 
