@@ -2,7 +2,6 @@ import { Position, Range, Selection, window, workspace } from 'vscode'
 import { useEvent } from 'reactive-vscode'
 import type { Magic } from '../types/magic'
 import { createMessageButler } from '../AISDK/createMessageButler'
-import { createStreamText } from '../AISDK'
 import { cleanDecorations, setInsertedDecoration, setUnchangedDecoration } from '../editor/setDecoration'
 import { calibrateSelection } from '../editor/calibration'
 import { createGenerateText } from '../AISDK/createGenerateText'
@@ -38,10 +37,8 @@ export async function sparkMagic(magic: Magic) {
 
     const insertedRange = new Range(insertPosition, endPosition)
 
-    currentTextEditor.selection = new Selection(insertedRange.start, insertedRange.end)
-
     setImmediate(() => {
-      const { calibratedRange } = calibrateSelection(currentTextEditor.selection)
+      const { calibratedRange } = calibrateSelection(new Selection(insertedRange.start, insertedRange.end))
 
       setInsertedDecoration(currentTextEditor!, calibratedRange)
 
