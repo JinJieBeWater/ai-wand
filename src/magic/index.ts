@@ -7,50 +7,46 @@ import { calibrateSelection } from '../editor/calibration'
 import { createGenerateText } from '../AISDK/createGenerateText'
 
 export async function sparkMagic(magic: Magic) {
-  const currentTextEditor = window.activeTextEditor
+  const textEditor = window.activeTextEditor
 
-  const currentSelectedText = currentTextEditor?.document.getText(currentTextEditor.selection)
+  const currentSelectedText = textEditor?.document.getText(textEditor.selection)
 
-  const { calibratedRange } = calibrateSelection(currentTextEditor!.selection)
+  const { calibratedRange } = calibrateSelection(textEditor!.selection)
 
   const msgButler = createMessageButler()
   msgButler.addUser(currentSelectedText!, magic.prompt)
 
-  const fullResponse: string = (await createGenerateText(msgButler.messages)).text
+  const fullResponse = await createGenerateText(msgButler.messages)
 
-  if (fullResponse === '') {
-    window.showErrorMessage('No response from the server')
-    return
-  }
-
-  currentTextEditor?.edit((editBuilder) => {
-    setUnchangedDecoration(currentTextEditor, calibratedRange)
+  textEditor?.edit((editBuilder) => {
+    setUnchangedDecoration(textEditor, calibratedRange)
 
     const insertPosition = new Position(calibratedRange.end.line + 1, 0)
 
-    editBuilder.insert(insertPosition, fullResponse)
+    editBuilder.insert(insertPosition, fullResponse.text)
 
-    const lines = fullResponse.split('\n')
+    const lines = fullResponse.text.split('\n')
     const endLine = insertPosition.line + lines.length - 1
     const endCharacter = lines[lines.length - 1].length
     const endPosition = new Position(endLine, endCharacter)
 
     const insertedRange = new Range(insertPosition, endPosition)
 
+    // 确保在插入后再设置装饰
     setImmediate(() => {
-      const { calibratedRange } = calibrateSelection(new Selection(insertedRange.start, insertedRange.end))
+      const { calibratedRange: calibratedInsertedRange } = calibrateSelection(new Selection(insertedRange.start, insertedRange.end))
 
-      setInsertedDecoration(currentTextEditor!, calibratedRange)
+      setInsertedDecoration(textEditor!, calibratedInsertedRange)
 
-      currentTextEditor?.revealRange(insertedRange, 1)
-      currentTextEditor.selection = new Selection(insertedRange.start, insertedRange.start)
+      textEditor?.revealRange(insertedRange, 1)
+      textEditor.selection = new Selection(insertedRange.start, insertedRange.start)
     })
   })
 
-  msgButler.addAssistant(fullResponse)
+  msgButler.addAssistant(fullResponse.text)
 
   const onDidChangeDecorations = useEvent(workspace.onDidSaveTextDocument)
   onDidChangeDecorations(() => {
-    cleanDecorations(currentTextEditor!)
+    cleanDecorations(textEditor!)
   })
 }
