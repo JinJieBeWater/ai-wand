@@ -119,8 +119,14 @@
           "type": "string",
           "default": "openRouter",
           "description": "Active AI provider",
-          "enum": ["openRouter", "ollama"],
-          "enumDescriptions": ["A unified interface for LLMs. Find the best models & prices for your prompts.", "Get up and running with large language models. "]
+          "enum": [
+            "openRouter",
+            "ollama"
+          ],
+          "enumDescriptions": [
+            "A unified interface for LLMs. Find the best models & prices for your prompts.",
+            "Get up and running with large language models. "
+          ]
         },
         "magicWand.provider.openRouterApiKey": {
           "type": "string",
@@ -151,12 +157,14 @@
   "dependencies": {
     "@openrouter/ai-sdk-provider": "^0.0.6",
     "ai": "^4.1.13",
+    "diff": "^7.0.0",
     "ollama-ai-provider": "^1.2.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.26.0",
     "@antfu/ni": "^0.22.4",
+    "@types/diff": "^7.0.1",
     "@types/node": "^22.4.1",
     "@types/vscode": "^1.92.0",
     "@vscode/vsce": "^3.0.0",
