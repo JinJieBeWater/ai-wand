@@ -1,59 +1,73 @@
-import { Position, Range, Selection, window, workspace } from 'vscode'
-import { useEvent } from 'reactive-vscode'
+import type { TextEditor, TextEditorDecorationType } from 'vscode'
+import { Position, Range, window } from 'vscode'
 import type { Magic } from '../types/magic'
-import { createMessageButler } from '../AISDK/createMessageButler'
-import { cleanDecorations, setInsertedDecoration, setUnchangedDecoration } from '../editor/setDecoration'
-import { calibrateSelection } from '../editor/calibration'
+import type { MessageButler } from '../AISDK'
+import { createMessageButler } from '../AISDK'
+import { getSelectedText } from '../utils/getSelectedText'
 import { createGenerateText } from '../AISDK/createGenerateText'
-import { useDiffLines } from '../diff/useDiffLines'
+import { EditType, computeDiff, makeDiffEditBuilderCompatible } from '../diff/computeDiff'
 import { logger } from '../utils/logger'
+import { createDeletionDecoration, createInsertedDecoration } from '../editor/decoration'
+
+export interface SparkContext {
+  magic: Magic
+  textEditor: TextEditor
+  msgButler: MessageButler
+  fullResponse: string
+  originalText: string
+}
 
 export async function sparkMagic(magic: Magic) {
-  const textEditor = window.activeTextEditor
-
-  const currentSelectedText = textEditor?.document.getText(textEditor.selection)
-
-  const msgButler = createMessageButler().addUser(currentSelectedText!, magic.prompt)
+  const textEditor = window.activeTextEditor!
+  const originalText = getSelectedText(textEditor!)
+  const msgButler = createMessageButler().addUser(originalText, magic.prompt)
 
   const fullResponse = await createGenerateText(msgButler.messages)
 
-  const diff = useDiffLines(currentSelectedText!, fullResponse.text)
+  logger.info('fullResponse', fullResponse)
 
-  diff.forEach((part) => {
-    logger.info('part', JSON.stringify(part))
+  const diff = computeDiff(fullResponse, originalText, textEditor.selection, {
+    decorateDeletions: true,
   })
-
-  const { calibratedRange } = calibrateSelection(textEditor!.selection)
-
-  textEditor?.edit((editBuilder) => {
-    setUnchangedDecoration(textEditor, calibratedRange)
-
-    const insertPosition = new Position(calibratedRange.end.line + 1, 0)
-
-    editBuilder.insert(insertPosition, fullResponse.text)
-
-    const lines = fullResponse.text.split('\n')
-    const endLine = insertPosition.line + lines.length - 1
-    const endCharacter = lines[lines.length - 1].length
-    const endPosition = new Position(endLine, endCharacter)
-
-    const insertedRange = new Range(insertPosition, endPosition)
-
-    // 确保在插入后再设置装饰
-    setImmediate(() => {
-      const { calibratedRange: calibratedInsertedRange } = calibrateSelection(new Selection(insertedRange.start, insertedRange.end))
-
-      setInsertedDecoration(textEditor!, calibratedInsertedRange)
-
-      textEditor?.revealRange(insertedRange, 1)
-      textEditor.selection = new Selection(insertedRange.start, insertedRange.start)
+  textEditor.edit((editBuilder) => {
+    diff.forEach((part) => {
+      interface Instance {
+        decoration: TextEditorDecorationType[]
+      }
+      const instance: Instance = {
+        decoration: [],
+      }
+      switch (part.type) {
+        case EditType.Insertion:
+          editBuilder.insert(part.range.start, part.text)
+          setImmediate(() => {
+            logger.info('Insertion.range', JSON.stringify(part.range))
+            logger.info('Insertion.text', JSON.stringify(part.text))
+            instance.decoration.push(createInsertedDecoration())
+            instance.decoration.forEach((decoration) => {
+              textEditor.setDecorations(decoration, [part.range])
+            })
+          })
+          break
+        case EditType.Deletion:
+          editBuilder.delete(part.range)
+          break
+        case EditType.DecoratedReplacement:
+          editBuilder.replace(part.range, part.text)
+          setImmediate(() => {
+            const lines = part.oldText.split('\n')
+            let position = part.range.start
+            lines.forEach((line) => {
+              const decoration = createDeletionDecoration(line)
+              instance.decoration.push(decoration)
+              textEditor.setDecorations(decoration, [new Range(position, position)])
+              position = new Position(position.line + 1, 0)
+            })
+          })
+          break
+        default:
+          throw new Error('Unknown edit type')
+      }
     })
-  })
-
-  msgButler.addAssistant(fullResponse.text)
-
-  const onDidChangeDecorations = useEvent(workspace.onDidSaveTextDocument)
-  onDidChangeDecorations(() => {
-    cleanDecorations(textEditor!)
   })
 }
