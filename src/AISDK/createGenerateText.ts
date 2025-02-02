@@ -2,6 +2,7 @@ import { APICallError, generateText } from 'ai'
 import type { CoreMessage } from 'ai'
 import { window } from 'vscode'
 import { logger } from '../utils/logger'
+import type { SparkContext } from '../magic'
 import { getModel } from './getModel'
 
 export async function createGenerateText(messages: CoreMessage[]) {
@@ -17,7 +18,7 @@ export async function createGenerateText(messages: CoreMessage[]) {
       throw new Error('No response from the server')
     }
 
-    return result
+    return result.text
   }
   catch (error) {
     logger.error('createGenerateText', JSON.stringify(error))
