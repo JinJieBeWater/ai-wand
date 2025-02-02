@@ -4,12 +4,19 @@ import { window } from 'vscode'
 import { logger } from '../utils/logger'
 import { getModel } from './getModel'
 
-export function createGenerateText(messages: CoreMessage[]) {
+export async function createGenerateText(messages: CoreMessage[]) {
   try {
-    const result = generateText({
+    const result = await generateText({
       model: getModel(),
       messages,
     })
+
+    // 预防服务器没有响应
+    if (result.text === '') {
+      window.showErrorMessage('No response from the server')
+      throw new Error('No response from the server')
+    }
+
     return result
   }
   catch (error) {
