@@ -3,8 +3,15 @@ import { TypeValidationError, smoothStream, streamText } from 'ai'
 import { window } from 'vscode'
 import { logger } from '../utils/logger'
 import { getModel } from './getModel'
+import { processFinishReason, processUsage } from './processResponse'
 
-export function createStreamText(messages: CoreMessage[]) {
+export interface CreateStreamTextProps {
+  messages: CoreMessage[]
+  onTextDelta?: (delta: string) => void
+  onFinish?: (text: string, finishReason: FinishReason, usage: LanguageModelUsage) => void
+}
+
+export function createStreamText({ messages, onTextDelta, onFinish }: CreateStreamTextProps) {
   try {
     // 用于存储完整的响应
     const result = streamText({
@@ -17,7 +24,7 @@ export function createStreamText(messages: CoreMessage[]) {
       onChunk: ({ chunk }) => {
         switch (chunk.type) {
           case 'text-delta':
-            logger.info('text', chunk.textDelta)
+            onTextDelta?.(chunk.textDelta)
             break
           case 'reasoning':
             logger.info('reasoning', chunk.textDelta)
@@ -25,9 +32,9 @@ export function createStreamText(messages: CoreMessage[]) {
         }
       },
       onFinish: ({ text, finishReason, usage }) => {
-        logger.info('finish', text)
         processFinishReason(finishReason)
         processUsage(usage)
+        onFinish?.(text, finishReason, usage)
       },
     })
     return result
@@ -37,35 +44,10 @@ export function createStreamText(messages: CoreMessage[]) {
       window.showErrorMessage('Type validation fails. Maybe Server is not working')
       throw error
     }
-  }
-}
-
-function processUsage(usage: LanguageModelUsage) {
-  logger.info('promptTokens', usage.promptTokens)
-  logger.info('completionTokens', usage.completionTokens)
-  logger.info('totalTokens', usage.totalTokens)
-}
-
-function processFinishReason(finishReason: FinishReason) {
-  switch (finishReason) {
-    case 'stop':
-      break
-    case 'length':
-      window.showErrorMessage('model generated maximum number of tokens')
-      break
-    case 'content-filter':
-      window.showErrorMessage('content filter violation stopped the model')
-      break
-    case 'tool-calls':
-      break
-    case 'error':
-      window.showErrorMessage('model stopped because of an error')
-      break
-    case 'other':
-      window.showErrorMessage('model stopped for other reasons')
-      break
-    case 'unknown':
-      window.showErrorMessage('Unknown finish reason')
-      break
+    else {
+      logger.error(error)
+      window.showErrorMessage(JSON.stringify(error))
+      throw error
+    }
   }
 }
