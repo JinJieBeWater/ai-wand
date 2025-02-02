@@ -40,14 +40,8 @@ export function createStreamText({ messages, onTextDelta, onFinish }: CreateStre
     return result
   }
   catch (error) {
-    if (TypeValidationError.isInstance(error)) {
-      window.showErrorMessage('Type validation fails. Maybe Server is not working')
-      throw error
-    }
-    else {
-      logger.error(error)
-      window.showErrorMessage(JSON.stringify(error))
-      throw error
-    }
+    logger.error('createStreamText', JSON.stringify(error))
+    window.showErrorMessage('createStreamText', JSON.stringify(error))
+    throw error
   }
 }
