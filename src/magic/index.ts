@@ -1,11 +1,11 @@
 import { Position, Range, Selection, window, workspace } from 'vscode'
-import { useActiveEditorDecorations, useEvent, useTextEditorSelection } from 'reactive-vscode'
+import { useActiveEditorDecorations, useEvent } from 'reactive-vscode'
 import type { Magic } from '../types/magic'
 import { INSERTED_DECORATION, UNCHANGED_DECORATION, cleanDecorations } from '../editor/decoration'
-import { createStreamText } from '../chat'
-import { createMessageButler } from '../chat/createMessageButler'
+import { createMessageButler } from '../AISDK/createMessageButler'
 import { getEditorInfo } from '../editor/getEditorInfo'
 import { logger } from '../utils/logger'
+import { createStreamText } from '../AISDK'
 
 export async function sparkMagic(magic: Magic) {
   const { activeTextEditor, selectedText, selectedRange, selection } = getEditorInfo()
@@ -15,14 +15,17 @@ export async function sparkMagic(magic: Magic) {
   msgButler.addUser(selectedText.value!, magic.prompt)
 
   // 用于存储完整的响应
-  let fullResponse = ``
+  let fullResponse: string = ``
 
   // // 创建 AI 模型实例
-  const result = createStreamText(msgButler.messages)
-  // // 遍历响应流
-  for await (const delta of result?.textStream) {
-    fullResponse += delta
+  const result = createStreamText({
+    messages: msgButler.messages,
+  })
+
+  for await (const chunk of result.textStream) {
+    fullResponse += chunk
   }
+
   // 预防服务器没有响应
   if (fullResponse === '') {
     window.showErrorMessage('No response from the server')
