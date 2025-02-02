@@ -5,18 +5,25 @@ import { createMessageButler } from '../AISDK/createMessageButler'
 import { cleanDecorations, setInsertedDecoration, setUnchangedDecoration } from '../editor/setDecoration'
 import { calibrateSelection } from '../editor/calibration'
 import { createGenerateText } from '../AISDK/createGenerateText'
+import { useDiffLines } from '../diff/useDiffLines'
+import { logger } from '../utils/logger'
 
 export async function sparkMagic(magic: Magic) {
   const textEditor = window.activeTextEditor
 
   const currentSelectedText = textEditor?.document.getText(textEditor.selection)
 
-  const { calibratedRange } = calibrateSelection(textEditor!.selection)
-
-  const msgButler = createMessageButler()
-  msgButler.addUser(currentSelectedText!, magic.prompt)
+  const msgButler = createMessageButler().addUser(currentSelectedText!, magic.prompt)
 
   const fullResponse = await createGenerateText(msgButler.messages)
+
+  const diff = useDiffLines(currentSelectedText!, fullResponse.text)
+
+  diff.forEach((part) => {
+    logger.info('part', JSON.stringify(part))
+  })
+
+  const { calibratedRange } = calibrateSelection(textEditor!.selection)
 
   textEditor?.edit((editBuilder) => {
     setUnchangedDecoration(textEditor, calibratedRange)
