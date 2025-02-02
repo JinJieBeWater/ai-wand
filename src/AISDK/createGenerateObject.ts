@@ -18,7 +18,11 @@ const schema = z.object({
   })).describe('Split the output code into blocks'),
 })
 
-async function createGenerateObject(messages: CoreMessage[]) {
+interface CreateGenerateObjectProps {
+  messages: CoreMessage[]
+}
+
+async function createGenerateObject({ messages }: CreateGenerateObjectProps) {
   try {
     const result = await generateObject({
       model: getModel(),

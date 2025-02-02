@@ -13,12 +13,3 @@ export const INSERTED_DECORATION = window.createTextEditorDecorationType({
   borderColor: new ThemeColor('diffEditor.insertedTextBorder'),
   rangeBehavior: DecorationRangeBehavior.OpenOpen,
 })
-
-export function cleanDecorations(editor: TextEditor) {
-  editor.setDecorations(UNCHANGED_DECORATION, [])
-  editor.setDecorations(INSERTED_DECORATION, [])
-}
-
-export function setUnchangedStatus() {
-
-}
