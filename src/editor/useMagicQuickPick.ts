@@ -1,10 +1,11 @@
 import type { QuickPick, QuickPickItem } from 'vscode'
 import { QuickPickItemKind, ThemeIcon, commands, window } from 'vscode'
 import { magics } from '../config'
-import { displayName } from '../generated/meta'
 import type { Magic } from '../types/magic'
 import { sparkMagic } from '../magic'
-import { logger } from './logger'
+import { logger } from '../utils/logger'
+import * as Meta from '../generated/meta'
+import { openMagicsSettings } from '../commands/openSettings'
 
 function createMagicQuickPickItemSperator(key: string) {
   return {
@@ -52,7 +53,7 @@ function createMagicQuickPick() {
     iconPath: new ThemeIcon('gear'),
   })
   const qp = window.createQuickPick()
-  qp.title = displayName
+  qp.title = Meta.displayName
   qp.placeholder = 'Spark a magic or customize new magic'
   qp.items = items
   return qp
@@ -71,7 +72,7 @@ function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>) {
 
   switch (item.label) {
     case 'Customize':
-      commands.executeCommand('workbench.action.openSettings', 'magicWand.magics')
+      openMagicsSettings()
       break
     case 'edit':
       logger.info('Spark a magic: edit')
