@@ -145,8 +145,8 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@JinJieBeWater/eslint-config": "^2.26.0",
-    "@JinJieBeWater/ni": "^0.22.4",
+    "@antfu/eslint-config": "^2.26.0",
+    "@antfu/ni": "^0.22.4",
     "@types/diff": "^7.0.1",
     "@types/node": "^22.4.1",
     "@types/vscode": "^1.92.0",
