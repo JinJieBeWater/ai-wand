@@ -6,7 +6,7 @@
   "private": true,
   "packageManager": "pnpm@9.7.1",
   "description": "Magic Wand is a powerful VS Code extension. Customize your own prompt words easily. With just a shortcut key, summon a menu of prompt words to assist your coding. It integrates seamlessly into the development process, boosting your programming efficiency significantly.",
-  "author": "Anthony Fu <anthonyfu117@hotmail.com>",
+  "author": "JinJieBeWater",
   "license": "MIT",
   "homepage": "https://github.com/JinJieBeWater/magic-wand#readme",
   "repository": {
