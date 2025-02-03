@@ -1,5 +1,4 @@
-import type { TextEditor } from 'vscode'
-import { DecorationRangeBehavior, OverviewRulerLane, ThemeColor, window } from 'vscode'
+import { DecorationRangeBehavior, ThemeColor, window } from 'vscode'
 
 export function createInsertedDecoration() {
   return window.createTextEditorDecorationType({
@@ -18,7 +17,6 @@ export function createDeletionDecoration(text: string) {
     rangeBehavior: DecorationRangeBehavior.ClosedClosed,
     before: {
       contentText: text,
-      margin: '0 0 0 1em',
     },
   })
 }

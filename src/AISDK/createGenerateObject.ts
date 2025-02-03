@@ -1,5 +1,5 @@
 import type { CoreMessage } from 'ai'
-import { APICallError, generateObject } from 'ai'
+import { generateObject } from 'ai'
 import { z } from 'zod'
 import { window } from 'vscode'
 import { logger } from '../utils/logger'

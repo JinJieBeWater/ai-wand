@@ -1,5 +1,5 @@
-import type { CoreMessage, FinishReason, LanguageModelUsage, StreamTextResult, ToolSet } from 'ai'
-import { TypeValidationError, smoothStream, streamText } from 'ai'
+import type { CoreMessage, FinishReason, LanguageModelUsage } from 'ai'
+import { smoothStream, streamText } from 'ai'
 import { window } from 'vscode'
 import { logger } from '../utils/logger'
 import { getModel } from './getModel'
