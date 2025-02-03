@@ -1,8 +1,7 @@
-import { APICallError, generateText } from 'ai'
+import { generateText } from 'ai'
 import type { CoreMessage } from 'ai'
 import { window } from 'vscode'
 import { logger } from '../utils/logger'
-import type { SparkContext } from '../magic'
 import { getModel } from './getModel'
 
 export async function createGenerateText(messages: CoreMessage[]) {

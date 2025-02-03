@@ -5,16 +5,12 @@ import type { MessageButler } from '../AISDK'
 import { createMessageButler } from '../AISDK'
 import { getSelectedText } from '../utils/getSelectedText'
 import { createGenerateText } from '../AISDK/createGenerateText'
-import { EditType, computeDiff, makeDiffEditBuilderCompatible } from '../diff/computeDiff'
-import { logger } from '../utils/logger'
+import type { Edit } from '../diff/computeDiff'
+import { EditType, computeDiff } from '../diff/computeDiff'
 import { createDeletionDecoration, createInsertedDecoration } from '../editor/decoration'
 
-export interface SparkContext {
-  magic: Magic
-  textEditor: TextEditor
-  msgButler: MessageButler
-  fullResponse: string
-  originalText: string
+interface Instance {
+  decoration: TextEditorDecorationType[]
 }
 
 export async function sparkMagic(magic: Magic) {
@@ -24,25 +20,19 @@ export async function sparkMagic(magic: Magic) {
 
   const fullResponse = await createGenerateText(msgButler.messages)
 
-  logger.info('fullResponse', fullResponse)
-
   const diff = computeDiff(fullResponse, originalText, textEditor.selection, {
     decorateDeletions: true,
   })
-  textEditor.edit((editBuilder) => {
-    diff.forEach((part) => {
-      interface Instance {
-        decoration: TextEditorDecorationType[]
-      }
-      const instance: Instance = {
-        decoration: [],
-      }
+
+  const diffEdit = async (part: Edit) => {
+    const instance: Instance = {
+      decoration: [],
+    }
+    await textEditor.edit((editBuilder) => {
       switch (part.type) {
         case EditType.Insertion:
           editBuilder.insert(part.range.start, part.text)
           setImmediate(() => {
-            logger.info('Insertion.range', JSON.stringify(part.range))
-            logger.info('Insertion.text', JSON.stringify(part.text))
             instance.decoration.push(createInsertedDecoration())
             instance.decoration.forEach((decoration) => {
               textEditor.setDecorations(decoration, [part.range])
@@ -68,6 +58,14 @@ export async function sparkMagic(magic: Magic) {
         default:
           throw new Error('Unknown edit type')
       }
+    }).then(async (success) => {
+      if (!success) {
+        await diffEdit(part)
+      }
     })
-  })
+  }
+
+  for (const part of diff) {
+    await diffEdit(part)
+  }
 }
