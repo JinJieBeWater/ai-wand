@@ -4,7 +4,7 @@ import type { Edit } from '../diff/computeDiff'
 import { EditType } from '../diff/computeDiff'
 import { createDeletionDecoration, createInsertedDecoration } from './decoration'
 
-interface lifeCycleInstance {
+export interface lifeCycleInstance {
   decorations: TextEditorDecorationType[]
   textEditor: TextEditor
   edit: Edit
@@ -29,7 +29,6 @@ function useDeletionDecoration(instance: lifeCycleInstance) {
       const decoration = createDeletionDecoration(line)
       decorations.push(decoration)
       textEditor.setDecorations(decoration, [new Range(position, position)])
-      console.log(`选中的代码:${line}`)
     })
   }
   else {

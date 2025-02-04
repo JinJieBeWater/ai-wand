@@ -5,6 +5,7 @@ import { createMessageButler } from '../AISDK'
 import { getSelectedText } from '../editor/getSelectedText'
 import { createGenerateText } from '../AISDK/createGenerateText'
 import { computeDiff } from '../diff/computeDiff'
+import type { lifeCycleInstance } from '../editor/diffEdit'
 import { diffEdit } from '../editor/diffEdit'
 
 export async function sparkMagic(magic: Magic) {
@@ -21,13 +22,37 @@ export async function sparkMagic(magic: Magic) {
 
   const instances = await diffEdit(textEditor, diff)
 
+  const cleanInstances = (targetInstances?: lifeCycleInstance[]) => {
+    const instancesToClean = targetInstances || instances
+    instancesToClean.forEach((instance) => {
+      instance.decorations.forEach((decoration) => {
+        textEditor.setDecorations(decoration, [])
+      })
+    })
+    if (!targetInstances) {
+      instances.length = 0
+    }
+    else {
+      targetInstances.forEach((instance) => {
+        const index = instances.indexOf(instance)
+        if (index > -1) {
+          instances.splice(index, 1)
+        }
+      })
+    }
+  }
+
   useDisposable(workspace.onDidSaveTextDocument((e) => {
     if (e.uri.toString() === textEditor.document.uri.toString()) {
-      instances.forEach((instance) => {
-        instance.decorations.forEach((decoration) => {
-          textEditor.setDecorations(decoration, [])
-        })
-      })
+      cleanInstances()
+    }
+  }))
+
+  useDisposable(workspace.onDidChangeTextDocument((e) => {
+    if (e.document.uri.toString() === textEditor.document.uri.toString()) {
+      if (!e.document.isDirty) {
+        cleanInstances()
+      }
     }
   }))
 
