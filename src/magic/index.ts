@@ -1,4 +1,5 @@
-import { window } from 'vscode'
+import { useDisposable } from 'reactive-vscode'
+import { window, workspace } from 'vscode'
 import type { Magic } from '../types/magic'
 import { createMessageButler } from '../AISDK'
 import { getSelectedText } from '../editor/getSelectedText'
@@ -19,6 +20,16 @@ export async function sparkMagic(magic: Magic) {
   })
 
   const instances = await diffEdit(textEditor, diff)
+
+  useDisposable(workspace.onDidSaveTextDocument((e) => {
+    if (e.uri.toString() === textEditor.document.uri.toString()) {
+      instances.forEach((instance) => {
+        instance.decorations.forEach((decoration) => {
+          textEditor.setDecorations(decoration, [])
+        })
+      })
+    }
+  }))
 
   return instances
 }
