@@ -18,10 +18,10 @@
 ## Commands
 
 <!-- commands -->
-| Command                            | Title                                     |
-| ---------------------------------- | ----------------------------------------- |
-| `magic-wand.magics-settings`       | Magic Wang Settings: Customize magic wand |
-| `magic-wand.quick-pick.showMagics` | Magic Wand 🪄✨🔮: Spark a magic           |
+| Command                      | Title                                     |
+| ---------------------------- | ----------------------------------------- |
+| `magic-wand.magics-settings` | Magic Wang Settings: Customize magic wand |
+| `magic-wand.showMagics`      | Magic Wand 🪄✨🔮: Spark a magic           |
 <!-- commands -->
 
 ## License

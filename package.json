@@ -41,7 +41,7 @@
         "icon": "$(gear)"
       },
       {
-        "command": "magic-wand.quick-pick.showMagics",
+        "command": "magic-wand.showMagics",
         "title": "Spark a magic",
         "category": "Magic Wand 🪄✨🔮",
         "icon": "$(tools)"
@@ -49,7 +49,7 @@
     ],
     "keybindings": [
       {
-        "command": "magic-wand.quick-pick.showMagics",
+        "command": "magic-wand.showMagics",
         "key": "alt+`"
       }
     ],
