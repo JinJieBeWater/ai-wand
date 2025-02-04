@@ -46,8 +46,8 @@ export class MagicWandCodelensProvider implements vscode.CodeLensProvider {
       codeLens.command = {
         title: '🪄',
         tooltip: 'Click to open the Magic Menu',
-        command: Meta.commands.quickPickShowMagics,
-        arguments: [codeLens.range],
+        command: Meta.commands.showMagics,
+        arguments: [codeLens.range.start.line],
       }
       return codeLens
     }
