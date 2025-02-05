@@ -30,6 +30,9 @@ importers:
       '@antfu/ni':
         specifier: ^0.22.4
         version: 0.22.4
+      '@reactive-vscode/vueuse':
+        specifier: ^0.2.10
+        version: 0.2.10
       '@types/diff':
         specifier: ^7.0.1
         version: 7.0.1
@@ -793,6 +796,12 @@ packages:
 
   '@reactive-vscode/reactivity@0.2.0':
     resolution: {integrity: sha512-TUDA8YSrd7Zhtg8mxb0VyJzBmLeuf9EnOM2O1XFI2zxPqlDKzNfYdI8L3nrM0S+FqnzV6sHcRsr9i1aonD7Org==}
+
+  '@reactive-vscode/reactivity@0.2.10':
+    resolution: {integrity: sha512-OEo1s6ZQnjKGm9Kp8b/p8+zaFg3VV6gDw61vIZOx57J750m5pldZ6VT0kah4JYTIlqQMGaHMNsbVCKfSLLcBKg==}
+
+  '@reactive-vscode/vueuse@0.2.10':
+    resolution: {integrity: sha512-UIjbJNXKgtmXYDOl9FMNYs0MC2V5b/yjd6KDRaxp14qMdBz4On1YdwxJwmTabXTBPPiKa+ncw4uZhUOwLhQNxw==}
 
   '@rollup/rollup-android-arm-eabi@4.20.0':
     resolution: {integrity: sha512-TSpWzflCc4VGAUJZlPpgAJE1+V60MePDQnBd7PPkpuEmOy8i87aL6tinFGKBFKuEDikYpig72QzdT3QPYIi+oA==}
@@ -3754,6 +3763,12 @@ snapshots:
   '@pkgr/core@0.1.1': {}
 
   '@reactive-vscode/reactivity@0.2.0': {}
+
+  '@reactive-vscode/reactivity@0.2.10': {}
+
+  '@reactive-vscode/vueuse@0.2.10':
+    dependencies:
+      '@reactive-vscode/reactivity': 0.2.10
 
   '@rollup/rollup-android-arm-eabi@4.20.0':
     optional: true
