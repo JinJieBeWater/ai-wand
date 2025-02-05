@@ -8,6 +8,7 @@ export interface lifeCycleInstance {
   decorations: TextEditorDecorationType[]
   textEditor: TextEditor
   edit: Edit
+  isActive: boolean
 }
 
 function useInsertionDecoration(instance: lifeCycleInstance) {
@@ -41,6 +42,7 @@ export async function diffEditItem(textEditor: TextEditor, part: Edit): Promise<
     decorations: [],
     textEditor,
     edit: part,
+    isActive: true,
   }
   await textEditor.edit((editBuilder) => {
     switch (part.type) {

@@ -60,7 +60,7 @@ export function computeDiff(
       calibratedDiff.push({
         type: EditType.Insertion,
         text: change.value,
-        range: new vscode.Range(startLine, 0, startLine + count - 1, Infinity),
+        range: new vscode.Range(startLine, 0, startLine + count, 0),
       })
       startLine += count
     }
@@ -71,14 +71,14 @@ export function computeDiff(
           type: EditType.DecoratedReplacement,
           text: '\n'.repeat(count),
           oldText,
-          range: new vscode.Range(startLine, 0, startLine + count - 1, Infinity),
+          range: new vscode.Range(startLine, 0, startLine + count, 0),
         })
         startLine += count
       }
       else {
         calibratedDiff.push({
           type: EditType.Deletion,
-          range: new vscode.Range(startLine, 0, startLine + count - 1, Infinity),
+          range: new vscode.Range(startLine, 0, startLine + count, 0),
           oldText: change.value,
         })
       }
