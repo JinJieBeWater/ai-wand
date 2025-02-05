@@ -9,6 +9,10 @@ const { activate, deactivate } = defineExtension(() => {
 
   const magicWandCodelens = new MagicWandCodelensProvider()
 
+  magicWandCodelens.onDidChangeCodeLenses((e) => {
+    logger.info('CodeLens changed', e)
+  })
+
   useDisposable(languages.registerCodeLensProvider('*', magicWandCodelens))
 
   logger.show()

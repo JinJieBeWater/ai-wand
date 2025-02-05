@@ -49,7 +49,7 @@ export class MagicWandCodelensProvider implements CodeLensProvider {
         title: '🪄',
         tooltip: 'Click to open the Magic Menu',
         command: Meta.commands.showMagics,
-        arguments: [codeLens.range.start.line],
+        arguments: [codeLens],
       }
       return codeLens
     }

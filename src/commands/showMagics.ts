@@ -1,11 +1,10 @@
+import type { CodeLens } from 'vscode'
 import useMagicQuickPick from '../editor/useMagicQuickPick'
 import { selectAiLine } from '../editor/selectAiLine'
-import { logger } from '../utils/logger'
 
-export async function showMagics(args: number) {
-  if (args !== undefined) {
-    logger.info('showMagics', args)
-    selectAiLine(args)
+export async function showMagics(codeLens: CodeLens) {
+  if (codeLens !== undefined) {
+    selectAiLine(codeLens.range.start.line)
   }
 
   const qp = useMagicQuickPick()
