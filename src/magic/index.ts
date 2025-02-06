@@ -7,6 +7,7 @@ import { computeDiff } from '../diff/computeDiff'
 import type { lifeCycleInstance } from '../editor/diffEdit'
 import { diffEdit } from '../editor/diffEdit'
 import { connectAISDK } from '../AISDK/connectAISDK'
+import { logger } from '../utils/logger'
 
 export async function sparkMagic(magic: Magic) {
   const textEditor = window.activeTextEditor!
