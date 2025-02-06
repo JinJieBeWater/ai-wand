@@ -50,12 +50,21 @@
         "command": "magic-wand.codelens.click",
         "title": "Codelens Click",
         "enablement": "editorHasSelection"
+      },
+      {
+        "command": "magic-wand.codelens.status.cancel",
+        "title": "Codelens Click",
+        "enablement": "editorHasSelection"
       }
     ],
     "menus": {
       "commandPalette": [
         {
           "command": "magic-wand.codelens.click",
+          "when": "false"
+        },
+        {
+          "command": "magic-wand.codelens.status.cancel",
           "when": "false"
         }
       ]
