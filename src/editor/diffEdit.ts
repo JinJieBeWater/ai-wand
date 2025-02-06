@@ -1,7 +1,8 @@
 import type { TextEditor, TextEditorDecorationType } from 'vscode'
-import { Range } from 'vscode'
+import { Position, Range } from 'vscode'
 import type { Edit } from '../diff/computeDiff'
 import { EditType } from '../diff/computeDiff'
+import { logger } from '../utils/logger'
 import { createDeletionDecoration, createInsertedDecoration } from './decoration'
 
 export interface lifeCycleInstance {
@@ -21,16 +22,23 @@ function useInsertionDecoration(instance: lifeCycleInstance) {
   })
 }
 
-function useDeletionDecoration(instance: lifeCycleInstance) {
+async function useDeletionDecoration(instance: lifeCycleInstance) {
   const { textEditor, decorations, edit } = instance
   if (edit.type === EditType.DecoratedReplacement) {
     const lines = edit.oldText.split('\n')
-    const position = edit.range.start
-    lines.forEach((line) => {
+    const startLine = edit.range.start.line
+    for (let index = 0; index < lines.length; index++) {
+      const line = lines[index]
+
       const decoration = createDeletionDecoration(line)
       decorations.push(decoration)
-      textEditor.setDecorations(decoration, [new Range(position, position)])
-    })
+
+      const currentPostion = new Position(startLine + index, 0)
+      const currentRange = new Range(currentPostion, currentPostion)
+
+      textEditor.setDecorations(decoration, [currentRange])
+      await new Promise(resolve => setTimeout(resolve, 50))
+    }
   }
   else {
     throw new Error('createDeletionDecoration only support EditType.DecoratedReplacement')
@@ -48,14 +56,12 @@ export async function diffEditItem(textEditor: TextEditor, part: Edit): Promise<
     switch (part.type) {
       case EditType.Insertion:
         editBuilder.insert(part.range.start, part.text)
-        useInsertionDecoration(instance)
         break
       case EditType.Deletion:
         editBuilder.delete(part.range)
         break
       case EditType.DecoratedReplacement:
         editBuilder.replace(part.range, part.text)
-        useDeletionDecoration(instance)
         break
       default:
         throw new Error('Unknown edit type')
@@ -63,6 +69,20 @@ export async function diffEditItem(textEditor: TextEditor, part: Edit): Promise<
   }).then(async (success) => {
     if (!success) {
       await diffEditItem(textEditor, part)
+    }
+    else {
+      switch (part.type) {
+        case EditType.Insertion:
+          useInsertionDecoration(instance)
+          break
+        case EditType.Deletion:
+          break
+        case EditType.DecoratedReplacement:
+          useDeletionDecoration(instance)
+          break
+        default:
+          throw new Error('Unknown edit type')
+      }
     }
   })
 
