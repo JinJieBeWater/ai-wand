@@ -6,9 +6,7 @@ import { MagicWandCodelensProvider } from './editor/codelens/MagicWandCodelensPr
 const { activate, deactivate } = defineExtension(() => {
   initCommands()
 
-  const magicWandCodelens = new MagicWandCodelensProvider()
-
-  logger.info('activate', magicWandCodelens)
+  const _magicWandCodelens = new MagicWandCodelensProvider()
 
   logger.show()
 })
