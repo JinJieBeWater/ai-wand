@@ -1,30 +1,50 @@
-import type { CancellationToken, CodeLensProvider, Event, TextDocument } from 'vscode'
-import { CodeLens, EventEmitter, Position, workspace } from 'vscode'
+import type { CancellationToken, CodeLensProvider, Disposable, Event, Range, TextDocument } from 'vscode'
+import { CodeLens, EventEmitter, Position, languages, window, workspace } from 'vscode'
 
+import { useCommand, useDisposable } from 'reactive-vscode'
 import { enableCodeLens } from '../../config'
 import { getRegex } from '../../regex'
 import * as Meta from '../../generated/meta'
+import { showMagics } from '../../commands/showMagics'
+import { selectAiLine } from '../selectAiLine'
+import { logger } from '../../utils/logger'
 
 /**
  * CodelensProvider
  */
 export class MagicWandCodelensProvider implements CodeLensProvider {
-  private codeLenses: CodeLens[] = []
   private regex: RegExp
+  private _disposables: Disposable[] = []
   private _onDidChangeCodeLenses: EventEmitter<void> = new EventEmitter<void>()
   public readonly onDidChangeCodeLenses: Event<void> = this._onDidChangeCodeLenses.event
+  public activeCodeLens: Map<number, CodeLens> = new Map()
 
   constructor() {
     this.regex = getRegex()
+
+    this.init()
 
     workspace.onDidChangeConfiguration((_) => {
       this._onDidChangeCodeLenses.fire()
     })
   }
 
+  /**
+   * init
+   */
+  private init(): void {
+    logger.info('init')
+    this._disposables.push(useDisposable(languages.registerCodeLensProvider({ scheme: 'file' }, this)))
+    useCommand(Meta.commands.codelensClick, (lens: CodeLens) => {
+      selectAiLine(lens.range.start.line)
+      showMagics()
+      this.fire()
+    })
+  }
+
   public provideCodeLenses(document: TextDocument, _token: CancellationToken): CodeLens[] | Thenable<CodeLens[]> {
+    const codeLenses: CodeLens[] = []
     if (enableCodeLens.value) {
-      this.codeLenses = []
       const regex = new RegExp(this.regex)
       const text = document.getText()
       let matches = regex.exec(text)
@@ -33,26 +53,38 @@ export class MagicWandCodelensProvider implements CodeLensProvider {
         const indexOf = line.text.indexOf(matches[0])
         const position = new Position(line.lineNumber, indexOf)
         const range = document.getWordRangeAtPosition(position, new RegExp(this.regex))
+
         if (range) {
-          this.codeLenses.push(new CodeLens(range))
+          const codeLens = new CodeLens(range)
+          const activeCodelen = this.activeCodeLens.get(range.start.line)
+          if (activeCodelen) {
+            codeLens.command = activeCodelen.command
+          }
+          else {
+            codeLens.command = {
+              title: '🪄',
+              tooltip: 'Magic Wand Show Magics',
+              command: Meta.commands.codelensClick,
+              arguments: [codeLens],
+            }
+          }
+          codeLenses.push(codeLens)
         }
         matches = regex.exec(text)
       }
-      return this.codeLenses
+      return codeLenses
     }
     return []
   }
 
   public resolveCodeLens(codeLens: CodeLens, _token: CancellationToken) {
-    if (enableCodeLens.value) {
-      codeLens.command = {
-        title: '🪄',
-        tooltip: 'Click to open the Magic Menu',
-        command: Meta.commands.showMagics,
-        arguments: [codeLens],
-      }
-      return codeLens
-    }
+    logger.info('resolveCodeLens', codeLens.range.start.line)
     return null
+  }
+
+  public fire(): void {
+    if (enableCodeLens.value) {
+      this._onDidChangeCodeLenses.fire()
+    }
   }
 }

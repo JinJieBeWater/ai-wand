@@ -45,8 +45,21 @@
         "title": "Spark a magic",
         "category": "Magic Wand 🪄✨🔮",
         "icon": "$(tools)"
+      },
+      {
+        "command": "magic-wand.codelens.click",
+        "title": "Codelens Click",
+        "enablement": "editorHasSelection"
       }
     ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "magic-wand.codelens.click",
+          "when": "false"
+        }
+      ]
+    },
     "keybindings": [
       {
         "command": "magic-wand.showMagics",
