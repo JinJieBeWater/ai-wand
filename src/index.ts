@@ -1,5 +1,4 @@
-import { defineExtension, useDisposable } from 'reactive-vscode'
-import { languages } from 'vscode'
+import { defineExtension } from 'reactive-vscode'
 import { logger } from './utils/logger'
 import { initCommands } from './commands'
 import { MagicWandCodelensProvider } from './editor/codelens/MagicWandCodelensProvider'
@@ -9,11 +8,7 @@ const { activate, deactivate } = defineExtension(() => {
 
   const magicWandCodelens = new MagicWandCodelensProvider()
 
-  magicWandCodelens.onDidChangeCodeLenses((e) => {
-    logger.info('CodeLens changed', e)
-  })
-
-  useDisposable(languages.registerCodeLensProvider('*', magicWandCodelens))
+  logger.info('activate', magicWandCodelens)
 
   logger.show()
 })

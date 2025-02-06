@@ -22,6 +22,7 @@
 | ---------------------------- | ----------------------------------------- |
 | `magic-wand.magics-settings` | Magic Wang Settings: Customize magic wand |
 | `magic-wand.showMagics`      | Magic Wand 🪄✨🔮: Spark a magic           |
+| `magic-wand.codelens.click`  | Codelens Click                            |
 <!-- commands -->
 
 ## License
