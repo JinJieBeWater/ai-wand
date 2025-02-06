@@ -33,7 +33,6 @@ export class MagicWandCodelensProvider implements CodeLensProvider {
    * init
    */
   private init(): void {
-    logger.info('init')
     this._disposables.push(useDisposable(languages.registerCodeLensProvider({ scheme: 'file' }, this)))
     useCommand(Meta.commands.codelensClick, (lens: CodeLens) => {
       selectAiLine(lens.range.start.line)

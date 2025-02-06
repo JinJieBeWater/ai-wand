@@ -8,6 +8,7 @@ import { computeDiff } from '../diff/computeDiff'
 import type { lifeCycleInstance } from '../editor/diffEdit'
 import { diffEdit } from '../editor/diffEdit'
 import { logger } from '../utils/logger'
+import { LoadingCodelensProvider } from '../editor/codelens/LoadingCodelensProvider'
 
 export async function sparkMagic(magic: Magic) {
   const textEditor = window.activeTextEditor!
@@ -15,7 +16,15 @@ export async function sparkMagic(magic: Magic) {
   const selection = textEditor.selection
   const msgButler = createMessageButler().addUser(originalText, magic.prompt)
 
-  const replacement = await createGenerateText(msgButler.messages)
+  const abortController = new AbortController()
+
+  const loadingCodelens = new LoadingCodelensProvider(selection, abortController)
+
+  const replacement = await createGenerateText(msgButler.messages, {
+    abortSignal: abortController.signal,
+  })
+
+  loadingCodelens.dispose()
 
   const diff = computeDiff(replacement, originalText, selection, {
     decorateDeletions: true,

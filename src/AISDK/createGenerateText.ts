@@ -4,11 +4,13 @@ import { window } from 'vscode'
 import { logger } from '../utils/logger'
 import { getModel } from './getModel'
 
-export async function createGenerateText(messages: CoreMessage[]) {
+export async function createGenerateText(messages: CoreMessage[], options?: { abortSignal?: AbortSignal }) {
   try {
+    const abortSignal = options?.abortSignal
     const result = await generateText({
       model: getModel(),
       messages,
+      abortSignal,
     })
 
     // 预防服务器没有响应
