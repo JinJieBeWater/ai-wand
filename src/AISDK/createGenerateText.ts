@@ -4,9 +4,10 @@ import { window } from 'vscode'
 import { logger } from '../utils/logger'
 import { getModel } from './getModel'
 
-export async function createGenerateText(messages: CoreMessage[], options?: { abortSignal?: AbortSignal }) {
+export async function createGenerateText(messages: CoreMessage[], options: { abortSignal: AbortSignal }) {
+  const abortSignal = options.abortSignal
+
   try {
-    const abortSignal = options?.abortSignal
     const result = await generateText({
       model: getModel(),
       messages,
@@ -21,7 +22,10 @@ export async function createGenerateText(messages: CoreMessage[], options?: { ab
 
     return result.text
   }
-  catch (error) {
+  catch (error: unknown) {
+    if (abortSignal.aborted) {
+      return ''
+    }
     logger.error('createGenerateText', JSON.stringify(error))
     window.showErrorMessage('createGenerateText', JSON.stringify(error))
     throw error

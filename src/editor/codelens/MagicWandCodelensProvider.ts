@@ -1,11 +1,10 @@
 import type { CancellationToken, CodeLensProvider, Disposable, Event, Range, TextDocument } from 'vscode'
-import { CodeLens, EventEmitter, Position, languages, window, workspace } from 'vscode'
+import { CodeLens, EventEmitter, Position, commands, languages, window, workspace } from 'vscode'
 
 import { useCommand, useDisposable } from 'reactive-vscode'
 import { enableCodeLens } from '../../config'
 import { getRegex } from '../../regex'
 import * as Meta from '../../generated/meta'
-import { showMagics } from '../../commands/showMagics'
 import { selectAiLine } from '../selectAiLine'
 import { logger } from '../../utils/logger'
 
@@ -36,7 +35,7 @@ export class MagicWandCodelensProvider implements CodeLensProvider {
     this._disposables.push(useDisposable(languages.registerCodeLensProvider({ scheme: 'file' }, this)))
     useCommand(Meta.commands.codelensClick, (lens: CodeLens) => {
       selectAiLine(lens.range.start.line)
-      showMagics()
+      commands.executeCommand(Meta.commands.showMagics)
       this.fire()
     })
   }

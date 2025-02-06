@@ -4,28 +4,25 @@ import { CodeLens, EventEmitter, languages, workspace } from 'vscode'
 import { useCommand, useDisposable } from 'reactive-vscode'
 import { enableCodeLens } from '../../config'
 import * as Meta from '../../generated/meta'
-import { showMagics } from '../../commands/showMagics'
-import { selectAiLine } from '../selectAiLine'
 import { logger } from '../../utils/logger'
 
 /**
  * CodelensProvider
  */
-export class LoadingCodelensProvider implements CodeLensProvider {
+export class StatusCodelensProvider implements CodeLensProvider {
   private _disposables: Disposable[] = []
   private _onDidChangeCodeLenses: EventEmitter<void> = new EventEmitter<void>()
   public readonly onDidChangeCodeLenses: Event<void> = this._onDidChangeCodeLenses.event
   public loadingCodelen: CodeLens
   public cancelCodelen: CodeLens
-  public abortController: AbortController
+  public abortController: AbortController = new AbortController()
 
-  constructor(range: Range, abortController: AbortController) {
+  constructor(range: Range) {
     const loadingCodelen = new CodeLens(range)
     loadingCodelen.command = {
       title: '$(sync~spin) Loading',
       tooltip: 'Requesting - Magic is being released',
-      command: Meta.commands.codelensClick,
-      arguments: [loadingCodelen],
+      command: '',
     }
     this.loadingCodelen = loadingCodelen
 
@@ -33,12 +30,10 @@ export class LoadingCodelensProvider implements CodeLensProvider {
     cancelCodelen.command = {
       title: 'Cancel',
       tooltip: 'Cancel Magic Wand',
-      command: Meta.commands.codelensClick,
-      arguments: [cancelCodelen],
+      command: Meta.commands.codelensStatusCancel,
+      arguments: [this],
     }
     this.cancelCodelen = cancelCodelen
-
-    this.abortController = abortController
 
     workspace.onDidChangeConfiguration((_) => {
       this._onDidChangeCodeLenses.fire()
@@ -51,16 +46,10 @@ export class LoadingCodelensProvider implements CodeLensProvider {
    * init
    */
   private init(): void {
-    this._disposables.push(useDisposable(languages.registerCodeLensProvider({ scheme: 'file' }, this)))
-    // useCommand(Meta.commands.codelensClick, (lens: CodeLens) => {
-    //   selectAiLine(lens.range.start.line)
-    //   showMagics()
-    //   this.fire()
-    // })
+    this._disposables.push(languages.registerCodeLensProvider({ scheme: 'file' }, this))
   }
 
   public provideCodeLenses(_document: TextDocument, _token: CancellationToken): CodeLens[] | Thenable<CodeLens[]> {
-    logger.info('LoadingCodelensProviderprovideCodeLenses')
     const codeLenses: CodeLens[] = []
     codeLenses.push(this.loadingCodelen)
     codeLenses.push(this.cancelCodelen)
@@ -79,12 +68,9 @@ export class LoadingCodelensProvider implements CodeLensProvider {
     }
   }
 
-  public abort() {
-    this.abortController.abort()
-  }
-
   public dispose() {
-    this.abort()
+    this.abortController.abort()
     this._disposables.forEach(d => d.dispose())
+    this.fire()
   }
 }

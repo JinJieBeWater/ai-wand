@@ -1,14 +1,12 @@
-import { effect, reactive, useDisposable, watchEffect } from 'reactive-vscode'
+import { reactive, useDisposable, watchEffect } from 'reactive-vscode'
 import { Position, Range, window, workspace } from 'vscode'
 import type { Magic } from '../types/magic'
 import { createMessageButler } from '../AISDK'
 import { getSelectedText } from '../editor/getSelectedText'
-import { createGenerateText } from '../AISDK/createGenerateText'
 import { computeDiff } from '../diff/computeDiff'
 import type { lifeCycleInstance } from '../editor/diffEdit'
 import { diffEdit } from '../editor/diffEdit'
-import { logger } from '../utils/logger'
-import { LoadingCodelensProvider } from '../editor/codelens/LoadingCodelensProvider'
+import { connectAISDK } from '../AISDK/connectAISDK'
 
 export async function sparkMagic(magic: Magic) {
   const textEditor = window.activeTextEditor!
@@ -16,15 +14,14 @@ export async function sparkMagic(magic: Magic) {
   const selection = textEditor.selection
   const msgButler = createMessageButler().addUser(originalText, magic.prompt)
 
-  const abortController = new AbortController()
-
-  const loadingCodelens = new LoadingCodelensProvider(selection, abortController)
-
-  const replacement = await createGenerateText(msgButler.messages, {
-    abortSignal: abortController.signal,
+  const replacement = await connectAISDK({
+    messages: msgButler.messages,
+    selection,
   })
 
-  loadingCodelens.dispose()
+  if (replacement === undefined) {
+    return
+  }
 
   const diff = computeDiff(replacement, originalText, selection, {
     decorateDeletions: true,
