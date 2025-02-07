@@ -1,7 +1,6 @@
 import type { CancellationToken, CodeLensProvider, Disposable, Event, Range, TextDocument } from 'vscode'
 import { CodeLens, EventEmitter, languages, workspace } from 'vscode'
 
-import { useCommand, useDisposable } from 'reactive-vscode'
 import { enableCodeLens } from '../../config'
 import * as Meta from '../../generated/meta'
 import { logger } from '../../utils/logger'

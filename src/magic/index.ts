@@ -1,5 +1,5 @@
 import { reactive, useDisposable, watchEffect } from 'reactive-vscode'
-import { Position, Range, window, workspace } from 'vscode'
+import { window, workspace } from 'vscode'
 import type { Magic } from '../types/magic'
 import { createMessageButler } from '../AISDK'
 import { getSelectedText } from '../editor/getSelectedText'
@@ -7,7 +7,6 @@ import { computeDiff } from '../diff/computeDiff'
 import type { lifeCycleInstance } from '../editor/diffEdit'
 import { diffEdit } from '../editor/diffEdit'
 import { connectAISDK } from '../AISDK/connectAISDK'
-import { logger } from '../utils/logger'
 
 export async function sparkMagic(magic: Magic) {
   const textEditor = window.activeTextEditor!
