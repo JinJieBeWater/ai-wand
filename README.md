@@ -24,6 +24,7 @@
 | ----------------------------------- | -------------------------------- |
 | `magic-wand.magics-settings`        | Magic Wand: Customize magic wand |
 | `magic-wand.showMagics`             | Magic Wand: Spark a magic        |
+| `magic-wand.toggleProvider`         | Magic Wand: Toggle Provider      |
 | `magic-wand.codelens.click`         | Codelens Click                   |
 | `magic-wand.codelens.status.cancel` | Codelens Click                   |
 <!-- commands -->

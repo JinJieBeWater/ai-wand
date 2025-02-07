@@ -46,6 +46,12 @@
         "icon": "$(tools)"
       },
       {
+        "command": "magic-wand.toggleProvider",
+        "title": "Toggle Provider",
+        "category": "Magic Wand",
+        "icon": "$(toggle-preview)"
+      },
+      {
         "command": "magic-wand.codelens.click",
         "title": "Codelens Click",
         "enablement": "editorHasSelection"
