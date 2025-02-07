@@ -18,12 +18,12 @@
 ## Commands
 
 <!-- commands -->
-| Command                             | Title                                     |
-| ----------------------------------- | ----------------------------------------- |
-| `magic-wand.magics-settings`        | Magic Wang Settings: Customize magic wand |
-| `magic-wand.showMagics`             | Magic Wand 🪄✨🔮: Spark a magic           |
-| `magic-wand.codelens.click`         | Codelens Click                            |
-| `magic-wand.codelens.status.cancel` | Codelens Click                            |
+| Command                             | Title                            |
+| ----------------------------------- | -------------------------------- |
+| `magic-wand.magics-settings`        | Magic Wand: Customize magic wand |
+| `magic-wand.showMagics`             | Magic Wand: Spark a magic        |
+| `magic-wand.codelens.click`         | Codelens Click                   |
+| `magic-wand.codelens.status.cancel` | Codelens Click                   |
 <!-- commands -->
 
 ## License
