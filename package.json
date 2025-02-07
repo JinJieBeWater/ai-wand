@@ -114,23 +114,24 @@
           },
           "description": "Use the object's first-level property for group setting and the second for Magic setting."
         },
+        "magic-wand.status.enableCodeLens": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable CodeLens"
+        },
         "magic-wand.status.activeProvider": {
           "type": "string",
           "default": "openRouter",
           "description": "Active AI provider",
           "enum": [
             "openRouter",
-            "ollama"
+            "ollama",
+            "deepseek"
           ],
           "enumDescriptions": [
             "A unified interface for LLMs. Find the best models & prices for your prompts.",
             "Get up and running with large language models. "
           ]
-        },
-        "magic-wand.status.enableCodeLens": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable CodeLens"
         },
         "magic-wand.provider.openRouterApiKey": {
           "type": "string",
@@ -141,6 +142,16 @@
           "type": "string",
           "default": "meta-llama/llama-3.1-405b-instruct:free",
           "description": "OpenRouter Model"
+        },
+        "magic-wand.provider.deepseekApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Deepseek ApiKey"
+        },
+        "magic-wand.provider.deepseekModel": {
+          "type": "string",
+          "default": "deepseek-chat",
+          "description": "Deepseek Model"
         }
       }
     }
@@ -159,6 +170,7 @@
     "release": "bumpp && nr publish"
   },
   "devDependencies": {
+    "@ai-sdk/deepseek": "^0.1.8",
     "@antfu/eslint-config": "^2.26.0",
     "@antfu/ni": "^0.22.4",
     "@openrouter/ai-sdk-provider": "^0.0.6",
