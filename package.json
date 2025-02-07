@@ -158,30 +158,28 @@
     "typecheck": "tsc --noEmit",
     "release": "bumpp && nr publish"
   },
-  "dependencies": {
-    "@openrouter/ai-sdk-provider": "^0.0.6",
-    "ai": "^4.1.13",
-    "diff": "^7.0.0",
-    "ollama-ai-provider": "^1.2.0",
-    "zod": "^3.24.1"
-  },
   "devDependencies": {
     "@antfu/eslint-config": "^2.26.0",
     "@antfu/ni": "^0.22.4",
+    "@openrouter/ai-sdk-provider": "^0.0.6",
     "@reactive-vscode/vueuse": "^0.2.10",
     "@types/diff": "^7.0.1",
     "@types/node": "^22.4.1",
     "@types/vscode": "^1.92.0",
     "@vscode/vsce": "^3.2.1",
+    "ai": "^4.1.13",
     "bumpp": "^9.5.1",
+    "diff": "^7.0.0",
     "eslint": "^9.9.0",
     "esno": "^4.7.0",
+    "ollama-ai-provider": "^1.2.0",
     "pnpm": "^9.7.1",
     "reactive-vscode": "^0.2.0",
     "tsup": "^8.2.4",
     "typescript": "^5.5.4",
     "vite": "^5.4.1",
     "vitest": "^2.0.5",
-    "vscode-ext-gen": "^0.4.1"
+    "vscode-ext-gen": "^0.4.1",
+    "zod": "^3.24.1"
   }
 }
