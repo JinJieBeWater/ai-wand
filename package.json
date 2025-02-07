@@ -1,11 +1,10 @@
 {
   "publisher": "JinJieBeWater",
   "name": "magic-wand",
-  "displayName": "Magic Wand",
-  "version": "0.0.0",
+  "displayName": "Magic Wand 🪄✨🔮",
+  "version": "0.0.1",
   "private": true,
-  "packageManager": "pnpm@9.7.1",
-  "description": "Magic Wand is a powerful VS Code extension. Customize your own prompt words easily. With just a shortcut key, summon a menu of prompt words to assist your coding. It integrates seamlessly into the development process, boosting your programming efficiency significantly.",
+  "description": "Customize your own prompt phrase, and then use the shortcut key to call out one key. Support optional model Provider and use your own api key",
   "author": "JinJieBeWater",
   "license": "MIT",
   "homepage": "https://github.com/JinJieBeWater/magic-wand#readme",
@@ -17,7 +16,7 @@
     "url": "https://github.com/JinJieBeWater/magic-wand/issues"
   },
   "categories": [
-    "Other"
+    "AI"
   ],
   "main": "./dist/index.js",
   "icon": "res/icon.png",
@@ -36,14 +35,14 @@
     "commands": [
       {
         "command": "magic-wand.magics-settings",
-        "category": "Magic Wang Settings",
         "title": "Customize magic wand",
+        "category": "Magic Wand",
         "icon": "$(gear)"
       },
       {
         "command": "magic-wand.showMagics",
         "title": "Spark a magic",
-        "category": "Magic Wand 🪄✨🔮",
+        "category": "Magic Wand",
         "icon": "$(tools)"
       },
       {
@@ -173,7 +172,7 @@
     "@types/diff": "^7.0.1",
     "@types/node": "^22.4.1",
     "@types/vscode": "^1.92.0",
-    "@vscode/vsce": "^3.0.0",
+    "@vscode/vsce": "^3.2.1",
     "bumpp": "^9.5.1",
     "eslint": "^9.9.0",
     "esno": "^4.7.0",
