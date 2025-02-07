@@ -67,13 +67,7 @@ export async function sparkMagic(magic: Magic) {
 
   watchEffect(() => {
     instances.forEach((instance) => {
-      if (instance.isActive) {
-        instance.decorations.forEach((decoration) => {
-          const currentRange = new Range(instance.edit.range.start, new Position(instance.edit.range.end.line - 1, 0))
-          textEditor.setDecorations(decoration, [currentRange])
-        })
-      }
-      else {
+      if (!instance.isActive) {
         instance.decorations.forEach((decoration) => {
           textEditor.setDecorations(decoration, [])
         })
