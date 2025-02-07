@@ -1,5 +1,5 @@
 import { reactive, useDisposable, watchEffect } from 'reactive-vscode'
-import { Position, Range, window, workspace } from 'vscode'
+import { window, workspace } from 'vscode'
 import type { Magic } from '../types/magic'
 import { createMessageButler } from '../AISDK'
 import { getSelectedText } from '../editor/getSelectedText'
@@ -7,7 +7,6 @@ import { computeDiff } from '../diff/computeDiff'
 import type { lifeCycleInstance } from '../editor/diffEdit'
 import { diffEdit } from '../editor/diffEdit'
 import { connectAISDK } from '../AISDK/connectAISDK'
-import { logger } from '../utils/logger'
 
 export async function sparkMagic(magic: Magic) {
   const textEditor = window.activeTextEditor!
@@ -67,13 +66,7 @@ export async function sparkMagic(magic: Magic) {
 
   watchEffect(() => {
     instances.forEach((instance) => {
-      if (instance.isActive) {
-        instance.decorations.forEach((decoration) => {
-          const currentRange = new Range(instance.edit.range.start, new Position(instance.edit.range.end.line - 1, 0))
-          textEditor.setDecorations(decoration, [currentRange])
-        })
-      }
-      else {
+      if (!instance.isActive) {
         instance.decorations.forEach((decoration) => {
           textEditor.setDecorations(decoration, [])
         })

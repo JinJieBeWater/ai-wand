@@ -1,5 +1,5 @@
 import type { QuickPick, QuickPickItem } from 'vscode'
-import { QuickPickItemKind, ThemeIcon, commands, window } from 'vscode'
+import { QuickPickItemKind, ThemeIcon, window } from 'vscode'
 import { magics } from '../config'
 import type { Magic } from '../types/magic'
 import { sparkMagic } from '../magic'

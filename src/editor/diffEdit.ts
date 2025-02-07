@@ -2,7 +2,6 @@ import type { TextEditor, TextEditorDecorationType } from 'vscode'
 import { Position, Range } from 'vscode'
 import type { Edit } from '../diff/computeDiff'
 import { EditType } from '../diff/computeDiff'
-import { logger } from '../utils/logger'
 import { createDeletionDecoration, createInsertedDecoration } from './decoration'
 
 export interface lifeCycleInstance {

@@ -1,5 +1,5 @@
-import type { CancellationToken, CodeLensProvider, Disposable, Event, Range, TextDocument } from 'vscode'
-import { CodeLens, EventEmitter, Position, commands, languages, window, workspace } from 'vscode'
+import type { CancellationToken, CodeLensProvider, Disposable, Event, TextDocument } from 'vscode'
+import { CodeLens, EventEmitter, Position, commands, languages, workspace } from 'vscode'
 
 import { useCommand, useDisposable } from 'reactive-vscode'
 import { enableCodeLens } from '../../config'
