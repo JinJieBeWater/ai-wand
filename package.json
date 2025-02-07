@@ -29,9 +29,7 @@
     "vscode": "^1.92.0"
   },
   "activationEvents": [
-    "onStartupFinished",
-    "onCommand:magic-wand.showMagics",
-    "onCommand:magic-wand.magics-settings"
+    "onStartupFinished"
   ],
   "contributes": {
     "commands": [
