@@ -1,10 +1,9 @@
 {
   "publisher": "JinJieBeWater",
   "name": "magic-wand",
-  "displayName": "Magic Wand",
-  "version": "0.0.0",
+  "displayName": "Magic Wand 🪄✨🔮",
+  "version": "0.0.1",
   "private": true,
-  "packageManager": "pnpm@9.7.1",
   "description": "Magic Wand is a powerful VS Code extension. Customize your own prompt words easily. With just a shortcut key, summon a menu of prompt words to assist your coding. It integrates seamlessly into the development process, boosting your programming efficiency significantly.",
   "author": "JinJieBeWater",
   "license": "MIT",
@@ -17,7 +16,7 @@
     "url": "https://github.com/JinJieBeWater/magic-wand/issues"
   },
   "categories": [
-    "Other"
+    "AI"
   ],
   "main": "./dist/index.js",
   "icon": "res/icon.png",
@@ -154,7 +153,7 @@
     "lint": "eslint .",
     "vscode:prepublish": "nr build",
     "publish": "vsce publish --no-dependencies",
-    "pack": "vsce package --no-dependencies",
+    "pack": "vsce package",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "release": "bumpp && nr publish"
