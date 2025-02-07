@@ -1,5 +1,6 @@
 import type { CoreMessage } from 'ai'
 import { window } from 'vscode'
+import { SystemPrompt, UserPrompt } from './prompt'
 
 export interface MessageButler {
   addUser: (code: string, prompt: string) => MessageButler
@@ -10,19 +11,18 @@ export interface MessageButler {
 export function createMessageButler() {
   const messages: CoreMessage[] = []
 
-  const file_suffix = window.activeTextEditor?.document.fileName.split('.').pop()
-
   messages.push({
     role: 'system',
-    content: `You are a professional programming assistant. When I provide you with a piece of code from a file with the suffix ${file_suffix}, your task is to modify the code by adding or removing specific content according to my requirements. Make sure to strictly adhere to the syntax rules of the programming language corresponding to the ${file_suffix} file. Once the modifications are done, directly return the updated code without enclosing it in Markdown code blocks.`,
+    content: SystemPrompt(),
   })
 
   const msgButler: MessageButler = {
     addUser(code: string, prompt: string) {
+      const language = window.activeTextEditor?.document.fileName.split('.').pop()
+
       messages.push({
         role: 'user',
-        content: `My code is as follows: ${code}
-My Requirements are as follows: ${prompt}`,
+        content: UserPrompt(code, prompt, language),
       })
       return msgButler
     },
