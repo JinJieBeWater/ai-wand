@@ -4,7 +4,7 @@
   "displayName": "Magic Wand 🪄✨🔮",
   "version": "0.0.1",
   "private": true,
-  "description": "Magic Wand is a powerful VS Code extension. Customize your own prompt words easily. With just a shortcut key, summon a menu of prompt words to assist your coding. It integrates seamlessly into the development process, boosting your programming efficiency significantly.",
+  "description": "Customize your own prompt phrase, and then use the shortcut key to call out one key. Support optional model Provider and use your own api key",
   "author": "JinJieBeWater",
   "license": "MIT",
   "homepage": "https://github.com/JinJieBeWater/magic-wand#readme",
@@ -29,7 +29,9 @@
     "vscode": "^1.92.0"
   },
   "activationEvents": [
-    "onStartupFinished"
+    "onStartupFinished",
+    "onCommand:magic-wand.showMagics",
+    "onCommand:magic-wand.magics-settings"
   ],
   "contributes": {
     "commands": [
