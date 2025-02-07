@@ -1,15 +1,22 @@
 import { createOpenRouter } from '@openrouter/ai-sdk-provider'
 import type { LanguageModelV1 } from 'ai'
 import { window } from 'vscode'
-import { activeProvider, openRouterApiKey, openRouterModel } from '../config'
+import { createDeepSeek } from '@ai-sdk/deepseek'
+import { config } from '../config'
 
 export function getModel(): LanguageModelV1 {
-  switch (activeProvider.value) {
+  switch (config['status.activeProvider']) {
     case 'openRouter': {
       const openrouter = createOpenRouter({
-        apiKey: openRouterApiKey.value,
+        apiKey: config['provider.openRouterApiKey'],
       })
-      return openrouter.chat(openRouterModel.value)
+      return openrouter.chat(config['provider.openRouterModel'])
+    }
+    case 'deepseek': {
+      const deepseek = createDeepSeek({
+        apiKey: config['provider.deepseekApiKey'],
+      })
+      return deepseek.chat(config['provider.deepseekModel'])
     }
     case 'ollama':
       window.showInformationMessage('ollama is adapting')

@@ -9,10 +9,12 @@
 | Key                                    | Description                                                                               | Type      | Default                                     |
 | -------------------------------------- | ----------------------------------------------------------------------------------------- | --------- | ------------------------------------------- |
 | `magic-wand.magics`                    | Use the object's first-level property for group setting and the second for Magic setting. | `object`  | See package.json                            |
-| `magic-wand.status.activeProvider`     | Active AI provider                                                                        | `string`  | `"openRouter"`                              |
 | `magic-wand.status.enableCodeLens`     | Enable CodeLens                                                                           | `boolean` | `true`                                      |
+| `magic-wand.status.activeProvider`     | Active AI provider                                                                        | `string`  | `"openRouter"`                              |
 | `magic-wand.provider.openRouterApiKey` | OpenRouter ApiKey                                                                         | `string`  | `""`                                        |
 | `magic-wand.provider.openRouterModel`  | OpenRouter Model                                                                          | `string`  | `"meta-llama/llama-3.1-405b-instruct:free"` |
+| `magic-wand.provider.deepseekApiKey`   | Deepseek ApiKey                                                                           | `string`  | `""`                                        |
+| `magic-wand.provider.deepseekModel`    | Deepseek Model                                                                            | `string`  | `"deepseek-chat"`                           |
 <!-- configs -->
 
 ## Commands

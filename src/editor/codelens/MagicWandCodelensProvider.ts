@@ -2,11 +2,11 @@ import type { CancellationToken, CodeLensProvider, Disposable, Event, TextDocume
 import { CodeLens, EventEmitter, Position, commands, languages, workspace } from 'vscode'
 
 import { useCommand, useDisposable } from 'reactive-vscode'
-import { enableCodeLens } from '../../config'
 import { getRegex } from '../../regex'
 import * as Meta from '../../generated/meta'
 import { selectAiLine } from '../selectAiLine'
 import { logger } from '../../utils/logger'
+import { config } from '../../config'
 
 /**
  * CodelensProvider
@@ -42,7 +42,7 @@ export class MagicWandCodelensProvider implements CodeLensProvider {
 
   public provideCodeLenses(document: TextDocument, _token: CancellationToken): CodeLens[] | Thenable<CodeLens[]> {
     const codeLenses: CodeLens[] = []
-    if (enableCodeLens.value) {
+    if (config['status.enableCodeLens']) {
       const regex = new RegExp(this.regex)
       const text = document.getText()
       let matches = regex.exec(text)
@@ -81,7 +81,7 @@ export class MagicWandCodelensProvider implements CodeLensProvider {
   }
 
   public fire(): void {
-    if (enableCodeLens.value) {
+    if (config['status.enableCodeLens']) {
       this._onDidChangeCodeLenses.fire()
     }
   }

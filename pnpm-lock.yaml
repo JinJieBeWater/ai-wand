@@ -7,29 +7,19 @@ settings:
 importers:
 
   .:
-    dependencies:
-      '@openrouter/ai-sdk-provider':
-        specifier: ^0.0.6
-        version: 0.0.6(zod@3.24.1)
-      ai:
-        specifier: ^4.1.13
-        version: 4.1.13(react@19.0.0)(zod@3.24.1)
-      diff:
-        specifier: ^7.0.0
-        version: 7.0.0
-      ollama-ai-provider:
-        specifier: ^1.2.0
-        version: 1.2.0(zod@3.24.1)
-      zod:
-        specifier: ^3.24.1
-        version: 3.24.1
     devDependencies:
+      '@ai-sdk/deepseek':
+        specifier: ^0.1.8
+        version: 0.1.8(zod@3.24.1)
       '@antfu/eslint-config':
         specifier: ^2.26.0
         version: 2.26.0(@typescript-eslint/utils@8.1.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4))(@vue/compiler-sfc@3.4.27)(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4)(vitest@2.0.5(@types/node@22.4.1))
       '@antfu/ni':
         specifier: ^0.22.4
         version: 0.22.4
+      '@openrouter/ai-sdk-provider':
+        specifier: ^0.0.6
+        version: 0.0.6(zod@3.24.1)
       '@reactive-vscode/vueuse':
         specifier: ^0.2.10
         version: 0.2.10
@@ -45,15 +35,24 @@ importers:
       '@vscode/vsce':
         specifier: ^3.2.1
         version: 3.2.1
+      ai:
+        specifier: ^4.1.13
+        version: 4.1.13(react@19.0.0)(zod@3.24.1)
       bumpp:
         specifier: ^9.5.1
         version: 9.5.1
+      diff:
+        specifier: ^7.0.0
+        version: 7.0.0
       eslint:
         specifier: ^9.9.0
         version: 9.9.0(jiti@1.21.6)
       esno:
         specifier: ^4.7.0
         version: 4.7.0
+      ollama-ai-provider:
+        specifier: ^1.2.0
+        version: 1.2.0(zod@3.24.1)
       pnpm:
         specifier: ^9.7.1
         version: 9.7.1
@@ -75,12 +74,27 @@ importers:
       vscode-ext-gen:
         specifier: ^0.4.1
         version: 0.4.1
+      zod:
+        specifier: ^3.24.1
+        version: 3.24.1
 
 packages:
 
   '@aashutoshrathi/word-wrap@1.2.6':
     resolution: {integrity: sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==}
     engines: {node: '>=0.10.0'}
+
+  '@ai-sdk/deepseek@0.1.8':
+    resolution: {integrity: sha512-ZnugEqmkscB0an46I0Z6Ppor8YwOC2bIhWXkivkGbVdpQgpx43cPBrD3lyOyNEHIFwHtcrJF13S+4FNPzR0Gng==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
+
+  '@ai-sdk/openai-compatible@0.1.8':
+    resolution: {integrity: sha512-o2WeZmkOgaaEHAIZfAdlAASotNemhWBzupUp7ql/vBKIrPDctbQS4K7XOvG7EZ1dshn0TxB+Ur7Q8HoWSeWPmA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
 
   '@ai-sdk/provider-utils@1.0.22':
     resolution: {integrity: sha512-YHK2rpj++wnLVc9vPGzGFP3Pjeld2MwhKinetA0zKXOoHAT/Jit5O8kZsxcSlJPu9wvcGT1UGZEjZrtO7PfFOQ==}
@@ -100,12 +114,25 @@ packages:
       zod:
         optional: true
 
+  '@ai-sdk/provider-utils@2.1.6':
+    resolution: {integrity: sha512-Pfyaj0QZS22qyVn5Iz7IXcJ8nKIKlu2MeSAdKJzTwkAks7zdLaKVB+396Rqcp1bfQnxl7vaduQVMQiXUrgK8Gw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
+    peerDependenciesMeta:
+      zod:
+        optional: true
+
   '@ai-sdk/provider@0.0.26':
     resolution: {integrity: sha512-dQkfBDs2lTYpKM8389oopPdQgIU007GQyCbuPPrV+K6MtSII3HBfE0stUIMXUb44L+LK1t6GXPP7wjSzjO6uKg==}
     engines: {node: '>=18'}
 
   '@ai-sdk/provider@1.0.6':
     resolution: {integrity: sha512-hwj/gFNxpDgEfTaYzCYoslmw01IY9kWLKl/wf8xuPvHtQIzlfXWmmUwc8PnCwxyt8cKzIuV0dfUghCf68HQ0SA==}
+    engines: {node: '>=18'}
+
+  '@ai-sdk/provider@1.0.7':
+    resolution: {integrity: sha512-q1PJEZ0qD9rVR+8JFEd01/QM++csMT5UVwYXSN2u54BrVw/D8TZLTeg2FEfKK00DgAx0UtWd8XOhhwITP9BT5g==}
     engines: {node: '>=18'}
 
   '@ai-sdk/react@1.1.7':
@@ -3215,6 +3242,19 @@ snapshots:
 
   '@aashutoshrathi/word-wrap@1.2.6': {}
 
+  '@ai-sdk/deepseek@0.1.8(zod@3.24.1)':
+    dependencies:
+      '@ai-sdk/openai-compatible': 0.1.8(zod@3.24.1)
+      '@ai-sdk/provider': 1.0.7
+      '@ai-sdk/provider-utils': 2.1.6(zod@3.24.1)
+      zod: 3.24.1
+
+  '@ai-sdk/openai-compatible@0.1.8(zod@3.24.1)':
+    dependencies:
+      '@ai-sdk/provider': 1.0.7
+      '@ai-sdk/provider-utils': 2.1.6(zod@3.24.1)
+      zod: 3.24.1
+
   '@ai-sdk/provider-utils@1.0.22(zod@3.24.1)':
     dependencies:
       '@ai-sdk/provider': 0.0.26
@@ -3233,11 +3273,24 @@ snapshots:
     optionalDependencies:
       zod: 3.24.1
 
+  '@ai-sdk/provider-utils@2.1.6(zod@3.24.1)':
+    dependencies:
+      '@ai-sdk/provider': 1.0.7
+      eventsource-parser: 3.0.0
+      nanoid: 3.3.8
+      secure-json-parse: 2.7.0
+    optionalDependencies:
+      zod: 3.24.1
+
   '@ai-sdk/provider@0.0.26':
     dependencies:
       json-schema: 0.4.0
 
   '@ai-sdk/provider@1.0.6':
+    dependencies:
+      json-schema: 0.4.0
+
+  '@ai-sdk/provider@1.0.7':
     dependencies:
       json-schema: 0.4.0
 

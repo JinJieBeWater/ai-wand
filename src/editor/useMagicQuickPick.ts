@@ -1,11 +1,11 @@
 import type { QuickPick, QuickPickItem } from 'vscode'
 import { QuickPickItemKind, ThemeIcon, window } from 'vscode'
-import { magics } from '../config'
 import type { Magic } from '../types/magic'
 import { sparkMagic } from '../magic'
 import { logger } from '../utils/logger'
 import * as Meta from '../generated/meta'
 import { openMagicsSettings } from '../commands/openSettings'
+import { config } from '../config'
 
 function createMagicQuickPickItemSperator(key: string) {
   return {
@@ -42,7 +42,7 @@ function createMagicQuickPick() {
   //   iconPath: new ThemeIcon('edit'),
   // })
   // 组遍历
-  Object.entries(magics.value).forEach(([key, magicGrp]) => {
+  Object.entries(config.magics).forEach(([key, magicGrp]) => {
     // 添加magic
     items.push(...createMagicQuickPickGrp(key, magicGrp))
   })
@@ -62,7 +62,7 @@ function createMagicQuickPick() {
 function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>) {
   // 构造magic列表
   const magicList: Magic[] = []
-  Object.entries(magics.value).forEach(([, magicGrp]) => {
+  Object.entries(config.magics).forEach(([, magicGrp]) => {
     magicGrp.forEach((magic) => {
       magicList.push(magic)
     })
