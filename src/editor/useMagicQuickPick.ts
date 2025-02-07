@@ -6,6 +6,7 @@ import { logger } from '../utils/logger'
 import * as Meta from '../generated/meta'
 import { openMagicsSettings } from '../commands/openSettings'
 import { config } from '../config'
+import { useProviderToggle } from './useProviderToggle'
 
 function createMagicQuickPickItemSperator(key: string) {
   return {
@@ -46,6 +47,12 @@ function createMagicQuickPick() {
     // 添加magic
     items.push(...createMagicQuickPickGrp(key, magicGrp))
   })
+  // 添加当前Provider
+  items.push({
+    label: 'Provider',
+    detail: `${config['status.activeProvider']} ${config[`provider.${config['status.activeProvider']}Model`]}`,
+    iconPath: new ThemeIcon('gear'),
+  })
   // 添加自定义按钮
   items.push({
     label: 'Customize',
@@ -60,25 +67,26 @@ function createMagicQuickPick() {
 }
 
 function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>) {
-  // 构造magic列表
-  const magicList: Magic[] = []
-  Object.entries(config.magics).forEach(([, magicGrp]) => {
-    magicGrp.forEach((magic) => {
-      magicList.push(magic)
-    })
-  })
   // 获取选中的item
   const item = qp.selectedItems[0]
 
   switch (item.label) {
+    case 'edit':
+      break
     case 'Customize':
       openMagicsSettings()
       break
-    case 'edit':
-      logger.info('Spark a magic: edit')
-      // TODO: 打开一个输入框接受用户输入 并释放
+    case 'Provider':
+      useProviderToggle()
       break
     default: {
+      // 构造magic列表
+      const magicList: Magic[] = []
+      Object.entries(config.magics).forEach(([, magicGrp]) => {
+        magicGrp.forEach((magic) => {
+          magicList.push(magic)
+        })
+      })
       const currentMagic = magicList.find(magic => magic.label === item.label)
       if (currentMagic) {
         sparkMagic(currentMagic)

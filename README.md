@@ -15,6 +15,8 @@
 | `magic-wand.provider.openRouterModel`  | OpenRouter Model                                                                          | `string`  | `"meta-llama/llama-3.1-405b-instruct:free"` |
 | `magic-wand.provider.deepseekApiKey`   | Deepseek ApiKey                                                                           | `string`  | `""`                                        |
 | `magic-wand.provider.deepseekModel`    | Deepseek Model                                                                            | `string`  | `"deepseek-chat"`                           |
+| `magic-wand.provider.ollamaApiKey`     | Ollama ApiKey                                                                             | `string`  | `""`                                        |
+| `magic-wand.provider.ollamaModel`      | Ollama Model                                                                              | `string`  | `""`                                        |
 <!-- configs -->
 
 ## Commands
