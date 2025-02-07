@@ -158,6 +158,16 @@
           "type": "string",
           "default": "deepseek-chat",
           "description": "Deepseek Model"
+        },
+        "magic-wand.provider.ollamaApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Ollama ApiKey"
+        },
+        "magic-wand.provider.ollamaModel": {
+          "type": "string",
+          "default": "",
+          "description": "Ollama Model"
         }
       }
     }
