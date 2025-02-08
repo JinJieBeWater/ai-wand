@@ -46,12 +46,6 @@ function createMagicQuickPick() {
     // 添加magic
     items.push(...createMagicQuickPickGrp(key, magicGrp))
   })
-  // 添加当前Provider
-  items.push({
-    label: 'Provider',
-    detail: `${config['status.activeProvider']} ${config[`provider.${config['status.activeProvider']}Model`]}`,
-    iconPath: new ThemeIcon('gear'),
-  })
   // 添加自定义按钮
   items.push({
     label: 'Customize',

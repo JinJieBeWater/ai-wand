@@ -6,5 +6,5 @@ export const config = defineConfigObject<Meta.ScopedConfigKeyTypeMap & {
   magics: Record<string, Magic[]>
 }>(
   Meta.scopedConfigs.scope,
-  Meta.scopedConfigs.defaults as any,
+  Meta.scopedConfigs.defaults,
 )
