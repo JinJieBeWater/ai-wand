@@ -2,7 +2,6 @@ import type { QuickPick, QuickPickItem } from 'vscode'
 import { QuickPickItemKind, ThemeIcon, window } from 'vscode'
 import type { Magic } from '../types/magic'
 import { sparkMagic } from '../magic'
-import { logger } from '../utils/logger'
 import * as Meta from '../generated/meta'
 import { openMagicsSettings } from '../commands/openSettings'
 import { config } from '../config'
@@ -46,12 +45,6 @@ function createMagicQuickPick() {
   Object.entries(config.magics).forEach(([key, magicGrp]) => {
     // 添加magic
     items.push(...createMagicQuickPickGrp(key, magicGrp))
-  })
-  // 添加当前Provider
-  items.push({
-    label: 'Provider',
-    detail: `${config['status.activeProvider']} ${config[`provider.${config['status.activeProvider']}Model`]}`,
-    iconPath: new ThemeIcon('gear'),
   })
   // 添加自定义按钮
   items.push({

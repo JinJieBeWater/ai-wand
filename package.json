@@ -132,7 +132,9 @@
           "enum": [
             "openRouter",
             "ollama",
-            "deepseek"
+            "deepseek",
+            "openai",
+            "proxyServer"
           ],
           "enumDescriptions": [
             "A unified interface for LLMs. Find the best models & prices for your prompts.",
@@ -168,6 +170,31 @@
           "type": "string",
           "default": "",
           "description": "Ollama Model"
+        },
+        "magic-wand.provider.openaiApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "OpenAI ApiKey"
+        },
+        "magic-wand.provider.openaiModel": {
+          "type": "string",
+          "default": "",
+          "description": "OpenAI Model"
+        },
+        "magic-wand.provider.proxyServerApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "ProxyServer ApiKey"
+        },
+        "magic-wand.provider.proxyServerModel": {
+          "type": "string",
+          "default": "",
+          "description": "ProxyServer Model"
+        },
+        "magic-wand.provider.proxyServerUrl": {
+          "type": "string",
+          "default": "",
+          "description": "ProxyServer Url"
         }
       }
     }
@@ -187,27 +214,28 @@
   },
   "devDependencies": {
     "@ai-sdk/deepseek": "^0.1.8",
-    "@antfu/eslint-config": "^2.26.0",
+    "@ai-sdk/openai": "^1.1.9",
+    "@antfu/eslint-config": "^2.27.3",
     "@antfu/ni": "^0.22.4",
     "@openrouter/ai-sdk-provider": "^0.0.6",
     "@reactive-vscode/vueuse": "^0.2.10",
     "@types/diff": "^7.0.1",
-    "@types/node": "^22.4.1",
+    "@types/node": "^22.13.1",
     "@types/vscode": "^1.92.0",
     "@vscode/vsce": "^3.2.1",
-    "ai": "^4.1.13",
-    "bumpp": "^9.5.1",
+    "ai": "^4.1.26",
+    "bumpp": "^9.11.1",
     "diff": "^7.0.0",
-    "eslint": "^9.9.0",
-    "esno": "^4.7.0",
+    "eslint": "^9.20.0",
+    "esno": "^4.8.0",
     "ollama-ai-provider": "^1.2.0",
-    "pnpm": "^9.7.1",
-    "reactive-vscode": "^0.2.0",
-    "tsup": "^8.2.4",
-    "typescript": "^5.5.4",
-    "vite": "^5.4.1",
-    "vitest": "^2.0.5",
-    "vscode-ext-gen": "^0.4.1",
+    "pnpm": "^9.15.5",
+    "reactive-vscode": "0.2.0",
+    "tsup": "^8.3.6",
+    "typescript": "^5.7.3",
+    "vite": "^5.4.14",
+    "vitest": "^2.1.9",
+    "vscode-ext-gen": "^0.4.4",
     "zod": "^3.24.1"
   }
 }

@@ -1,5 +1,4 @@
 import { DecorationRangeBehavior, ThemeColor, window } from 'vscode'
-import { logger } from '../utils/logger'
 
 export function createInsertedDecoration() {
   return window.createTextEditorDecorationType({
