@@ -13,7 +13,9 @@ Magic Wand 🪄✨🔮 作为一个vscode插件, 就像使用一根魔杖一样,
 
 Magic Wannd 专注于碎片化场景, 专注于小任务, 因此也低消耗
 
->Magic Wand 受到了 [Cody](https://github.com/sourcegraph/cody) 的启发, 痛苦于在使用 cody 过程中遇到的许多问题 `This feature has been disabled by your Sourcegraph site admin.🤣`, 以及 cody 本身并不支持自定义 AI 提供商, 因此 Magic Wand 诞生了.
+> Magic Wand 受到了 [Cody](https://github.com/sourcegraph/cody) 的启发, 痛苦于在使用 cody 过程中遇到的许多问题 `This feature has been disabled by your Sourcegraph site admin.🤣`, 以及 cody 本身并不支持自定义 AI 提供商, 因此 Magic Wand 诞生了.
+
+> Magic Wand 仍在开发早期阶段, 只有基本功能
 
 ## Features
 
