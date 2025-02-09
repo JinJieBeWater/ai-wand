@@ -200,8 +200,8 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --external vscode",
-    "watch": "nr build --watch --sourcemap",
+    "build": "tsup src/index.ts --external vscode --env.NODE_ENV production",
+    "watch": "nr build --watch --sourcemap --env.NODE_ENV development",
     "prepare": "nr update",
     "update": "vscode-ext-gen --output src/generated/meta.ts",
     "lint": "eslint .",
