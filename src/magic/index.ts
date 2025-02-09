@@ -31,6 +31,7 @@ export async function sparkMagic(magic: Magic) {
   context.msgButler = msgButler
 
   const replacement = await connectAISDK({
+    context,
     messages: msgButler.messages,
     selection,
   })

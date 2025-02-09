@@ -5,8 +5,15 @@ import { StatusCodelensProvider } from '../editor/codelens/StatusCodelensProvide
 import { logger } from '../utils/logger'
 import { getModel } from './getModel'
 import { outputParser } from './outputParser'
+import { Context } from '../magic'
 
-export async function connectAISDK({ messages, selection }: { messages: CoreMessage[], selection: Selection }) {
+interface ConnectAISDKOptions {
+  context: Context
+  messages: CoreMessage[]
+  selection: Selection
+}
+
+export async function connectAISDK({ context, messages, selection }: ConnectAISDKOptions) {
   const loadingCodelens = new StatusCodelensProvider(selection)
 
   try {
@@ -20,7 +27,7 @@ export async function connectAISDK({ messages, selection }: { messages: CoreMess
       window.showErrorMessage('No response from the server')
     }
     else {
-      return outputParser(result.text)
+      return outputParser(context,result.text)
     }
   }
   catch (error) {
