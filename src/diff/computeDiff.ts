@@ -92,7 +92,6 @@ export function computeDiff(
   return calibratedDiff
 }
 
-
 /**
  * The VS Code `editBuilder` does not expect to be provided with optimistic ranges.
  * For example, a second insertion should not assume (in it's range) that the first insertion was successful.
@@ -109,7 +108,7 @@ export function makeDiffEditBuilderCompatible(diff: Edit[]): Edit[] {
         edit.range.start.line - linesAdded,
         edit.range.start.character,
         edit.range.end.line - linesAdded,
-        edit.range.end.character
+        edit.range.end.character,
       ),
     })
 
@@ -119,7 +118,8 @@ export function makeDiffEditBuilderCompatible(diff: Edit[]): Edit[] {
     const linesChanged = edit.range.end.line - edit.range.start.line
     if (edit.type === EditType.Insertion) {
       linesAdded += linesChanged
-    } else if (edit.type === EditType.Deletion) {
+    }
+    else if (edit.type === EditType.Deletion) {
       linesAdded -= linesChanged
     }
   }

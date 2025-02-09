@@ -3,9 +3,9 @@ import { generateText } from 'ai'
 import { type Selection, window } from 'vscode'
 import { StatusCodelensProvider } from '../editor/codelens/StatusCodelensProvider'
 import { logger } from '../utils/logger'
+import type { Context } from '../magic'
 import { getModel } from './getModel'
 import { outputParser } from './outputParser'
-import { Context } from '../magic'
 
 interface ConnectAISDKOptions {
   context: Context
@@ -27,7 +27,7 @@ export async function connectAISDK({ context, messages, selection }: ConnectAISD
       window.showErrorMessage('No response from the server')
     }
     else {
-      return outputParser(context,result.text)
+      return outputParser(context, result.text)
     }
   }
   catch (error) {
