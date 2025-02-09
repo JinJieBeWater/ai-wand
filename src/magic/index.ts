@@ -1,5 +1,5 @@
 import { reactive, useDisposable, watchEffect } from 'reactive-vscode'
-import { TextEditor, window, workspace } from 'vscode'
+import { Disposable, TextEditor, window, workspace } from 'vscode'
 import type { Magic } from '../types/magic'
 import { createMessageButler } from '../AISDK'
 import { getSelectedText } from '../editor/getSelectedText'
@@ -51,13 +51,16 @@ export async function sparkMagic(magic: Magic) {
     })
   }
 
-  useDisposable(workspace.onDidSaveTextDocument((e) => {
+  const disposables: Disposable[] = []
+
+  disposables.push(useDisposable(workspace.onDidSaveTextDocument((e) => {
     if (e.uri.toString() === textEditor.document.uri.toString()) {
       setInstances(false)
+      disposables.forEach(d => d.dispose())
     }
-  }))
+  })))
 
-  useDisposable(workspace.onDidChangeTextDocument((e) => {
+  disposables.push(useDisposable(workspace.onDidChangeTextDocument((e) => {
     if (e.document.uri.toString() === textEditor.document.uri.toString()) {
       if (!e.document.isDirty) {
         setInstances(false)
@@ -66,7 +69,7 @@ export async function sparkMagic(magic: Magic) {
         const contentChanges = e.contentChanges[0]
         const undoRange = contentChanges.range
         const targetInstances: lifeCycleInstance[] = []
-        for (let i = instances.length - 1; i >= 0; i--) {
+        for (let i = instances.length - 1;i >= 0;i--) {
           const instance = instances[i]
           const isRangeEqual = JSON.stringify(instance.edit.range) === JSON.stringify(undoRange)
           if (isRangeEqual) {
@@ -78,7 +81,9 @@ export async function sparkMagic(magic: Magic) {
       }
     }
   }))
+)
 
+  
   watchEffect(() => {
     instances.forEach((instance) => {
       if (!instance.isActive) {

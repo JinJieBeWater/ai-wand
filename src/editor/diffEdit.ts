@@ -13,11 +13,11 @@ export interface lifeCycleInstance {
 
 function useInsertionDecoration(instance: lifeCycleInstance) {
   const { textEditor, decorations, edit } = instance
-  setImmediate(() => {
-    decorations.push(createInsertedDecoration())
-    decorations.forEach((decoration) => {
-      textEditor.setDecorations(decoration, [edit.range])
-    })
+  const { range } = edit
+  const currentRange = new Range(range.start.line, 0, range.end.line - 1, 0)
+  decorations.push(createInsertedDecoration())
+  decorations.forEach((decoration) => {
+    textEditor.setDecorations(decoration, [currentRange])
   })
 }
 

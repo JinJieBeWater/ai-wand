@@ -9,8 +9,6 @@ const outputParser = (context: Context, output: string) => {
   const regex = /```\w+\n([\s\S]*?)\n```/g
   const matches = regex.exec(output)
   if (matches) {
-    // 如果有匹配则返回匹配的结果
-    logger.info('outputParser', JSON.stringify(matches))
     return matches[1]
   }
   return output
