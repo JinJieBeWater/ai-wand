@@ -4,6 +4,7 @@
   "displayName": "Magic Wand 🪄✨🔮",
   "version": "0.0.1",
   "private": true,
+  "packageManager": "pnpm@10.2.1",
   "description": "Customize your own prompt phrase, and then use the shortcut key to call out one key. Support optional model Provider and use your own api key",
   "author": "JinJieBeWater",
   "license": "MIT",
@@ -92,7 +93,7 @@
                 "label": "docs",
                 "description": "使用注释",
                 "prompt": "保留原本代码的同时对代码进行注释, 对于定义函数/变量/类等的地方要使用JsDoc, 对于其他地方使用单行注释",
-                "mode": "insert"
+                "mode": "edit"
               },
               {
                 "label": "Log",
@@ -114,7 +115,7 @@
                 "label": "Mermaid",
                 "description": "将代码逻辑转换为Mermaid",
                 "prompt": "将代码逻辑转换为Mermaid",
-                "mode": "ask"
+                "mode": "edit"
               }
             ]
           },
