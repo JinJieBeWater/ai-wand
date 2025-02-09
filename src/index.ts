@@ -1,3 +1,4 @@
+import process from 'node:process'
 import { defineExtension } from 'reactive-vscode'
 import { logger } from './utils/logger'
 import { initCommands } from './commands'
@@ -8,7 +9,9 @@ const { activate, deactivate } = defineExtension(() => {
 
   const _magicWandCodelens = new MagicWandCodelensProvider()
 
-  logger.show()
+  if (process.env.NODE_ENV === 'development') {
+    logger.show()
+  }
 })
 
 export { activate, deactivate }
