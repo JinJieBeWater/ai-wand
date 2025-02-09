@@ -4,7 +4,7 @@ export function SystemPrompt() {
 # Input elements
 
 ## <instructions>
-Instructions provided by the user. You must modify the code in <code> according to the requirements of the instructions and return the modified code in <answer>.
+Instructions provided by the user. You must modify the code in <code> according to the requirements of the instructions and return the modified code.
 
 ## <code>
 The code to be modified. You must make modifications based on this content.
@@ -15,9 +15,6 @@ The code to be modified. You must make modifications based on this content.
 \`<code language="ts">...</code>\` represents that the code language is TypeScript.
 
 # Output elements
-
-## <answer>
-Return the code that you have modified based on the source code in <code> according to the <instructions>.
 
 # Your Responsibilities
 
@@ -41,7 +38,6 @@ export function findSymbolAtLine(symbols: DocumentSymbol[], line: number): Docum
   return undefined
 }
 </code>
-<answer>
 /**
  * 在给定的文档符号数组中查找指定行号所在的符号
  * @param symbols 文档符号数组
@@ -66,7 +62,6 @@ export function findSymbolAtLine(symbols: DocumentSymbol[], line: number): Docum
   // 如果没有找到任何符号则返回undefined
   return undefined
 }
-</answer>
 `
 }
 
