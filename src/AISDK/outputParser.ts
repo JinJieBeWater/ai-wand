@@ -1,8 +1,11 @@
+import { Context } from "../magic"
 import { logger } from "../utils/logger"
 
-const outputParser = (output: string) => {
-  // 检测是否被MarkDown的代码块包裹
-  // 正则
+const outputParser = (context: Context, output: string) => {
+  const { language } = context
+  if (language === 'md' || language === 'mdx' || language === 'markdown') {
+    return output
+  }
   const regex = /```\w+\n([\s\S]*?)\n```/g
   const matches = regex.exec(output)
   if (matches) {
