@@ -4,6 +4,7 @@ import { type Selection, window } from 'vscode'
 import { StatusCodelensProvider } from '../editor/codelens/StatusCodelensProvider'
 import { logger } from '../utils/logger'
 import { getModel } from './getModel'
+import { outputParser } from './outputParser'
 
 export async function connectAISDK({ messages, selection }: { messages: CoreMessage[], selection: Selection }) {
   const loadingCodelens = new StatusCodelensProvider(selection)
@@ -19,7 +20,7 @@ export async function connectAISDK({ messages, selection }: { messages: CoreMess
       window.showErrorMessage('No response from the server')
     }
     else {
-      return result.text
+      return outputParser(result.text)
     }
   }
   catch (error) {

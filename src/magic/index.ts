@@ -1,5 +1,5 @@
 import { reactive, useDisposable, watchEffect } from 'reactive-vscode'
-import { window, workspace } from 'vscode'
+import { TextEditor, window, workspace } from 'vscode'
 import type { Magic } from '../types/magic'
 import { createMessageButler } from '../AISDK'
 import { getSelectedText } from '../editor/getSelectedText'
@@ -8,20 +8,34 @@ import type { lifeCycleInstance } from '../editor/diffEdit'
 import { diffEdit } from '../editor/diffEdit'
 import { connectAISDK } from '../AISDK/connectAISDK'
 
+export type Context = {
+  magic: Magic
+  textEditor: TextEditor
+  originalText: string
+  language?: string
+  msgButler?: ReturnType<typeof createMessageButler>
+}
+
 export async function sparkMagic(magic: Magic) {
   const textEditor = window.activeTextEditor!
   const originalText = getSelectedText(textEditor!)
   const selection = textEditor.selection
-  const msgButler = createMessageButler().addUser(originalText, magic.prompt)
+  const language = textEditor.document.fileName.split('.').pop()
+  const context: Context = {
+    magic,
+    textEditor,
+    originalText,
+    language,
+  }
+  const msgButler = createMessageButler(context).addUser(originalText, magic.prompt)
+  context.msgButler = msgButler
 
   const replacement = await connectAISDK({
     messages: msgButler.messages,
     selection,
   })
 
-  if (replacement === undefined) {
-    return
-  }
+  if (replacement === undefined) return
 
   const diff = computeDiff(replacement, originalText, selection, {
     decorateDeletions: true,
