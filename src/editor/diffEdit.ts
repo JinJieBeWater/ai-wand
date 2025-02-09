@@ -1,7 +1,7 @@
 import type { TextEditor, TextEditorDecorationType } from 'vscode'
 import { Position, Range } from 'vscode'
 import type { Edit } from '../diff/computeDiff'
-import { EditType } from '../diff/computeDiff'
+import { EditType, makeDiffEditBuilderCompatible } from '../diff/computeDiff'
 import { createDeletionDecoration, createInsertedDecoration } from './decoration'
 
 export interface lifeCycleInstance {
@@ -89,10 +89,53 @@ export async function diffEditItem(textEditor: TextEditor, part: Edit): Promise<
 }
 
 export async function diffEdit(textEditor: TextEditor, diff: Edit[]) {
+  const suitableDiff = makeDiffEditBuilderCompatible(diff)
   const instances: lifeCycleInstance[] = []
-  for (const part of diff) {
-    const instance = await diffEditItem(textEditor, part)
-    instances.push(instance)
-  }
+  textEditor.edit((editBuilder) => {
+    diff.forEach((part,index) => {
+      const instance: lifeCycleInstance = {
+        decorations: [],
+        textEditor,
+        edit: part,
+        isActive: true,
+      }
+      instances.push(instance)
+      const suitablePart = suitableDiff[index]
+      switch (part.type) {
+        case EditType.Insertion:
+          editBuilder.insert(suitablePart.range.start, part.text)
+          break
+        case EditType.Deletion:
+          editBuilder.delete(suitablePart.range)
+          break
+        case EditType.DecoratedReplacement:
+          editBuilder.replace(suitablePart.range, part.text)
+          break
+        default:
+          throw new Error('Unknown edit type')
+      }
+    })
+  }).then(async (success) => {
+    if (!success) {
+      await diffEdit(textEditor, diff)
+    }
+    else {
+      for (const instance of instances) {
+        const part = instance.edit
+        switch (part.type) {
+          case EditType.Insertion:
+            useInsertionDecoration(instance)
+            break
+          case EditType.Deletion:
+            break
+          case EditType.DecoratedReplacement:
+            useDeletionDecoration(instance)
+            break
+          default:
+            throw new Error('Unknown edit type')
+        }
+      }
+    }
+  })
   return instances
 }
