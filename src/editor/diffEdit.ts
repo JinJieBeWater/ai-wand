@@ -36,7 +36,6 @@ async function useDeletionDecoration(instance: lifeCycleInstance) {
       const currentRange = new Range(currentPostion, currentPostion)
 
       textEditor.setDecorations(decoration, [currentRange])
-      await new Promise(resolve => setTimeout(resolve, 50))
     }
   }
   else {
@@ -92,7 +91,7 @@ export async function diffEdit(textEditor: TextEditor, diff: Edit[]) {
   const suitableDiff = makeDiffEditBuilderCompatible(diff)
   const instances: lifeCycleInstance[] = []
   textEditor.edit((editBuilder) => {
-    diff.forEach((part,index) => {
+    diff.forEach((part, index) => {
       const instance: lifeCycleInstance = {
         decorations: [],
         textEditor,
