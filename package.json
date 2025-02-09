@@ -230,7 +230,7 @@
     "esno": "^4.8.0",
     "ollama-ai-provider": "^1.2.0",
     "pnpm": "^9.15.5",
-    "reactive-vscode": "^0.2.10",
+    "reactive-vscode": "0.2.0",
     "tsup": "^8.3.6",
     "typescript": "^5.7.3",
     "vite": "^5.4.14",
