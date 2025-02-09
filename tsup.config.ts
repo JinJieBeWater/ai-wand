@@ -10,4 +10,6 @@ export default defineConfig({
   external: [
     'vscode',
   ],
+  clean: true,
+  treeshake: true,
 })

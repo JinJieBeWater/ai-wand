@@ -1,5 +1,6 @@
 import { reactive, useDisposable, watchEffect } from 'reactive-vscode'
-import { Disposable, TextEditor, window, workspace } from 'vscode'
+import type { Disposable, TextEditor } from 'vscode'
+import { window, workspace } from 'vscode'
 import type { Magic } from '../types/magic'
 import { createMessageButler } from '../AISDK'
 import { getSelectedText } from '../editor/getSelectedText'
@@ -8,7 +9,7 @@ import type { lifeCycleInstance } from '../editor/diffEdit'
 import { diffEdit } from '../editor/diffEdit'
 import { connectAISDK } from '../AISDK/connectAISDK'
 
-export type Context = {
+export interface Context {
   magic: Magic
   textEditor: TextEditor
   originalText: string
@@ -36,7 +37,8 @@ export async function sparkMagic(magic: Magic) {
     selection,
   })
 
-  if (replacement === undefined) return
+  if (replacement === undefined)
+    return
 
   const diff = computeDiff(replacement, originalText, selection, {
     decorateDeletions: true,
@@ -69,7 +71,7 @@ export async function sparkMagic(magic: Magic) {
         const contentChanges = e.contentChanges[0]
         const undoRange = contentChanges.range
         const targetInstances: lifeCycleInstance[] = []
-        for (let i = instances.length - 1;i >= 0;i--) {
+        for (let i = instances.length - 1; i >= 0; i--) {
           const instance = instances[i]
           const isRangeEqual = JSON.stringify(instance.edit.range) === JSON.stringify(undoRange)
           if (isRangeEqual) {
@@ -80,10 +82,9 @@ export async function sparkMagic(magic: Magic) {
         setInstances(false, targetInstances)
       }
     }
-  }))
-)
+  })),
+  )
 
-  
   watchEffect(() => {
     instances.forEach((instance) => {
       if (!instance.isActive) {

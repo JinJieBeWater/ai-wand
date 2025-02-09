@@ -1,7 +1,6 @@
 import type { CoreMessage } from 'ai'
-import { window } from 'vscode'
+import type { Context } from '../magic'
 import { SystemPrompt, UserPrompt } from './prompt'
-import { Context } from '../magic'
 
 export interface MessageButler {
   addUser: (code: string, prompt: string) => MessageButler
@@ -20,7 +19,6 @@ export function createMessageButler(context: Context) {
 
   const msgButler: MessageButler = {
     addUser(code: string, prompt: string) {
-
       messages.push({
         role: 'user',
         content: UserPrompt(code, prompt, language),
