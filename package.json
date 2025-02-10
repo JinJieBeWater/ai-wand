@@ -2,7 +2,7 @@
   "publisher": "JinJieBeWater",
   "name": "magic-wand",
   "displayName": "Magic Wand 🪄✨🔮",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.2.1",
   "description": "Customize your own prompt phrase, and then use the shortcut key to call out one key. Support optional model Provider and use your own api key",
