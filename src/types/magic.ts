@@ -4,8 +4,8 @@ export enum MagicMode {
   insert,
 }
 export interface Magic {
-  label: string
-  description: string
+  label?: string
+  description?: string
   prompt: string
   mode: MagicMode
 }

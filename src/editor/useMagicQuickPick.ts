@@ -5,6 +5,7 @@ import { sparkMagic } from '../magic'
 import * as Meta from '../generated/meta'
 import { openMagicsSettings } from '../commands/openSettings'
 import { config } from '../config'
+import { liveEdit } from '../magic/liveEdit'
 import { useProviderToggle } from './useProviderToggle'
 
 function createMagicQuickPickItemSperator(key: string) {
@@ -16,7 +17,7 @@ function createMagicQuickPickItemSperator(key: string) {
 
 function createMagicQuickPickItem(magic: Magic): QuickPickItem {
   return {
-    label: magic.label,
+    label: magic.label ?? '',
     description: magic.description,
     iconPath: new ThemeIcon('sparkle'),
   }
@@ -36,11 +37,10 @@ function createMagicQuickPickGrp(key: string, magicGrp: Magic[]): QuickPickItem[
 function createMagicQuickPick() {
   const items: QuickPickItem[] = []
   // 添加临场magic
-  // items.push({
-  //   label: 'edit',
-  //   description: 'On-site creation',
-  //   iconPath: new ThemeIcon('edit'),
-  // })
+  items.push({
+    label: 'edit',
+    iconPath: new ThemeIcon('edit'),
+  })
   // 组遍历
   Object.entries(config.magics).forEach(([key, magicGrp]) => {
     // 添加magic
@@ -53,6 +53,16 @@ function createMagicQuickPick() {
     iconPath: new ThemeIcon('gear'),
   })
   const qp = window.createQuickPick()
+  qp.buttons = [{
+    iconPath: new ThemeIcon('gear'),
+    tooltip: 'Settings',
+  }]
+  qp.onDidTriggerButton((e) => {
+    if (e.tooltip === 'Settings') {
+      openMagicsSettings()
+      qp.hide()
+    }
+  })
   qp.title = Meta.displayName
   qp.placeholder = 'Spark a magic or customize new magic'
   qp.items = items
@@ -65,12 +75,10 @@ function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>) {
 
   switch (item.label) {
     case 'edit':
+      liveEdit()
       break
     case 'Customize':
       openMagicsSettings()
-      break
-    case 'Provider':
-      useProviderToggle()
       break
     default: {
       // 构造magic列表
