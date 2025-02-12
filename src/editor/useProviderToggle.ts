@@ -1,4 +1,4 @@
-import { type QuickPickItem, window } from 'vscode'
+import { type QuickPickItem, ThemeIcon, commands, window } from 'vscode'
 import { providers } from '../AISDK/providers'
 import { config } from '../config'
 import * as Meta from '../generated/meta'
@@ -8,6 +8,12 @@ export function useProviderToggle() {
     label: provider,
     description: config[`provider.${provider}Model`],
     picked: provider === config['status.activeProvider'],
+    buttons: [
+      {
+        iconPath: new ThemeIcon('gear'),
+        tooltip: provider,
+      },
+    ],
   }))
   const qp = window.createQuickPick()
 
@@ -15,7 +21,9 @@ export function useProviderToggle() {
   qp.placeholder = 'Select Model Provider'
   qp.items = items
 
-  qp.show()
+  qp.onDidTriggerItemButton((e) => {
+    commands.executeCommand('workbench.action.openSettings', `${Meta.name}.provider.${e.item.label}.`)
+  })
 
   qp.onDidAccept(async () => {
     const selected = qp.selectedItems[0]
@@ -24,6 +32,8 @@ export function useProviderToggle() {
     }
     qp.dispose()
   })
+
+  qp.show()
 
   qp.onDidHide(() => qp.dispose())
 
