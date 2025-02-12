@@ -1,6 +1,7 @@
 import { type QuickPickItem, window } from 'vscode'
 import { providers } from '../AISDK/providers'
 import { config } from '../config'
+import * as Meta from '../generated/meta'
 
 export function useProviderToggle() {
   const items: QuickPickItem[] = providers.map(provider => ({
@@ -10,8 +11,8 @@ export function useProviderToggle() {
   }))
   const qp = window.createQuickPick()
 
-  qp.title = 'Select AI provider'
-  qp.placeholder = 'Select AI provider'
+  qp.title = `${Meta.displayName} Provider Toggle`
+  qp.placeholder = 'Select Model Provider'
   qp.items = items
 
   qp.show()
@@ -20,10 +21,11 @@ export function useProviderToggle() {
     const selected = qp.selectedItems[0]
     if (selected) {
       config.$set('status.activeProvider', selected.label)
-      window.showInformationMessage(`switch to ${selected.label} ${selected.description}`)
     }
     qp.dispose()
   })
+
+  qp.onDidHide(() => qp.dispose())
 
   return qp
 }

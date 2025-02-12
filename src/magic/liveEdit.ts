@@ -5,35 +5,38 @@ import { type Magic, MagicMode } from '../types/magic'
 import * as Meta from '../generated/meta'
 import { openMagicsSettings } from '../commands/openSettings'
 import { useProviderToggle } from '../editor/useProviderToggle'
+import { config } from '../config'
 import { sparkMagic } from '.'
 
 const items: QuickPickItem[] = [
   {
     label: 'Context',
     description: 'The context sent to the model',
+    detail: '$(gear) ' + 'Selection',
     alwaysShow: true,
-
   },
   {
     label: 'Provider',
     description: 'The Model Provider',
+    detail: '$(gear) ' + `${config['status.activeProvider']} ${config[`provider.${config['status.activeProvider']}Model`]}`,
     alwaysShow: true,
   },
 ]
 
 const submitItem: QuickPickItem = {
   label: 'Submit',
-  description: 'Submit the prompt',
-  detail: 'Enter',
+  detail: '$(check) ' + 'Enter',
   alwaysShow: true,
 }
 
 function createLiveEditQP() {
   const qp = window.createQuickPick()
-  qp.buttons = [{
-    iconPath: new ThemeIcon('gear'),
-    tooltip: 'Settings',
-  }]
+  qp.buttons = [
+    {
+      iconPath: new ThemeIcon('gear'),
+      tooltip: 'Settings',
+    },
+  ]
   qp.onDidTriggerButton((e) => {
     if (e.tooltip === 'Settings') {
       openMagicsSettings()
@@ -43,15 +46,19 @@ function createLiveEditQP() {
   qp.title = `${Meta.displayName} - Live Edit`
   qp.placeholder = 'Input your prompt'
   qp.items = items
+
+  qp.onDidHide(() => qp.dispose())
+
   return qp
 }
 
-export function liveEdit() {
+export function liveEdit(value?: string) {
   const magic: Magic = {
     prompt: '',
     mode: MagicMode.edit,
   }
   const qp = createLiveEditQP()
+  qp.value = value ?? magic.prompt
   qp.onDidChangeValue((e) => {
     if (e) {
       qp.items = [submitItem, ...items]

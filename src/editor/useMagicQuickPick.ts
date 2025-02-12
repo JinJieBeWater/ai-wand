@@ -38,34 +38,44 @@ function createMagicQuickPick() {
   const items: QuickPickItem[] = []
   // 添加临场magic
   items.push({
-    label: 'edit',
-    iconPath: new ThemeIcon('edit'),
+    label: 'Edit',
+    iconPath: new ThemeIcon('zap'),
+    description: 'built-in',
+    alwaysShow: true,
+    picked: true,
   })
   // 组遍历
   Object.entries(config.magics).forEach(([key, magicGrp]) => {
     // 添加magic
     items.push(...createMagicQuickPickGrp(key, magicGrp))
   })
-  // 添加自定义按钮
-  items.push({
-    label: 'Customize',
-    description: 'Jump to the magic settings',
-    iconPath: new ThemeIcon('gear'),
-  })
   const qp = window.createQuickPick()
-  qp.buttons = [{
-    iconPath: new ThemeIcon('gear'),
-    tooltip: 'Settings',
-  }]
+  qp.buttons = [
+    {
+      iconPath: new ThemeIcon('copilot'),
+      tooltip: 'Provider Toggle',
+    },
+    {
+      iconPath: new ThemeIcon('gear'),
+      tooltip: 'Settings',
+    },
+  ]
   qp.onDidTriggerButton((e) => {
-    if (e.tooltip === 'Settings') {
-      openMagicsSettings()
-      qp.hide()
+    switch (e.tooltip) {
+      case 'Provider Toggle':
+        useProviderToggle()
+        break
+      case 'Settings':
+        openMagicsSettings()
+        break
     }
   })
-  qp.title = Meta.displayName
-  qp.placeholder = 'Spark a magic or customize new magic'
+  qp.title = `${Meta.displayName} SparkMagic`
+  qp.placeholder = 'Spark a magic or execute live edit'
   qp.items = items
+
+  qp.onDidHide(() => qp.dispose())
+
   return qp
 }
 
@@ -74,11 +84,8 @@ function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>) {
   const item = qp.selectedItems[0]
 
   switch (item.label) {
-    case 'edit':
-      liveEdit()
-      break
-    case 'Customize':
-      openMagicsSettings()
+    case 'Edit':
+      liveEdit(qp.value)
       break
     default: {
       // 构造magic列表
@@ -104,8 +111,6 @@ function useMagicQuickPick() {
   const qp = createMagicQuickPick()
 
   qp.onDidAccept(() => onMagicQuickPickAccept(qp))
-
-  qp.onDidHide(() => qp.dispose())
 
   return qp
 }
