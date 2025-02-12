@@ -1,5 +1,5 @@
 import { reactive, useDisposable, watchEffect } from 'reactive-vscode'
-import type { Disposable, TextEditor } from 'vscode'
+import type { Disposable, Selection, TextEditor } from 'vscode'
 import { window, workspace } from 'vscode'
 import type { Magic } from '../types/magic'
 import { createMessageButler } from '../AISDK'
@@ -17,10 +17,15 @@ export interface Context {
   msgButler?: ReturnType<typeof createMessageButler>
 }
 
-export async function sparkMagic(magic: Magic) {
-  const textEditor = window.activeTextEditor!
+type SparkMagic = (magic: Magic, options?: {
+  selection?: Selection
+  textEditor?: TextEditor
+}) => Promise<lifeCycleInstance[] | undefined>
+
+const sparkMagic: SparkMagic = async (magic: Magic, options) => {
+  const textEditor = options?.textEditor ?? window.activeTextEditor!
+  const selection = options?.selection ?? textEditor.selection
   const originalText = getSelectedText(textEditor!)
-  const selection = textEditor.selection
   const language = textEditor.document.fileName.split('.').pop()
   const context: Context = {
     magic,
@@ -97,3 +102,5 @@ export async function sparkMagic(magic: Magic) {
 
   return instances
 }
+
+export { sparkMagic }

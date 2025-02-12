@@ -5,6 +5,7 @@ import { sparkMagic } from '../magic'
 import * as Meta from '../generated/meta'
 import { openMagicsSettings } from '../commands/openSettings'
 import { config } from '../config'
+import { liveEdit } from '../magic/liveEdit'
 import { useProviderToggle } from './useProviderToggle'
 
 function createMagicQuickPickItemSperator(key: string) {
@@ -16,7 +17,7 @@ function createMagicQuickPickItemSperator(key: string) {
 
 function createMagicQuickPickItem(magic: Magic): QuickPickItem {
   return {
-    label: magic.label,
+    label: magic.label ?? '',
     description: magic.description,
     iconPath: new ThemeIcon('sparkle'),
   }
@@ -36,26 +37,45 @@ function createMagicQuickPickGrp(key: string, magicGrp: Magic[]): QuickPickItem[
 function createMagicQuickPick() {
   const items: QuickPickItem[] = []
   // 添加临场magic
-  // items.push({
-  //   label: 'edit',
-  //   description: 'On-site creation',
-  //   iconPath: new ThemeIcon('edit'),
-  // })
+  items.push({
+    label: 'Edit',
+    iconPath: new ThemeIcon('zap'),
+    description: 'built-in',
+    alwaysShow: true,
+    picked: true,
+  })
   // 组遍历
   Object.entries(config.magics).forEach(([key, magicGrp]) => {
     // 添加magic
     items.push(...createMagicQuickPickGrp(key, magicGrp))
   })
-  // 添加自定义按钮
-  items.push({
-    label: 'Customize',
-    description: 'Jump to the magic settings',
-    iconPath: new ThemeIcon('gear'),
-  })
   const qp = window.createQuickPick()
-  qp.title = Meta.displayName
-  qp.placeholder = 'Spark a magic or customize new magic'
+  qp.buttons = [
+    {
+      iconPath: new ThemeIcon('copilot'),
+      tooltip: 'Provider Toggle',
+    },
+    {
+      iconPath: new ThemeIcon('gear'),
+      tooltip: 'Settings',
+    },
+  ]
+  qp.onDidTriggerButton((e) => {
+    switch (e.tooltip) {
+      case 'Provider Toggle':
+        useProviderToggle()
+        break
+      case 'Settings':
+        openMagicsSettings()
+        break
+    }
+  })
+  qp.title = `${Meta.displayName} SparkMagic`
+  qp.placeholder = 'Spark a magic or execute live edit'
   qp.items = items
+
+  qp.onDidHide(() => qp.dispose())
+
   return qp
 }
 
@@ -64,13 +84,8 @@ function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>) {
   const item = qp.selectedItems[0]
 
   switch (item.label) {
-    case 'edit':
-      break
-    case 'Customize':
-      openMagicsSettings()
-      break
-    case 'Provider':
-      useProviderToggle()
+    case 'Edit':
+      liveEdit(qp.value)
       break
     default: {
       // 构造magic列表
@@ -96,8 +111,6 @@ function useMagicQuickPick() {
   const qp = createMagicQuickPick()
 
   qp.onDidAccept(() => onMagicQuickPickAccept(qp))
-
-  qp.onDidHide(() => qp.dispose())
 
   return qp
 }
