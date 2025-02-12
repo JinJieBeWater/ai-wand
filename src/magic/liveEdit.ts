@@ -1,4 +1,4 @@
-import type { QuickPick, QuickPickItem } from 'vscode'
+import type { QuickPickItem } from 'vscode'
 import { ThemeIcon, window } from 'vscode'
 import { logger } from '../utils/logger'
 import { type Magic, MagicMode } from '../types/magic'
