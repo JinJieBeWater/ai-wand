@@ -13,12 +13,12 @@ export function getModel(): LanguageModelV1 {
       })
       return openai.chat(config['provider.openaiModel'])
     }
-    case 'proxyServer': {
-      const proxyServer = createOpenRouter({
-        apiKey: config['provider.proxyServerApiKey'],
-        baseURL: config['provider.proxyServerUrl'],
+    case 'openaiAdaptedServer': {
+      const openaiAdaptedServer = createOpenRouter({
+        apiKey: config['provider.openaiAdaptedServerApiKey'],
+        baseURL: config['provider.openaiAdaptedServerUrl'],
       })
-      return proxyServer.chat(config['provider.proxyServerModel'])
+      return openaiAdaptedServer.chat(config['provider.openaiAdaptedServerModel'])
     }
     case 'openRouter': {
       const openrouter = createOpenRouter({

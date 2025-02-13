@@ -135,7 +135,7 @@
             "ollama",
             "deepseek",
             "openai",
-            "proxyServer"
+            "openaiAdaptedServer"
           ],
           "enumDescriptions": [
             "A unified interface for LLMs. Find the best models & prices for your prompts.",
@@ -182,27 +182,27 @@
           "default": "",
           "description": "OpenAI Model"
         },
-        "magic-wand.provider.proxyServerApiKey": {
+        "magic-wand.provider.openaiAdaptedServerApiKey": {
           "type": "string",
           "default": "",
-          "description": "ProxyServer ApiKey"
+          "description": "openaiAdaptedServer ApiKey"
         },
-        "magic-wand.provider.proxyServerModel": {
+        "magic-wand.provider.openaiAdaptedServerModel": {
           "type": "string",
           "default": "",
-          "description": "ProxyServer Model"
+          "description": "openaiAdaptedServer Model"
         },
-        "magic-wand.provider.proxyServerUrl": {
+        "magic-wand.provider.openaiAdaptedServerUrl": {
           "type": "string",
           "default": "",
-          "description": "ProxyServer Url"
+          "description": "openaiAdaptedServer Url"
         }
       }
     }
   },
   "scripts": {
     "build": "tsup src/index.ts --external vscode --env.NODE_ENV production",
-    "watch": "nr build --watch --sourcemap --env.NODE_ENV development",
+    "watch": "tsup src/index.ts --external vscode --watch --sourcemap --env.NODE_ENV development",
     "prepare": "nr update",
     "update": "vscode-ext-gen --output src/generated/meta.ts",
     "lint": "eslint .",

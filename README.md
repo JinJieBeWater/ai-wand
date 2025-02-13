@@ -48,22 +48,22 @@ Magic Wannd 专注于碎片化场景, 专注于小任务, 因此也低消耗
 
 <!-- configs -->
 
-| Key                                     | Description                                                                               | Type      | Default                                     |
-| --------------------------------------- | ----------------------------------------------------------------------------------------- | --------- | ------------------------------------------- |
-| `magic-wand.magics`                     | Use the object's first-level property for group setting and the second for Magic setting. | `object`  | See package.json                            |
-| `magic-wand.status.enableCodeLens`      | Enable CodeLens                                                                           | `boolean` | `true`                                      |
-| `magic-wand.status.activeProvider`      | Active AI provider                                                                        | `string`  | `"openRouter"`                              |
-| `magic-wand.provider.openRouterApiKey`  | OpenRouter ApiKey                                                                         | `string`  | `""`                                        |
-| `magic-wand.provider.openRouterModel`   | OpenRouter Model                                                                          | `string`  | `"meta-llama/llama-3.1-405b-instruct:free"` |
-| `magic-wand.provider.deepseekApiKey`    | Deepseek ApiKey                                                                           | `string`  | `""`                                        |
-| `magic-wand.provider.deepseekModel`     | Deepseek Model                                                                            | `string`  | `"deepseek-chat"`                           |
-| `magic-wand.provider.ollamaApiKey`      | Ollama ApiKey                                                                             | `string`  | `""`                                        |
-| `magic-wand.provider.ollamaModel`       | Ollama Model                                                                              | `string`  | `""`                                        |
-| `magic-wand.provider.openaiApiKey`      | OpenAI ApiKey                                                                             | `string`  | `""`                                        |
-| `magic-wand.provider.openaiModel`       | OpenAI Model                                                                              | `string`  | `""`                                        |
-| `magic-wand.provider.proxyServerApiKey` | ProxyServer ApiKey                                                                        | `string`  | `""`                                        |
-| `magic-wand.provider.proxyServerModel`  | ProxyServer Model                                                                         | `string`  | `""`                                        |
-| `magic-wand.provider.proxyServerUrl`    | ProxyServer Url                                                                           | `string`  | `""`                                        |
+| Key                                             | Description                                                                               | Type      | Default                                     |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------- | --------- | ------------------------------------------- |
+| `magic-wand.magics`                             | Use the object's first-level property for group setting and the second for Magic setting. | `object`  | See package.json                            |
+| `magic-wand.status.enableCodeLens`              | Enable CodeLens                                                                           | `boolean` | `true`                                      |
+| `magic-wand.status.activeProvider`              | Active AI provider                                                                        | `string`  | `"openRouter"`                              |
+| `magic-wand.provider.openRouterApiKey`          | OpenRouter ApiKey                                                                         | `string`  | `""`                                        |
+| `magic-wand.provider.openRouterModel`           | OpenRouter Model                                                                          | `string`  | `"meta-llama/llama-3.1-405b-instruct:free"` |
+| `magic-wand.provider.deepseekApiKey`            | Deepseek ApiKey                                                                           | `string`  | `""`                                        |
+| `magic-wand.provider.deepseekModel`             | Deepseek Model                                                                            | `string`  | `"deepseek-chat"`                           |
+| `magic-wand.provider.ollamaApiKey`              | Ollama ApiKey                                                                             | `string`  | `""`                                        |
+| `magic-wand.provider.ollamaModel`               | Ollama Model                                                                              | `string`  | `""`                                        |
+| `magic-wand.provider.openaiApiKey`              | OpenAI ApiKey                                                                             | `string`  | `""`                                        |
+| `magic-wand.provider.openaiModel`               | OpenAI Model                                                                              | `string`  | `""`                                        |
+| `magic-wand.provider.openaiAdaptedServerApiKey` | openaiAdaptedServer ApiKey                                                                | `string`  | `""`                                        |
+| `magic-wand.provider.openaiAdaptedServerModel`  | openaiAdaptedServer Model                                                                 | `string`  | `""`                                        |
+| `magic-wand.provider.openaiAdaptedServerUrl`    | openaiAdaptedServer Url                                                                   | `string`  | `""`                                        |
 
 <!-- configs -->
 

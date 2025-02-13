@@ -1,0 +1,91 @@
+{
+  "user-config": {
+    "active": {
+      "provider": "deepseek",
+      "model": "deepseek-chat"
+    },
+    "edit-active": {
+      "provider": "deepseek",
+      "model": "deepseek-chat"
+    },
+    "providers": [
+      {
+        "name": "openRouter",
+        "apiKey": "",
+        "model": "meta-llama/llama-3.1-405b-instruct:free"
+      },
+      {
+        "name": "deepseek",
+        "apiKey": "",
+        "model": "deepseek-chat"
+      },
+      {
+        "name": "openai",
+        "apiKey": "",
+        "model": ""
+      },
+      {
+        "name": "ollama",
+        "apiKey": "",
+        "model": ""
+      },
+      {
+        "name": "openaiAdaptedServer",
+        "apiKey": "",
+        "baseUrl": ""
+      }
+    ]
+  },
+  "magics": {
+    "Information": [
+      {
+        "label": "docs",
+        "description": "文档注释",
+        "prompt": "保留原本代码的同时对代码进行注释, 对于定义函数/变量/类等的地方要使用JsDoc, 对于其他地方使用单行注释",
+        "mode": "edit"
+      },
+      {
+        "label": "Log",
+        "description": "打印日志",
+        "prompt": "根据选中的代码打印日志",
+        "mode": "edit"
+      }
+    ],
+    "Function": [
+      {
+        "label": "Implement",
+        "description": "根据注释实现功能",
+        "prompt": "根据代码中提供的注释实现功能",
+        "mode": "edit"
+      },
+      {
+        "label": "if/else -> switch",
+        "description": "将if/else转换为switch",
+        "prompt": "将代码中的 if/else 语句转换成 switch case 语句, 注意判断逻辑变更前后一致",
+        "mode": "edit"
+      }
+    ],
+    "Typescript": [
+      {
+        "label": "Typed",
+        "description": "为代码补全类型",
+        "prompt": "为代码补全类型",
+        "mode": "edit"
+      },
+      {
+        "label": "Extract Type",
+        "description": "提取类型",
+        "prompt": "提取变量/函数定义中的类型, 改成单独的类型声明, 与变量/函数定义分开",
+        "mode": "edit"
+      }
+    ],
+    "Kit": [
+      {
+        "label": "Mermaid",
+        "description": "将代码逻辑转换为Mermaid",
+        "prompt": "将代码逻辑转换为Mermaid",
+        "mode": "edit"
+      }
+    ]
+  }
+}

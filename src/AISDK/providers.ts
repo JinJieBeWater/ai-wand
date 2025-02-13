@@ -5,7 +5,7 @@ const providers: Meta.ConfigKeyTypeMap['magic-wand.status.activeProvider'][] = [
   'ollama',
   'deepseek',
   'openai',
-  'proxyServer',
+  'openaiAdaptedServer',
 ]
 
 export { providers }

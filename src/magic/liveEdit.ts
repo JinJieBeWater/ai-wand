@@ -25,7 +25,7 @@ const items: QuickPickItem[] = [
 
 const submitItem: QuickPickItem = {
   label: 'Submit',
-  detail: '$(check) ' + 'Enter',
+  detail: '$(zap) ' + 'Enter',
   alwaysShow: true,
 }
 

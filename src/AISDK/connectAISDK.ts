@@ -24,7 +24,7 @@ export async function connectAISDK({ context, messages, selection }: ConnectAISD
     })
     // 预防服务器没有响应
     if (result.text === '') {
-      window.showErrorMessage('No response from the server')
+      window.showErrorMessage('No response from the language model')
     }
     else {
       return outputParser(context, result.text)
