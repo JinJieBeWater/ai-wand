@@ -14,8 +14,6 @@ The code to be modified. You must make modifications based on this content.
 #### Example
 \`<code language="ts">...</code>\` represents that the code language is TypeScript.
 
-# Output elements
-
 # Your Responsibilities
 
 ## Modify the code provided by the user directly according to the user's <instructions>.
@@ -38,6 +36,7 @@ export function findSymbolAtLine(symbols: DocumentSymbol[], line: number): Docum
   return undefined
 }
 </code>
+
 /**
  * 在给定的文档符号数组中查找指定行号所在的符号
  * @param symbols 文档符号数组
@@ -62,6 +61,12 @@ export function findSymbolAtLine(symbols: DocumentSymbol[], line: number): Docum
   // 如果没有找到任何符号则返回undefined
   return undefined
 }
+
+# Output Rules
+
+## 如果在 Markdown 及 mdx 文件中，允许使用围栏代码块包裹生成的响应
+
+## 如果在其他文件(js/ts/jsx/tsx等)中，直接返回生成的响应(不使用围栏代码块包裹)
 `
 }
 

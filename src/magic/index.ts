@@ -1,6 +1,6 @@
 import { reactive, useDisposable, watchEffect } from 'reactive-vscode'
 import type { Disposable, Selection, TextEditor } from 'vscode'
-import { window, workspace } from 'vscode'
+import { Range, TextDocumentChangeReason, window, workspace } from 'vscode'
 import type { Magic } from '../types/magic'
 import { createMessageButler } from '../AISDK'
 import { getSelectedText } from '../editor/getSelectedText'
@@ -8,6 +8,7 @@ import { computeDiff } from '../diff/computeDiff'
 import type { lifeCycleInstance } from '../editor/diffEdit'
 import { diffEdit } from '../editor/diffEdit'
 import { connectAISDK } from '../AISDK/connectAISDK'
+import { logger } from '../utils/logger'
 
 export interface Context {
   magic: Magic
@@ -67,24 +68,75 @@ const sparkMagic: SparkMagic = async (magic: Magic, options) => {
     }
   })))
 
+  let preLineCount = textEditor.document.lineCount
+
   disposables.push(useDisposable(workspace.onDidChangeTextDocument((e) => {
     if (e.document.uri.toString() === textEditor.document.uri.toString()) {
-      if (!e.document.isDirty) {
-        setInstances(false)
-      }
-      else {
-        const contentChanges = e.contentChanges[0]
-        const undoRange = contentChanges.range
+      const lineCount = e.document.lineCount
+      const offset = lineCount - preLineCount
+      preLineCount = lineCount
+
+      const change = e.contentChanges[0]
+      const changeStart = change.range.start.line
+      const changeEnd = change.range.end.line
+
+      if (e.document.isDirty) {
         const targetInstances: lifeCycleInstance[] = []
-        for (let i = instances.length - 1; i >= 0; i--) {
-          const instance = instances[i]
-          const isRangeEqual = JSON.stringify(instance.edit.range) === JSON.stringify(undoRange)
-          if (isRangeEqual) {
-            targetInstances.push(instance)
+
+        switch (e.reason) {
+          case TextDocumentChangeReason.Undo:
+            logger.info('Undo')
             break
-          }
+          case TextDocumentChangeReason.Redo:
+            logger.info('Redo')
+            break
+          default:
+            // undo delete
+            logger.info('Default')
+            logger.info('变更的范围', JSON.stringify(change))
+            instances.forEach((instance) => {
+              const currentRange = instance.edit.range
+              const currentRangeStart = currentRange.start.line
+              const currentRangeEnd = currentRange.end.line
+              if (change.range.contains(instance.edit.range)) {
+                logger.info(`变更的范围包含实例的范围`, JSON.stringify(instance.edit.range))
+                targetInstances.push(instance)
+              }
+              else if (instance.edit.range.contains(change.range)) {
+                logger.info(`实例的范围包含变更的范围`, JSON.stringify(instance.edit.range))
+                targetInstances.push(instance)
+              }
+              else if (currentRangeStart >= changeStart && currentRangeStart < changeEnd) {
+                logger.info(`前沿重叠`, JSON.stringify(instance.edit.range))
+                targetInstances.push(instance)
+              }
+              else if (currentRangeEnd > changeStart && currentRangeEnd < changeEnd) {
+                logger.info(`后沿重叠`, JSON.stringify(instance.edit.range))
+                targetInstances.push(instance)
+              }
+            })
+            break
         }
         setInstances(false, targetInstances)
+
+        // 校准范围
+        // 修改受到影响的instance的range
+        instances.forEach((instance) => {
+          const range = instance.edit.range
+          // 在影响范围内
+          if (!(range.end.line < changeStart)) {
+            const currentRange = new Range(
+              range.start.line + offset,
+              range.start.character,
+              range.end.line + offset,
+              range.end.character,
+            )
+            instance.edit.range = currentRange
+          }
+        })
+      }
+      else {
+        setInstances(false)
       }
     }
   })),
