@@ -43,54 +43,11 @@ async function useDeletionDecoration(instance: lifeCycleInstance) {
   }
 }
 
-export async function diffEditItem(textEditor: TextEditor, part: Edit): Promise<lifeCycleInstance> {
-  const instance: lifeCycleInstance = {
-    decorations: [],
-    textEditor,
-    edit: part,
-    isActive: true,
-  }
-  await textEditor.edit((editBuilder) => {
-    switch (part.type) {
-      case EditType.Insertion:
-        editBuilder.insert(part.range.start, part.text)
-        break
-      case EditType.Deletion:
-        editBuilder.delete(part.range)
-        break
-      case EditType.DecoratedReplacement:
-        editBuilder.replace(part.range, part.text)
-        break
-      default:
-        throw new Error('Unknown edit type')
-    }
-  }).then(async (success) => {
-    if (!success) {
-      await diffEditItem(textEditor, part)
-    }
-    else {
-      switch (part.type) {
-        case EditType.Insertion:
-          useInsertionDecoration(instance)
-          break
-        case EditType.Deletion:
-          break
-        case EditType.DecoratedReplacement:
-          useDeletionDecoration(instance)
-          break
-        default:
-          throw new Error('Unknown edit type')
-      }
-    }
-  })
-
-  return instance
-}
-
 export async function diffEdit(textEditor: TextEditor, diff: Edit[]) {
   const suitableDiff = makeDiffEditBuilderCompatible(diff)
+
   const instances: lifeCycleInstance[] = []
-  textEditor.edit((editBuilder) => {
+  await textEditor.edit((editBuilder) => {
     diff.forEach((part, index) => {
       const instance: lifeCycleInstance = {
         decorations: [],
