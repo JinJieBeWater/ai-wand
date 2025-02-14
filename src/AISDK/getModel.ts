@@ -3,34 +3,34 @@ import { createOpenAI } from '@ai-sdk/openai'
 import type { LanguageModelV1 } from 'ai'
 import { window } from 'vscode'
 import { createDeepSeek } from '@ai-sdk/deepseek'
-import { config } from '../config'
+import { settings } from '../configs/settings'
 
 export function getModel(): LanguageModelV1 {
-  switch (config['status.activeProvider']) {
+  switch (settings['status.activeProvider']) {
     case 'openai': {
       const openai = createOpenAI({
-        apiKey: config['provider.openaiApiKey'],
+        apiKey: settings['provider.openaiApiKey'],
       })
-      return openai.chat(config['provider.openaiModel'])
+      return openai.chat(settings['provider.openaiModel'])
     }
     case 'openaiAdaptedServer': {
       const openaiAdaptedServer = createOpenRouter({
-        apiKey: config['provider.openaiAdaptedServerApiKey'],
-        baseURL: config['provider.openaiAdaptedServerUrl'],
+        apiKey: settings['provider.openaiAdaptedServerApiKey'],
+        baseURL: settings['provider.openaiAdaptedServerUrl'],
       })
-      return openaiAdaptedServer.chat(config['provider.openaiAdaptedServerModel'])
+      return openaiAdaptedServer.chat(settings['provider.openaiAdaptedServerModel'])
     }
     case 'openRouter': {
       const openrouter = createOpenRouter({
-        apiKey: config['provider.openRouterApiKey'],
+        apiKey: settings['provider.openRouterApiKey'],
       })
-      return openrouter.chat(config['provider.openRouterModel'])
+      return openrouter.chat(settings['provider.openRouterModel'])
     }
     case 'deepseek': {
       const deepseek = createDeepSeek({
-        apiKey: config['provider.deepseekApiKey'],
+        apiKey: settings['provider.deepseekApiKey'],
       })
-      return deepseek.chat(config['provider.deepseekModel'])
+      return deepseek.chat(settings['provider.deepseekModel'])
     }
     case 'ollama':
       window.showInformationMessage('ollama is adapting')

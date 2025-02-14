@@ -2,7 +2,7 @@ import type { QuickPickItem } from 'vscode'
 import { logger } from '../utils/logger'
 import { type Magic, MagicMode } from '../types/magic'
 import { useProviderToggle } from '../editor/quickPick/useProviderToggle'
-import { config } from '../config'
+import { settings } from '../configs/settings'
 import { createCommonQuickPick } from '../editor/quickPick'
 import { sparkMagic } from '.'
 
@@ -16,7 +16,7 @@ const items: QuickPickItem[] = [
   {
     label: 'Provider',
     description: 'The Model Provider',
-    detail: '$(gear) ' + `${config['status.activeProvider']} ${config[`provider.${config['status.activeProvider']}Model`]}`,
+    detail: '$(gear) ' + `${settings['status.activeProvider']} ${settings[`provider.${settings['status.activeProvider']}Model`]}`,
     alwaysShow: true,
   },
 ]

@@ -1,14 +1,14 @@
 import { type QuickPickItem, ThemeIcon, commands } from 'vscode'
 import { providers } from '../../AISDK/providers'
-import { config } from '../../config'
+import { settings } from '../../configs/settings'
 import * as Meta from '../../generated/meta'
 import { createCommonQuickPick } from './createCommonQuickPick'
 
 export function useProviderToggle() {
   const items: QuickPickItem[] = providers.map(provider => ({
     label: provider,
-    description: config[`provider.${provider}Model`],
-    picked: provider === config['status.activeProvider'],
+    description: settings[`provider.${provider}Model`],
+    picked: provider === settings['status.activeProvider'],
     buttons: [
       {
         iconPath: new ThemeIcon('gear'),
@@ -29,7 +29,7 @@ export function useProviderToggle() {
   qp.onDidAccept(async () => {
     const selected = qp.selectedItems[0]
     if (selected) {
-      config.$set('status.activeProvider', selected.label)
+      settings.$set('status.activeProvider', selected.label)
     }
     qp.dispose()
   })

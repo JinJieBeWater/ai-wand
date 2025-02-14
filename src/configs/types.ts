@@ -1,12 +1,5 @@
 import type { Magics } from '../types/magic'
-
-export const providerOptions = [
-  'openai',
-  'deepseek',
-  'openRouter',
-  'ollama',
-  'openaiAdaptedServer',
-] as const
+import type { providerOptions } from './constans'
 
 type ProviderOptions = typeof providerOptions[number]
 
