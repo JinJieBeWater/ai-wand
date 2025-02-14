@@ -25,7 +25,6 @@ function useConfig() {
   }
   isConfigInitialized = true
 
-  logger.info('开始初始化配置')
   // 创建配置文件夹
   if (!fs.existsSync(configFolderPath)) {
     fs.mkdirSync(configFolderPath)
@@ -36,36 +35,40 @@ function useConfig() {
     fs.writeFileSync(configFilePath, JSON.stringify(defaultConfig, null, 2))
   }
 
-  config.value = parseConfig(configFilePath)
+  const { value, error } = Try(() => fs.readFileSync(configFilePath, 'utf-8'))
 
-  // fs 监听配置文件变化
-  fs.watch(configFilePath, (eventType, filename) => {
-    if (eventType === 'change') {
-      logger.info('配置文件发生变化:', filename)
-      const newConfig = parseConfig(configFilePath)
+  if (error) {
+    logger.error('读取失败:', error)
+    window.showErrorMessage('读取失败: 请检查文件路径和权限')
+    return defaultConfig as unknown as MagicWandConfig
+  }
+
+  config.value = parseConfig(value)
+
+  // Method 1: 通过fs监听配置文件变化 需要安装三方库 原生重复触发
+  // Method 2: 通过监听vscode的保存事件 √
+
+  workspace.onDidSaveTextDocument(async (document) => {
+    const driveLetter = document.uri.fsPath.split(':')[0].toUpperCase()
+    const fsPath = driveLetter + document.uri.fsPath.slice(1)
+    if (fsPath === configFilePath) {
+      logger.info('配置变更')
+      const newConfig = parseConfig(document.getText())
       config.value = newConfig
     }
   })
-  logger.info('配置初始化完成')
 
   return config
 }
 
-/**
- * 解析配置文件
- * @param configFilePath 配置文件路径
- * @returns 解析后的配置
- */
-function parseConfig(configFilePath: string) {
-  const { value, error } = Try<MagicWandConfig>(() => JSON.parse(fs.readFileSync(configFilePath, 'utf-8')))
+function parseConfig(config: string) {
+  const { value, error } = Try<MagicWandConfig>(() => JSON.parse(config))
   if (error) {
-    logger.info('value', value)
-    window.showErrorMessage('解析配置文件失败: 请检查配置文件格式是否正确')
-    logger.error('解析配置文件失败: 请检查配置文件格式是否正确')
+    window.showErrorMessage('解析失败: 请检查配置文件格式是否正确')
     logger.error(error)
     return defaultConfig as unknown as MagicWandConfig
   }
-  logger.info('解析配置文件成功')
+  logger.info('解析成功')
   return value as MagicWandConfig
 }
 

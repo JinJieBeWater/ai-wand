@@ -9,7 +9,7 @@ export function Try<T>(fn: TryFn<T>) {
   }
   catch (error) {
     return {
-      value: undefined,
+      value: '',
       error,
     }
   }
