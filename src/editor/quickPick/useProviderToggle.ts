@@ -1,7 +1,8 @@
-import { type QuickPickItem, ThemeIcon, commands, window } from 'vscode'
-import { providers } from '../AISDK/providers'
-import { config } from '../config'
-import * as Meta from '../generated/meta'
+import { type QuickPickItem, ThemeIcon, commands } from 'vscode'
+import { providers } from '../../AISDK/providers'
+import { config } from '../../config'
+import * as Meta from '../../generated/meta'
+import { createCommonQuickPick } from './createCommonQuickPick'
 
 export function useProviderToggle() {
   const items: QuickPickItem[] = providers.map(provider => ({
@@ -15,9 +16,9 @@ export function useProviderToggle() {
       },
     ],
   }))
-  const qp = window.createQuickPick()
+  const qp = createCommonQuickPick()
 
-  qp.title = `${Meta.displayName} Provider Toggle`
+  qp.title = `${qp.title} Provider Toggle`
   qp.placeholder = 'Select Model Provider'
   qp.items = items
 
@@ -34,8 +35,6 @@ export function useProviderToggle() {
   })
 
   qp.show()
-
-  qp.onDidHide(() => qp.dispose())
 
   return qp
 }

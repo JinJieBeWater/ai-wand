@@ -71,13 +71,14 @@ Magic Wannd 专注于碎片化场景, 专注于小任务, 因此也低消耗
 
 <!-- commands -->
 
-| Command                             | Title                            |
-| ----------------------------------- | -------------------------------- |
-| `magic-wand.magics-settings`        | Magic Wand: Customize magic wand |
-| `magic-wand.showMagics`             | Magic Wand: Spark a magic        |
-| `magic-wand.toggleProvider`         | Magic Wand: Toggle Provider      |
-| `magic-wand.codelens.click`         | Codelens Click                   |
-| `magic-wand.codelens.status.cancel` | Codelens Click                   |
+| Command                             | Title                                  |
+| ----------------------------------- | -------------------------------------- |
+| `magic-wand.openVscodeSettings`     | Magic Wand: Magic Wand vscode Settings |
+| `magic-wand.openMagicWandConfig`    | Magic Wand: Magic Wand Config          |
+| `magic-wand.showMagics`             | Magic Wand: Spark a magic              |
+| `magic-wand.toggleProvider`         | Magic Wand: Toggle Provider            |
+| `magic-wand.codelens.click`         | Codelens Click                         |
+| `magic-wand.codelens.status.cancel` | Codelens Click                         |
 
 <!-- commands -->
 

@@ -1,11 +1,9 @@
 import type { QuickPickItem } from 'vscode'
-import { ThemeIcon, window } from 'vscode'
 import { logger } from '../utils/logger'
 import { type Magic, MagicMode } from '../types/magic'
-import * as Meta from '../generated/meta'
-import { openMagicsSettings } from '../commands/openSettings'
-import { useProviderToggle } from '../editor/useProviderToggle'
+import { useProviderToggle } from '../editor/quickPick/useProviderToggle'
 import { config } from '../config'
+import { createCommonQuickPick } from '../editor/quickPick'
 import { sparkMagic } from '.'
 
 const items: QuickPickItem[] = [
@@ -30,20 +28,9 @@ const submitItem: QuickPickItem = {
 }
 
 function createLiveEditQP() {
-  const qp = window.createQuickPick()
-  qp.buttons = [
-    {
-      iconPath: new ThemeIcon('gear'),
-      tooltip: 'Settings',
-    },
-  ]
-  qp.onDidTriggerButton((e) => {
-    if (e.tooltip === 'Settings') {
-      openMagicsSettings()
-      qp.hide()
-    }
-  })
-  qp.title = `${Meta.displayName} - Live Edit`
+  const qp = createCommonQuickPick()
+
+  qp.title = `${qp.title} - Live Edit`
   qp.placeholder = 'Input your prompt'
   qp.items = items
 

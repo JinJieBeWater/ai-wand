@@ -1,10 +1,10 @@
 {
-  "user-config": {
-    "active": {
+  "active": {
+    "primaryProvider": {
       "provider": "deepseek",
       "model": "deepseek-chat"
     },
-    "edit-active": {
+    "editProvider": {
       "provider": "deepseek",
       "model": "deepseek-chat"
     },

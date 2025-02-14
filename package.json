@@ -35,10 +35,16 @@
   "contributes": {
     "commands": [
       {
-        "command": "magic-wand.magics-settings",
-        "title": "Customize magic wand",
+        "command": "magic-wand.openVscodeSettings",
+        "title": "Magic Wand vscode Settings",
         "category": "Magic Wand",
         "icon": "$(gear)"
+      },
+      {
+        "command": "magic-wand.openMagicWandConfig",
+        "title": "Magic Wand Config",
+        "category": "Magic Wand",
+        "icon": "$(json)"
       },
       {
         "command": "magic-wand.showMagics",

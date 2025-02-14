@@ -17,16 +17,16 @@ interface Provider {
 }
 
 export interface MagicWandConfig {
-  'user-config': {
-    'active': {
+  active: {
+    primaryProvider: {
       provider: ProviderOptions
       model: string
     }
-    'edit-active': {
+    editProvider: {
       provider: ProviderOptions
       model: string
     }
   }
-  'providers': Provider[]
-  'magics': Magics
+  providers: Provider[]
+  magics: Magics
 }
