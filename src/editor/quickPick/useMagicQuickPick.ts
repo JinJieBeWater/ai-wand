@@ -1,12 +1,12 @@
 import type { QuickPick, QuickPickItem } from 'vscode'
 import { QuickPickItemKind, ThemeIcon, window } from 'vscode'
-import type { Magic } from '../types/magic'
-import { sparkMagic } from '../magic'
-import * as Meta from '../generated/meta'
-import { openMagicsSettings } from '../commands/openSettings'
-import { config } from '../config'
-import { liveEdit } from '../magic/liveEdit'
-import { useProviderToggle } from './useProviderToggle'
+import type { Magic } from '../../types/magic'
+import { sparkMagic } from '../../magic'
+import { liveEdit } from '../../magic/liveEdit'
+import { useConfig } from '../../configs'
+import { createCommonQuickPick } from './createCommonQuickPick'
+
+const config = useConfig()
 
 function createMagicQuickPickItemSperator(key: string) {
   return {
@@ -45,36 +45,14 @@ function createMagicQuickPick() {
     picked: true,
   })
   // 组遍历
-  Object.entries(config.magics).forEach(([key, magicGrp]) => {
+  Object.entries(config.value.magics).forEach(([key, magicGrp]) => {
     // 添加magic
     items.push(...createMagicQuickPickGrp(key, magicGrp))
   })
-  const qp = window.createQuickPick()
-  qp.buttons = [
-    {
-      iconPath: new ThemeIcon('copilot'),
-      tooltip: 'Provider Toggle',
-    },
-    {
-      iconPath: new ThemeIcon('gear'),
-      tooltip: 'Settings',
-    },
-  ]
-  qp.onDidTriggerButton((e) => {
-    switch (e.tooltip) {
-      case 'Provider Toggle':
-        useProviderToggle()
-        break
-      case 'Settings':
-        openMagicsSettings()
-        break
-    }
-  })
-  qp.title = `${Meta.displayName} SparkMagic`
+  const qp = createCommonQuickPick()
+  qp.title = `${qp.title} SparkMagic`
   qp.placeholder = 'Spark a magic or execute live edit'
   qp.items = items
-
-  qp.onDidHide(() => qp.dispose())
 
   return qp
 }
@@ -90,7 +68,7 @@ function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>) {
     default: {
       // 构造magic列表
       const magicList: Magic[] = []
-      Object.entries(config.magics).forEach(([, magicGrp]) => {
+      Object.entries(config.value.magics).forEach(([, magicGrp]) => {
         magicGrp.forEach((magic) => {
           magicList.push(magic)
         })

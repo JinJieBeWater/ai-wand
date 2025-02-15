@@ -64,9 +64,9 @@ export function findSymbolAtLine(symbols: DocumentSymbol[], line: number): Docum
 
 # Output Rules
 
-## 如果在 Markdown 及 mdx 文件中，允许使用围栏代码块包裹生成的响应
+## - 如果在 Markdown 及 mdx 文件中，允许使用围栏代码块包裹生成的响应
 
-## 如果在其他文件(js/ts/jsx/tsx等)中，直接返回生成的响应(不使用围栏代码块包裹)
+## - 如果在其他文件(js/ts/jsx/tsx等)中，直接返回生成的响应(不使用围栏代码块包裹)
 `
 }
 

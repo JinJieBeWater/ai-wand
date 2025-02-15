@@ -1,4 +1,4 @@
-import useMagicQuickPick from '../editor/useMagicQuickPick'
+import useMagicQuickPick from '../editor/quickPick/useMagicQuickPick'
 
 export function showMagics() {
   const qp = useMagicQuickPick()

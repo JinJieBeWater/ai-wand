@@ -35,10 +35,16 @@
   "contributes": {
     "commands": [
       {
-        "command": "magic-wand.magics-settings",
-        "title": "Customize magic wand",
+        "command": "magic-wand.openVscodeSettings",
+        "title": "Magic Wand vscode Settings",
         "category": "Magic Wand",
         "icon": "$(gear)"
+      },
+      {
+        "command": "magic-wand.openMagicWandConfig",
+        "title": "Magic Wand Config",
+        "category": "Magic Wand",
+        "icon": "$(json)"
       },
       {
         "command": "magic-wand.showMagics",
@@ -85,124 +91,17 @@
       "title": "Magic Wand",
       "type": "object",
       "properties": {
-        "magic-wand.magics": {
-          "type": "object",
-          "default": {
-            "Information": [
-              {
-                "label": "docs",
-                "description": "使用注释",
-                "prompt": "保留原本代码的同时对代码进行注释, 对于定义函数/变量/类等的地方要使用JsDoc, 对于其他地方使用单行注释",
-                "mode": "edit"
-              },
-              {
-                "label": "Log",
-                "description": "打印日志",
-                "prompt": "根据选中的代码打印日志",
-                "mode": "edit"
-              }
-            ],
-            "Typescript": [
-              {
-                "label": "typed",
-                "description": "为代码补全类型",
-                "prompt": "为代码补全类型",
-                "mode": "edit"
-              }
-            ],
-            "Kit": [
-              {
-                "label": "Mermaid",
-                "description": "将代码逻辑转换为Mermaid",
-                "prompt": "将代码逻辑转换为Mermaid",
-                "mode": "edit"
-              }
-            ]
-          },
-          "description": "Use the object's first-level property for group setting and the second for Magic setting."
-        },
         "magic-wand.status.enableCodeLens": {
           "type": "boolean",
           "default": true,
           "description": "Enable CodeLens"
-        },
-        "magic-wand.status.activeProvider": {
-          "type": "string",
-          "default": "openRouter",
-          "description": "Active AI provider",
-          "enum": [
-            "openRouter",
-            "ollama",
-            "deepseek",
-            "openai",
-            "proxyServer"
-          ],
-          "enumDescriptions": [
-            "A unified interface for LLMs. Find the best models & prices for your prompts.",
-            "Get up and running with large language models. "
-          ]
-        },
-        "magic-wand.provider.openRouterApiKey": {
-          "type": "string",
-          "default": "",
-          "description": "OpenRouter ApiKey"
-        },
-        "magic-wand.provider.openRouterModel": {
-          "type": "string",
-          "default": "meta-llama/llama-3.1-405b-instruct:free",
-          "description": "OpenRouter Model"
-        },
-        "magic-wand.provider.deepseekApiKey": {
-          "type": "string",
-          "default": "",
-          "description": "Deepseek ApiKey"
-        },
-        "magic-wand.provider.deepseekModel": {
-          "type": "string",
-          "default": "deepseek-chat",
-          "description": "Deepseek Model"
-        },
-        "magic-wand.provider.ollamaApiKey": {
-          "type": "string",
-          "default": "",
-          "description": "Ollama ApiKey"
-        },
-        "magic-wand.provider.ollamaModel": {
-          "type": "string",
-          "default": "",
-          "description": "Ollama Model"
-        },
-        "magic-wand.provider.openaiApiKey": {
-          "type": "string",
-          "default": "",
-          "description": "OpenAI ApiKey"
-        },
-        "magic-wand.provider.openaiModel": {
-          "type": "string",
-          "default": "",
-          "description": "OpenAI Model"
-        },
-        "magic-wand.provider.proxyServerApiKey": {
-          "type": "string",
-          "default": "",
-          "description": "ProxyServer ApiKey"
-        },
-        "magic-wand.provider.proxyServerModel": {
-          "type": "string",
-          "default": "",
-          "description": "ProxyServer Model"
-        },
-        "magic-wand.provider.proxyServerUrl": {
-          "type": "string",
-          "default": "",
-          "description": "ProxyServer Url"
         }
       }
     }
   },
   "scripts": {
     "build": "tsup src/index.ts --external vscode --env.NODE_ENV production",
-    "watch": "nr build --watch --sourcemap --env.NODE_ENV development",
+    "watch": "tsup src/index.ts --external vscode --watch --sourcemap --env.NODE_ENV development",
     "prepare": "nr update",
     "update": "vscode-ext-gen --output src/generated/meta.ts",
     "lint": "eslint .",

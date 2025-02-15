@@ -48,22 +48,9 @@ Magic Wannd 专注于碎片化场景, 专注于小任务, 因此也低消耗
 
 <!-- configs -->
 
-| Key                                     | Description                                                                               | Type      | Default                                     |
-| --------------------------------------- | ----------------------------------------------------------------------------------------- | --------- | ------------------------------------------- |
-| `magic-wand.magics`                     | Use the object's first-level property for group setting and the second for Magic setting. | `object`  | See package.json                            |
-| `magic-wand.status.enableCodeLens`      | Enable CodeLens                                                                           | `boolean` | `true`                                      |
-| `magic-wand.status.activeProvider`      | Active AI provider                                                                        | `string`  | `"openRouter"`                              |
-| `magic-wand.provider.openRouterApiKey`  | OpenRouter ApiKey                                                                         | `string`  | `""`                                        |
-| `magic-wand.provider.openRouterModel`   | OpenRouter Model                                                                          | `string`  | `"meta-llama/llama-3.1-405b-instruct:free"` |
-| `magic-wand.provider.deepseekApiKey`    | Deepseek ApiKey                                                                           | `string`  | `""`                                        |
-| `magic-wand.provider.deepseekModel`     | Deepseek Model                                                                            | `string`  | `"deepseek-chat"`                           |
-| `magic-wand.provider.ollamaApiKey`      | Ollama ApiKey                                                                             | `string`  | `""`                                        |
-| `magic-wand.provider.ollamaModel`       | Ollama Model                                                                              | `string`  | `""`                                        |
-| `magic-wand.provider.openaiApiKey`      | OpenAI ApiKey                                                                             | `string`  | `""`                                        |
-| `magic-wand.provider.openaiModel`       | OpenAI Model                                                                              | `string`  | `""`                                        |
-| `magic-wand.provider.proxyServerApiKey` | ProxyServer ApiKey                                                                        | `string`  | `""`                                        |
-| `magic-wand.provider.proxyServerModel`  | ProxyServer Model                                                                         | `string`  | `""`                                        |
-| `magic-wand.provider.proxyServerUrl`    | ProxyServer Url                                                                           | `string`  | `""`                                        |
+| Key                                | Description     | Type      | Default |
+| ---------------------------------- | --------------- | --------- | ------- |
+| `magic-wand.status.enableCodeLens` | Enable CodeLens | `boolean` | `true`  |
 
 <!-- configs -->
 
@@ -71,13 +58,14 @@ Magic Wannd 专注于碎片化场景, 专注于小任务, 因此也低消耗
 
 <!-- commands -->
 
-| Command                             | Title                            |
-| ----------------------------------- | -------------------------------- |
-| `magic-wand.magics-settings`        | Magic Wand: Customize magic wand |
-| `magic-wand.showMagics`             | Magic Wand: Spark a magic        |
-| `magic-wand.toggleProvider`         | Magic Wand: Toggle Provider      |
-| `magic-wand.codelens.click`         | Codelens Click                   |
-| `magic-wand.codelens.status.cancel` | Codelens Click                   |
+| Command                             | Title                                  |
+| ----------------------------------- | -------------------------------------- |
+| `magic-wand.openVscodeSettings`     | Magic Wand: Magic Wand vscode Settings |
+| `magic-wand.openMagicWandConfig`    | Magic Wand: Magic Wand Config          |
+| `magic-wand.showMagics`             | Magic Wand: Spark a magic              |
+| `magic-wand.toggleProvider`         | Magic Wand: Toggle Provider            |
+| `magic-wand.codelens.click`         | Codelens Click                         |
+| `magic-wand.codelens.status.cancel` | Codelens Click                         |
 
 <!-- commands -->
 

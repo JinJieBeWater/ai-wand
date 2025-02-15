@@ -1,4 +1,4 @@
-import { reactive, useDisposable, watchEffect } from 'reactive-vscode'
+import { reactive, watchEffect } from 'reactive-vscode'
 import type { Disposable, Selection, TextEditor } from 'vscode'
 import { Range, TextDocumentChangeReason, window, workspace } from 'vscode'
 import type { Magic } from '../types/magic'
@@ -61,16 +61,16 @@ const sparkMagic: SparkMagic = async (magic: Magic, options) => {
 
   const disposables: Disposable[] = []
 
-  disposables.push(useDisposable(workspace.onDidSaveTextDocument((e) => {
+  disposables.push(workspace.onDidSaveTextDocument((e) => {
     if (e.uri.toString() === textEditor.document.uri.toString()) {
       setInstances(false)
       disposables.forEach(d => d.dispose())
     }
-  })))
+  }))
 
   let preLineCount = textEditor.document.lineCount
 
-  disposables.push(useDisposable(workspace.onDidChangeTextDocument((e) => {
+  disposables.push(workspace.onDidChangeTextDocument((e) => {
     if (e.document.uri.toString() === textEditor.document.uri.toString()) {
       const lineCount = e.document.lineCount
       const offset = lineCount - preLineCount
@@ -139,7 +139,7 @@ const sparkMagic: SparkMagic = async (magic: Magic, options) => {
         setInstances(false)
       }
     }
-  })),
+  }),
   )
 
   watchEffect(() => {
