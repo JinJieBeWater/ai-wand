@@ -1,4 +1,5 @@
-import { type QuickPickItem, window } from 'vscode'
+import type { QuickPickItem } from 'vscode'
+import { ThemeIcon, window } from 'vscode'
 import type { Ref } from 'reactive-vscode'
 import { computed } from 'reactive-vscode'
 import { type Magic, MagicMode } from '../types/magic'
@@ -15,12 +16,22 @@ enum QuickPickItemLabel {
   editProvider = 'Edit Provider',
 }
 
+enum QuickPickItemTooltip {
+  toggleEditProvider = 'Toggle Edit Provider',
+}
+
 const items: Ref<QuickPickItem[]> = computed(() => {
   return [
     {
       label: QuickPickItemLabel.submit,
       detail: `$(zap) ${config.value.active.editProvider.model}`,
       alwaysShow: true,
+      buttons: [
+        {
+          iconPath: new ThemeIcon('gear'),
+          tooltip: QuickPickItemTooltip.toggleEditProvider,
+        },
+      ],
     },
     {
       label: QuickPickItemLabel.context,
@@ -44,6 +55,14 @@ function createLiveEditQP() {
   qp.title = `${qp.title} - Live Edit`
   qp.placeholder = 'Input your prompt'
   qp.items = items.value
+
+  qp.onDidTriggerItemButton((item) => {
+    switch (item.button.tooltip) {
+      case QuickPickItemTooltip.toggleEditProvider:
+        useProviderToggle(ProviderToggleMode.editProvider)
+        break
+    }
+  })
 
   qp.onDidHide(() => qp.dispose())
 

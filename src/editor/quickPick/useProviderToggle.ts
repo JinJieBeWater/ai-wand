@@ -40,7 +40,7 @@ export function useProviderToggle(mode = ProviderToggleMode.primaryProvider) {
   })
   const qp = createCommonQuickPick()
 
-  qp.title = `${qp.title} Provider Toggle`
+  qp.title = `${mode === ProviderToggleMode.primaryProvider ? 'Toggle Primary Provider' : 'Toggle Edit Provider'}`
   qp.placeholder = 'Select Model Provider'
   qp.items = items
 
