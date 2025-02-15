@@ -10,18 +10,17 @@ export interface MessageButler {
 
 export function createMessageButler(context: Context) {
   const messages: CoreMessage[] = []
-  const { language } = context
 
   messages.push({
     role: 'system',
-    content: SystemPrompt(),
+    content: SystemPrompt(context),
   })
 
   const msgButler: MessageButler = {
     addUser(code: string, prompt: string) {
       messages.push({
         role: 'user',
-        content: UserPrompt(code, prompt, language),
+        content: UserPrompt(context, code, prompt),
       })
       return msgButler
     },
