@@ -13,6 +13,7 @@ import { logger } from '../utils/logger'
 export interface Context {
   magic: Magic
   textEditor: TextEditor
+  /** 选中的原始文本 */
   originalText: string
   language?: string
   msgButler?: ReturnType<typeof createMessageButler>

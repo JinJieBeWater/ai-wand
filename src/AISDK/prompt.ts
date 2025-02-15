@@ -1,7 +1,9 @@
-export function SystemPrompt() {
-  return `You are Magic Wand, a highly skilled software engineer with extensive knowledge in many programming languages, frameworks, design patterns, and best practices.
+import type { Context } from '../magic'
 
-# Input elements
+export function SystemPrompt(_context: Context) {
+  const prompt = `You are Magic Wand, a highly skilled software engineer with extensive knowledge in many programming languages, frameworks, design patterns, and best practices.
+
+# User Input elements
 
 ## <instructions>
 Instructions provided by the user. You must modify the code in <code> according to the requirements of the instructions and return the modified code.
@@ -14,6 +16,18 @@ The code to be modified. You must make modifications based on this content.
 #### Example
 \`<code language="ts">...</code>\` represents that the code language is TypeScript.
 
+## <outputRules>
+The assistant output rules that must be followed
+
+### Attributes
+- fencedCodeBlocks: Whether to allow fenced code blocks in the output, default is false
+#### Example
+\`<outputRules fencedCodeBlocks="false" />\` represents that the output must not use fenced code blocks and must be returned directly without wrapping elements.
+
+- importStatement: Whether to allow import statements in the output, default is false
+#### Example
+\`<outputRules importStatement="false" />\` represents that the output must not use import statements.
+
 # Your Responsibilities
 
 ## Modify the code provided by the user directly according to the user's <instructions>.
@@ -23,6 +37,7 @@ The code to be modified. You must make modifications based on this content.
 保留原本代码的同时对代码进行注释, 对于定义函数/变量/类等的地方要使用JsDoc, 对于其他地方使用单行注释
 </instructions>
 <code language="typescript">
+<outputRules fencedCodeBlocks="false" importStatement="false" />
 export function findSymbolAtLine(symbols: DocumentSymbol[], line: number): DocumentSymbol | undefined {
   for (const symbol of symbols) {
     if (symbol.range.start.line <= line && symbol.range.end.line >= line) {
@@ -64,13 +79,27 @@ export function findSymbolAtLine(symbols: DocumentSymbol[], line: number): Docum
 
 # Output Rules
 
-## - 如果在 Markdown 及 mdx 文件中，允许使用围栏代码块包裹生成的响应
+## Fenced code blocks
 
-## - 如果在其他文件(js/ts/jsx/tsx等)中，直接返回生成的响应(不使用围栏代码块包裹)
+- If in Markdown and mdx files, it is allowed to use fenced code blocks to wrap the generated responses.
+
+- If in other files (such as js/ts/jsx/tsx, etc.), directly return the generated responses (without using fenced code blocks to wrap them).
+
+## Import statement, similar to "import" or "require"
+
+
 `
+  return prompt
 }
 
-export function UserPrompt(code: string, prompt: string, language?: string) {
+export function UserPrompt(context: Context, code: string, prompt: string) {
+  const { language, textEditor, originalText } = context
+  let importStatement = false
+  let fencedCodeBlocks = false
+  if (textEditor.document.getText() === originalText)
+    importStatement = true
+  if (language === 'md' || language === 'mdx' || language === 'markdown')
+    fencedCodeBlocks = true
   return `
 <instructions>
 ${prompt}
@@ -78,5 +107,6 @@ ${prompt}
 <code language="${language || 'text'}">
 ${code}
 </code>
+<outputRules fencedCodeBlocks="${fencedCodeBlocks}" importStatement="${importStatement}" />
   `
 }

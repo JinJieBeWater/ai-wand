@@ -1,7 +1,7 @@
 import type { QuickPickItem } from 'vscode'
+import { ThemeIcon, window } from 'vscode'
 import type { Ref } from 'reactive-vscode'
 import { computed } from 'reactive-vscode'
-import { logger } from '../utils/logger'
 import { type Magic, MagicMode } from '../types/magic'
 import { ProviderToggleMode, useProviderToggle } from '../editor/quickPick/useProviderToggle'
 import { createCommonQuickPick } from '../editor/quickPick'
@@ -16,12 +16,22 @@ enum QuickPickItemLabel {
   editProvider = 'Edit Provider',
 }
 
+enum QuickPickItemTooltip {
+  toggleEditProvider = 'Toggle Edit Provider',
+}
+
 const items: Ref<QuickPickItem[]> = computed(() => {
   return [
     {
       label: QuickPickItemLabel.submit,
-      detail: '$(zap) ' + 'Enter',
+      detail: `$(zap) ${config.value.active.editProvider.model}`,
       alwaysShow: true,
+      buttons: [
+        {
+          iconPath: new ThemeIcon('gear'),
+          tooltip: QuickPickItemTooltip.toggleEditProvider,
+        },
+      ],
     },
     {
       label: QuickPickItemLabel.context,
@@ -46,6 +56,14 @@ function createLiveEditQP() {
   qp.placeholder = 'Input your prompt'
   qp.items = items.value
 
+  qp.onDidTriggerItemButton((item) => {
+    switch (item.button.tooltip) {
+      case QuickPickItemTooltip.toggleEditProvider:
+        useProviderToggle(ProviderToggleMode.editProvider)
+        break
+    }
+  })
+
   qp.onDidHide(() => qp.dispose())
 
   return qp
@@ -67,7 +85,7 @@ export function liveEdit(value?: string) {
         sparkMagic(magic)
         break
       case QuickPickItemLabel.context:
-        logger.info('Live Edit Context')
+        window.showInformationMessage('develop...')
         break
       case QuickPickItemLabel.editProvider:
         useProviderToggle(ProviderToggleMode.editProvider)
