@@ -19,6 +19,11 @@ enum QuickPickItemLabel {
 const items: Ref<QuickPickItem[]> = computed(() => {
   return [
     {
+      label: QuickPickItemLabel.submit,
+      detail: '$(zap) ' + 'Enter',
+      alwaysShow: true,
+    },
+    {
       label: QuickPickItemLabel.context,
       description: 'The context sent to the model',
       detail: '$(gear) ' + 'Selection',
@@ -30,14 +35,9 @@ const items: Ref<QuickPickItem[]> = computed(() => {
       detail: '$(gear) ' + `${config.value.active.editProvider.provider} ${config.value.active.editProvider.model}`,
       alwaysShow: true,
     },
+
   ]
 })
-
-const submitItem: QuickPickItem = {
-  label: QuickPickItemLabel.submit,
-  detail: '$(zap) ' + 'Enter',
-  alwaysShow: true,
-}
 
 function createLiveEditQP() {
   const qp = createCommonQuickPick()
@@ -58,18 +58,11 @@ export function liveEdit(value?: string) {
   }
   const qp = createLiveEditQP()
   qp.value = value ?? magic.prompt
-  qp.onDidChangeValue((e) => {
-    if (e) {
-      qp.items = [submitItem, ...items.value]
-      qp.activeItems = [submitItem]
-    }
-    else {
-      qp.items = items.value
-    }
-  })
   qp.onDidAccept(() => {
     switch (qp.activeItems[0].label) {
       case QuickPickItemLabel.submit:
+        if (!qp.value)
+          return
         magic.prompt = qp.value
         sparkMagic(magic)
         break
