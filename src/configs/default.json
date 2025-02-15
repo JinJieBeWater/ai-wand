@@ -22,7 +22,8 @@
     "openRouter": {
       "apiKey": "",
       "modelList": [
-        "meta-llama/llama-3.1-405b-instruct:free"
+        "meta-llama/llama-3.3-70b-instruct:free",
+        "google/gemini-2.0-flash-lite-preview-02-05:free"
       ]
     },
     "deepseek": {
