@@ -79,14 +79,13 @@ export function findSymbolAtLine(symbols: DocumentSymbol[], line: number): Docum
 
 # Output Rules
 
-## Fenced code blocks
+## Fenced code blocks / Other wrapping
 
-- If in Markdown and mdx files, it is allowed to use fenced code blocks to wrap the generated responses.
-
-- If in other files (such as js/ts/jsx/tsx, etc.), directly return the generated responses (without using fenced code blocks to wrap them).
+- Even if you are allowed to use Fenced code blocks or Other wrapping, you must also use it when necessary.
 
 ## Import statement, similar to "import" or "require"
 
+- When the importStatement is allowed, it must also be used when it is determined that it must be used.
 
 `
   return prompt
