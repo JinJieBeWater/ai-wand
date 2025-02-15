@@ -1,4 +1,6 @@
+import { workspace } from 'vscode'
 import type { Context } from '../magic'
+import { logger } from '../utils/logger'
 
 export function SystemPrompt(_context: Context) {
   const prompt = `You are Magic Wand, a highly skilled software engineer with extensive knowledge in many programming languages, frameworks, design patterns, and best practices.
@@ -15,6 +17,9 @@ The code to be modified. You must make modifications based on this content.
 - language: The programming language, such as ts, jsx, css, etc.
 #### Example
 \`<code language="ts">...</code>\` represents that the code language is TypeScript.
+
+## <codeContext>
+The relevant context of the provided code, which is used to refer to changes in <code>
 
 ## <outputRules>
 The assistant output rules that must be followed
@@ -42,25 +47,51 @@ The assistant output rules that must be followed
 
 - When the importStatement is allowed, it must also be used when it is determined that it must be used.
 
+## The output content should conform to the indentation of the original code.
 `
   return prompt
 }
 
 export function UserPrompt(context: Context, code: string, prompt: string) {
-  const { language, textEditor, originalText } = context
-  let importStatement = false
-  let fencedCodeBlocks = false
-  if (textEditor.document.getText() === originalText)
-    importStatement = true
-  if (language === 'md' || language === 'mdx' || language === 'markdown')
-    fencedCodeBlocks = true
-  return `
+  const { language, textEditor, originalText, magic } = context
+
+  let msg = `
 <instructions>
 ${prompt}
 </instructions>
 <code language="${language || 'text'}">
 ${code}
-</code>
-<outputRules fencedCodeBlocks="${fencedCodeBlocks}" importStatement="${importStatement}" />
-  `
+</code>`
+
+  if (magic.context) {
+    const { currentFile, openTabs } = magic.context
+    let codeContext = ''
+    // currentFile 默认开启
+    if (currentFile === undefined || currentFile) {
+      logger.info('currentFile', textEditor.document.fileName)
+      codeContext += `${textEditor.document.fileName}\n`
+      codeContext += `${textEditor.document.getText()}\n`
+    }
+
+    if (openTabs) {
+      workspace.textDocuments.forEach((doc) => {
+        if (doc.fileName === textEditor.document.fileName)
+          return
+        codeContext += `\n${doc.fileName}\n`
+        codeContext += `${doc.getText()}\n`
+      })
+    }
+
+    msg += `
+    <codeContext>${codeContext}</codeContext>`
+  }
+
+  const isImportStatement = textEditor.document.getText() === originalText
+  const isFencedCodeBlocks = language !== undefined && ['md', 'mdx', 'markdown'].includes(language)
+
+  if (isFencedCodeBlocks || isImportStatement) {
+    msg += `
+    <outputRules fencedCodeBlocks="${isFencedCodeBlocks}" importStatement="${isImportStatement}" />`
+  }
+  return msg
 }
