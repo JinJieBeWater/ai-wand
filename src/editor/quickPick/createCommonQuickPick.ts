@@ -5,7 +5,7 @@ import { useProviderToggle } from './useProviderToggle'
 
 enum ButtonTooltip {
   ProviderToggle = 'Provider Toggle',
-  MagicWandConfig = 'Magics Config',
+  MagicWandConfig = 'Magic Wand Config',
   VSCodeSettings = 'vscode Settings',
 }
 

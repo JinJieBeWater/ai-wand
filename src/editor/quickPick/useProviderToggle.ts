@@ -1,8 +1,6 @@
-import { type QuickPickItem, QuickPickItemKind, ThemeIcon, commands } from 'vscode'
-import * as Meta from '../../generated/meta'
+import { type QuickPickItem, QuickPickItemKind } from 'vscode'
 import type { ProviderOptions } from '../../configs'
 import { providerOptions, useConfig } from '../../configs'
-import { logger } from '../../utils/logger'
 import { createCommonQuickPick } from './createCommonQuickPick'
 
 const config = useConfig()
@@ -31,12 +29,12 @@ export function useProviderToggle(mode = ProviderToggleMode.primaryProvider) {
         label: model,
         description: provider,
         picked: provider === config.value.active.primaryProvider.provider,
-        buttons: [
-          {
-            iconPath: new ThemeIcon('gear'),
-            tooltip: provider,
-          },
-        ],
+        // buttons: [
+        //   {
+        //     iconPath: new ThemeIcon('gear'),
+        //     tooltip: provider,
+        //   },
+        // ],
       })
     })
   })
@@ -46,9 +44,9 @@ export function useProviderToggle(mode = ProviderToggleMode.primaryProvider) {
   qp.placeholder = 'Select Model Provider'
   qp.items = items
 
-  qp.onDidTriggerItemButton((e) => {
-    commands.executeCommand('workbench.action.openSettings', `${Meta.name}.provider.${e.item.label}.`)
-  })
+  // qp.onDidTriggerItemButton((e) => {
+  //   commands.executeCommand('workbench.action.openSettings', `${Meta.name}.provider.${e.item.label}.`)
+  // })
 
   qp.onDidAccept(async () => {
     const selected = qp.selectedItems[0]

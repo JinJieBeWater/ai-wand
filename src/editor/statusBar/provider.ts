@@ -2,7 +2,6 @@ import { useStatusBarItem, watchEffect } from 'reactive-vscode'
 import { StatusBarAlignment } from 'vscode'
 import * as Meta from '../../generated/meta'
 import { useConfig } from '../../configs'
-import { logger } from '../../utils/logger'
 
 const config = useConfig()
 
