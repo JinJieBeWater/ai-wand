@@ -56,7 +56,7 @@
       {
         "label": "Implement",
         "description": "根据注释实现功能",
-        "prompt": "根据代码中提供的注释实现功能",
+        "prompt": "根据代码中提供的注释要求, 修改代码实现功能",
         "mode": "edit"
       },
       {

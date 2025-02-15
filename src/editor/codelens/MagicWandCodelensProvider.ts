@@ -4,7 +4,7 @@ import { CodeLens, EventEmitter, Position, commands, languages, workspace } from
 import { useCommand } from 'reactive-vscode'
 import { getRegex } from '../../regex'
 import * as Meta from '../../generated/meta'
-import { selectAiLine } from '../selectAiLine'
+import { selectAtLine } from '../selectAiLine'
 import { logger } from '../../utils/logger'
 import { settings } from '../../configs/settings'
 
@@ -34,7 +34,7 @@ export class MagicWandCodelensProvider implements CodeLensProvider {
   private init(): void {
     this._disposables.push(languages.registerCodeLensProvider({ scheme: 'file' }, this))
     useCommand(Meta.commands.codelensClick, (lens: CodeLens) => {
-      selectAiLine(lens.range.start.line)
+      selectAtLine(lens.range.start.line)
       commands.executeCommand(Meta.commands.showMagics)
       this.fire()
     })

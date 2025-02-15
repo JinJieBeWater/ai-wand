@@ -2,7 +2,7 @@ import { Selection, window } from 'vscode'
 import { findSymbolAtLine } from './findSymbolAtLine'
 import { getSymbols } from './getSymbols'
 
-export async function selectAiLine(line: number) {
+export async function selectAtLine(line: number) {
   const textEditor = window.activeTextEditor
   if (!textEditor)
     return
