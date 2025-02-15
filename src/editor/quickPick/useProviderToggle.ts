@@ -1,21 +1,45 @@
-import { type QuickPickItem, ThemeIcon, commands } from 'vscode'
-import { providers } from '../../AISDK/providers'
-import { settings } from '../../configs/settings'
+import { type QuickPickItem, QuickPickItemKind, ThemeIcon, commands } from 'vscode'
 import * as Meta from '../../generated/meta'
+import type { ProviderOptions } from '../../configs'
+import { providerOptions, useConfig } from '../../configs'
+import { logger } from '../../utils/logger'
 import { createCommonQuickPick } from './createCommonQuickPick'
 
-export function useProviderToggle() {
-  const items: QuickPickItem[] = providers.map(provider => ({
-    label: provider,
-    description: settings[`provider.${provider}Model`],
-    picked: provider === settings['status.activeProvider'],
-    buttons: [
-      {
-        iconPath: new ThemeIcon('gear'),
-        tooltip: provider,
-      },
-    ],
-  }))
+const config = useConfig()
+
+export enum ProviderToggleMode {
+  primaryProvider,
+  editProvider,
+}
+
+export function useProviderToggle(mode = ProviderToggleMode.primaryProvider) {
+  const items: QuickPickItem[] = []
+
+  providerOptions.forEach((provider) => {
+    const currentProvider = config.value.providers[provider]
+    if (currentProvider.modelList.length === 0) {
+      return
+    }
+
+    items.push({
+      label: provider,
+      kind: QuickPickItemKind.Separator,
+    })
+
+    currentProvider.modelList.forEach((model) => {
+      items.push({
+        label: model,
+        description: provider,
+        picked: provider === config.value.active.primaryProvider.provider,
+        buttons: [
+          {
+            iconPath: new ThemeIcon('gear'),
+            tooltip: provider,
+          },
+        ],
+      })
+    })
+  })
   const qp = createCommonQuickPick()
 
   qp.title = `${qp.title} Provider Toggle`
@@ -28,8 +52,18 @@ export function useProviderToggle() {
 
   qp.onDidAccept(async () => {
     const selected = qp.selectedItems[0]
+    const { label: model, description: provider } = selected
     if (selected) {
-      settings.$set('status.activeProvider', selected.label)
+      switch (mode) {
+        case ProviderToggleMode.primaryProvider:
+          config.value.active.primaryProvider.provider = provider as ProviderOptions
+          config.value.active.primaryProvider.model = model
+          break
+        case ProviderToggleMode.editProvider:
+          config.value.active.editProvider.provider = provider as ProviderOptions
+          config.value.active.editProvider.model = model
+          break
+      }
     }
     qp.dispose()
   })

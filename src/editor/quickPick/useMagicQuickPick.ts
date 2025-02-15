@@ -2,9 +2,11 @@ import type { QuickPick, QuickPickItem } from 'vscode'
 import { QuickPickItemKind, ThemeIcon, window } from 'vscode'
 import type { Magic } from '../../types/magic'
 import { sparkMagic } from '../../magic'
-import { settings } from '../../configs/settings'
 import { liveEdit } from '../../magic/liveEdit'
+import { useConfig } from '../../configs'
 import { createCommonQuickPick } from './createCommonQuickPick'
+
+const config = useConfig()
 
 function createMagicQuickPickItemSperator(key: string) {
   return {
@@ -43,7 +45,7 @@ function createMagicQuickPick() {
     picked: true,
   })
   // 组遍历
-  Object.entries(settings.magics).forEach(([key, magicGrp]) => {
+  Object.entries(config.value.magics).forEach(([key, magicGrp]) => {
     // 添加magic
     items.push(...createMagicQuickPickGrp(key, magicGrp))
   })
@@ -66,7 +68,7 @@ function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>) {
     default: {
       // 构造magic列表
       const magicList: Magic[] = []
-      Object.entries(settings.magics).forEach(([, magicGrp]) => {
+      Object.entries(config.value.magics).forEach(([, magicGrp]) => {
         magicGrp.forEach((magic) => {
           magicList.push(magic)
         })

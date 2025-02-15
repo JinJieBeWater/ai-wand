@@ -7,34 +7,34 @@
     "editProvider": {
       "provider": "deepseek",
       "model": "deepseek-chat"
+    }
+  },
+  "providers": {
+    "openai": {
+      "apiKey": "",
+      "modelList": []
     },
-    "providers": [
-      {
-        "name": "openRouter",
-        "apiKey": "",
-        "model": "meta-llama/llama-3.1-405b-instruct:free"
-      },
-      {
-        "name": "deepseek",
-        "apiKey": "",
-        "model": "deepseek-chat"
-      },
-      {
-        "name": "openai",
-        "apiKey": "",
-        "model": ""
-      },
-      {
-        "name": "ollama",
-        "apiKey": "",
-        "model": ""
-      },
-      {
-        "name": "openaiAdaptedServer",
-        "apiKey": "",
-        "baseUrl": ""
-      }
-    ]
+    "openaiAdaptedServer": {
+      "apiKey": "",
+      "modelList": [],
+      "baseURL": ""
+    },
+    "openRouter": {
+      "apiKey": "",
+      "modelList": [
+        "meta-llama/llama-3.1-405b-instruct:free"
+      ]
+    },
+    "deepseek": {
+      "apiKey": "",
+      "modelList": [
+        "deepseek-chat"
+      ]
+    },
+    "ollama": {
+      "apiKey": "",
+      "modelList": []
+    }
   },
   "magics": {
     "Information": [

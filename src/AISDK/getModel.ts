@@ -3,36 +3,42 @@ import { createOpenAI } from '@ai-sdk/openai'
 import type { LanguageModelV1 } from 'ai'
 import { window } from 'vscode'
 import { createDeepSeek } from '@ai-sdk/deepseek'
-import { settings } from '../configs/settings'
+import { ProviderOptions, useConfig } from '../configs'
 
 export function getModel(): LanguageModelV1 {
-  switch (settings['status.activeProvider']) {
-    case 'openai': {
+  const config = useConfig()
+
+  const activeProvider = config.value.active.primaryProvider
+  const { model, provider } = activeProvider
+  const currentProviderConfig = config.value.providers[activeProvider.provider]
+  const { apiKey, baseURL } = currentProviderConfig
+  switch (provider) {
+    case ProviderOptions.openai: {
       const openai = createOpenAI({
-        apiKey: settings['provider.openaiApiKey'],
+        apiKey,
       })
-      return openai.chat(settings['provider.openaiModel'])
+      return openai.chat(model)
     }
-    case 'openaiAdaptedServer': {
+    case ProviderOptions.openaiAdaptedServer: {
       const openaiAdaptedServer = createOpenRouter({
-        apiKey: settings['provider.openaiAdaptedServerApiKey'],
-        baseURL: settings['provider.openaiAdaptedServerUrl'],
+        apiKey,
+        baseURL,
       })
-      return openaiAdaptedServer.chat(settings['provider.openaiAdaptedServerModel'])
+      return openaiAdaptedServer.chat(model)
     }
-    case 'openRouter': {
+    case ProviderOptions.openRouter: {
       const openrouter = createOpenRouter({
-        apiKey: settings['provider.openRouterApiKey'],
+        apiKey,
       })
-      return openrouter.chat(settings['provider.openRouterModel'])
+      return openrouter.chat(model)
     }
-    case 'deepseek': {
+    case ProviderOptions.deepseek: {
       const deepseek = createDeepSeek({
-        apiKey: settings['provider.deepseekApiKey'],
+        apiKey,
       })
-      return deepseek.chat(settings['provider.deepseekModel'])
+      return deepseek.chat(model)
     }
-    case 'ollama':
+    case ProviderOptions.ollama:
       window.showInformationMessage('ollama is adapting')
       throw new Error('ollama is adapting')
     default:

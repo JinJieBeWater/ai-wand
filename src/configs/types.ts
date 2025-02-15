@@ -1,12 +1,10 @@
 import type { Magics } from '../types/magic'
-import type { providerOptions } from './constans'
-
-type ProviderOptions = typeof providerOptions[number]
+import type { ProviderOptions } from './constans'
 
 interface Provider {
-  name: ProviderOptions
   apiKey: string
-  model: string
+  modelList: string[]
+  baseURL?: string
 }
 
 export interface MagicWandConfig {
@@ -20,6 +18,8 @@ export interface MagicWandConfig {
       model: string
     }
   }
-  providers: Provider[]
+  providers: {
+    [key in ProviderOptions]: Provider
+  }
   magics: Magics
 }
