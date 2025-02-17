@@ -4,7 +4,9 @@ import type { Ref } from 'reactive-vscode'
 import { computed } from 'reactive-vscode'
 import { type Magic, MagicMode } from '../types/magic'
 import { ProviderToggleMode, useProviderToggle } from '../editor/quickPick/useProviderToggle'
-import { createCommonQuickPick } from '../editor/quickPick'
+import type { CreateQuickPickOptions } from '../editor/quickPick'
+import { QuickPickId, createCommonQuickPick } from '../editor/quickPick'
+
 import { useConfig } from '../configs'
 import { sparkMagic } from '.'
 
@@ -49,8 +51,11 @@ const items: Ref<QuickPickItem[]> = computed(() => {
   ]
 })
 
-function createLiveEditQP() {
-  const qp = createCommonQuickPick()
+function createLiveEditQP(options?: CreateQuickPickOptions) {
+  const { qp, stack } = createCommonQuickPick({
+    id: QuickPickId.liveEdit,
+    ...options,
+  })
 
   qp.title = `${qp.title} - Live Edit`
   qp.placeholder = 'Input your prompt'
@@ -66,15 +71,15 @@ function createLiveEditQP() {
 
   qp.onDidHide(() => qp.dispose())
 
-  return qp
+  return { qp, stack }
 }
 
-export function liveEdit(value?: string) {
+export function liveEdit(value?: string, options?: CreateQuickPickOptions) {
   const magic: Magic = {
     prompt: '',
     mode: MagicMode.edit,
   }
-  const qp = createLiveEditQP()
+  const { qp } = createLiveEditQP(options)
   qp.value = value ?? magic.prompt
   qp.onDidAccept(() => {
     switch (qp.activeItems[0].label) {
