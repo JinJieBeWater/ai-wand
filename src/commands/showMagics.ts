@@ -17,6 +17,5 @@ export function showMagics() {
   }
 
   const qp = useMagicQuickPick()
-  qp.show()
   return qp
 }

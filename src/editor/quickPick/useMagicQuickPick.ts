@@ -4,7 +4,8 @@ import type { Magic } from '../../types/magic'
 import { sparkMagic } from '../../magic'
 import { liveEdit } from '../../magic/liveEdit'
 import { useConfig } from '../../configs'
-import { createCommonQuickPick } from './createCommonQuickPick'
+import type { CreateQuickPickOptions } from './createCommonQuickPick'
+import { QuickPickId, createCommonQuickPick } from './createCommonQuickPick'
 
 const config = useConfig()
 
@@ -34,7 +35,7 @@ function createMagicQuickPickGrp(key: string, magicGrp: Magic[]): QuickPickItem[
   return items
 }
 
-function createMagicQuickPick() {
+function createMagicQuickPick(options?: CreateQuickPickOptions) {
   const items: QuickPickItem[] = []
   // 添加临场magic
   items.push({
@@ -49,21 +50,26 @@ function createMagicQuickPick() {
     // 添加magic
     items.push(...createMagicQuickPickGrp(key, magicGrp))
   })
-  const qp = createCommonQuickPick()
+  const { qp, stack } = createCommonQuickPick({
+    id: QuickPickId.useMagicQuickPick,
+    ...options,
+  })
   qp.title = `${qp.title} SparkMagic`
   qp.placeholder = 'Spark a magic or execute live edit'
   qp.items = items
 
-  return qp
+  return { qp, stack }
 }
 
-function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>) {
+function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>, options?: CreateQuickPickOptions) {
   // 获取选中的item
   const item = qp.selectedItems[0]
 
   switch (item.label) {
     case 'Edit':
-      liveEdit(qp.value)
+      liveEdit(qp.value, {
+        stack: options?.stack,
+      })
       break
     default: {
       // 构造magic列表
@@ -85,11 +91,13 @@ function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>) {
   qp.hide()
 }
 
-function useMagicQuickPick() {
-  const qp = createMagicQuickPick()
+function useMagicQuickPick(options?: CreateQuickPickOptions) {
+  const { qp, stack } = createMagicQuickPick(options)
 
-  qp.onDidAccept(() => onMagicQuickPickAccept(qp))
-
+  qp.onDidAccept(() => onMagicQuickPickAccept(qp, {
+    stack,
+  }))
+  qp.show()
   return qp
 }
 
