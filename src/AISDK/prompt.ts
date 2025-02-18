@@ -8,6 +8,7 @@ export function SystemPrompt(_context: Context) {
 # 你的职责
 
 - 你将根据用户的提供的代码上下文和要求，对用户提供的代码段进行修改。
+- 你生成的内容将被我直接插入到代码编辑器中，编辑器中已有相关的代码上下文，你生成的响应只会覆盖用户提供的代码段。
 
 # 输出规范
 
@@ -46,7 +47,7 @@ export function UserPrompt(context: Context, code: string, prompt: string) {
 
   if (codeContext.length > 0) {
     msg += `
-代码的上下文如下（这些代码不应该被修改，不应该被返回）:
+代码的上下文如下:
 ${codeContext}
 `
   }
