@@ -1,13 +1,13 @@
 import type { QuickPickItem } from 'vscode'
-import { ThemeIcon, window } from 'vscode'
 import type { Ref } from 'reactive-vscode'
 import { computed } from 'reactive-vscode'
-import { type Magic, MagicMode } from '../types/magic'
+import { type Magic, MagicContextMode, MagicMode } from '../types/magic'
 import { ProviderToggleMode, useProviderToggle } from '../editor/quickPick/useProviderToggle'
 import type { CreateQuickPickOptions } from '../editor/quickPick'
 import { QuickPickId, createCommonQuickPick } from '../editor/quickPick'
 
 import { useConfig } from '../configs'
+import { useEditContextQuickPick } from '../editor/quickPick/useEditContextQuickPick'
 import { sparkMagic } from '.'
 
 const config = useConfig()
@@ -18,9 +18,9 @@ enum QuickPickItemLabel {
   editProvider = 'Edit Provider',
 }
 
-enum QuickPickItemTooltip {
-  toggleEditProvider = 'Toggle Edit Provider',
-}
+// enum QuickPickItemTooltip {
+//   toggleEditProvider = 'Toggle Edit Provider',
+// }
 
 const items: Ref<QuickPickItem[]> = computed(() => {
   return [
@@ -28,17 +28,11 @@ const items: Ref<QuickPickItem[]> = computed(() => {
       label: QuickPickItemLabel.submit,
       detail: `$(zap) ${config.value.active.editProvider.model}`,
       alwaysShow: true,
-      buttons: [
-        {
-          iconPath: new ThemeIcon('gear'),
-          tooltip: QuickPickItemTooltip.toggleEditProvider,
-        },
-      ],
     },
     {
       label: QuickPickItemLabel.context,
       description: 'The context sent to the model',
-      detail: '$(gear) ' + 'Selection',
+      detail: `$(gear) ${MagicContextMode.currentFile}`,
       alwaysShow: true,
     },
     {
@@ -51,7 +45,10 @@ const items: Ref<QuickPickItem[]> = computed(() => {
   ]
 })
 
-function createLiveEditQP(options?: CreateQuickPickOptions) {
+function createLiveEditQP(options: CreateQuickPickOptions & {
+  magic: Magic
+}) {
+  const { magic } = options ?? {}
   const { qp, stack } = createCommonQuickPick({
     id: QuickPickId.liveEdit,
     ...options,
@@ -59,15 +56,23 @@ function createLiveEditQP(options?: CreateQuickPickOptions) {
 
   qp.title = `${qp.title} - Live Edit`
   qp.placeholder = 'Input your prompt'
-  qp.items = items.value
-
-  qp.onDidTriggerItemButton((item) => {
-    switch (item.button.tooltip) {
-      case QuickPickItemTooltip.toggleEditProvider:
-        useProviderToggle(ProviderToggleMode.editProvider)
-        break
+  const currentItems = items.value
+  let contextDetail = '$(gear)'
+  Object.keys(magic.context!).forEach((key) => {
+    if (magic.context![key as MagicContextMode]) {
+      contextDetail += ` ${key}`
     }
   })
+  currentItems[1].detail = contextDetail
+  qp.items = currentItems
+
+  // qp.onDidTriggerItemButton((item) => {
+  //   switch (item.button.tooltip) {
+  //     case QuickPickItemTooltip.toggleEditProvider:
+  //       useProviderToggle(ProviderToggleMode.editProvider)
+  //       break
+  //   }
+  // })
 
   qp.onDidHide(() => qp.dispose())
 
@@ -75,11 +80,27 @@ function createLiveEditQP(options?: CreateQuickPickOptions) {
 }
 
 export function liveEdit(value?: string, options?: CreateQuickPickOptions) {
+  const preValue = options?.preValue
   const magic: Magic = {
     prompt: '',
     mode: MagicMode.edit,
+    context: {
+      currentFile: true,
+      openTabs: false,
+    },
   }
-  const { qp } = createLiveEditQP(options)
+  if (preValue) {
+    const contextLabel = preValue.map(item => item.label) as MagicContextMode[]
+    contextLabel.forEach((label) => {
+      if (label in magic.context!) {
+        magic.context![label] = true
+      }
+    })
+  }
+  const { qp, stack } = createLiveEditQP({
+    magic,
+    ...options,
+  })
   qp.value = value ?? magic.prompt
   qp.onDidAccept(() => {
     switch (qp.activeItems[0].label) {
@@ -90,10 +111,14 @@ export function liveEdit(value?: string, options?: CreateQuickPickOptions) {
         sparkMagic(magic)
         break
       case QuickPickItemLabel.context:
-        window.showInformationMessage('develop...')
+        useEditContextQuickPick({
+          stack,
+        })
         break
       case QuickPickItemLabel.editProvider:
-        useProviderToggle(ProviderToggleMode.editProvider)
+        useProviderToggle(ProviderToggleMode.editProvider, {
+          stack,
+        })
         break
     }
     qp.hide()

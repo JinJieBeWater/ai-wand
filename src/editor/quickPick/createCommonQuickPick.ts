@@ -1,11 +1,11 @@
-import type { QuickInputButton } from 'vscode'
-import { QuickInputButtons, QuickPick, QuickPickItem, ThemeIcon, window } from 'vscode'
+import type { QuickInputButton, QuickPick, QuickPickItem } from 'vscode'
+import { QuickInputButtons, ThemeIcon, window } from 'vscode'
 import * as Meta from '../../generated/meta'
 import { openMagicWandConfig, openVscodeSettings } from '../../commands/openSettings'
 import { liveEdit } from '../../magic/liveEdit'
-import { logger } from '../../utils/logger'
 import { ProviderToggleMode, useProviderToggle } from './useProviderToggle'
 import useMagicQuickPick from './useMagicQuickPick'
+import { useEditContextQuickPick } from './useEditContextQuickPick'
 
 enum ButtonTooltip {
   ProviderToggle = 'Provider Toggle',
@@ -14,16 +14,21 @@ enum ButtonTooltip {
 }
 
 export enum QuickPickId {
-  useMagicQuickPick,
-  useProviderToggle,
+  magic,
+  providerToggle,
   liveEdit,
+  editContext,
 }
 
 export interface CreateQuickPickOptions {
   stack?: QuickPickId[]
   back?: boolean
+  preValue?: readonly QuickPickItem[]
 }
 
+type QP = QuickPick<QuickPickItem> & {
+  id: QuickPickId
+}
 export function createCommonQuickPick(options: CreateQuickPickOptions & {
   id: QuickPickId
 }) {
@@ -33,10 +38,9 @@ export function createCommonQuickPick(options: CreateQuickPickOptions & {
     stack.pop()
   }
 
-  logger.info(stack.length)
-
-  const qp = window.createQuickPick()
+  const qp = window.createQuickPick() as QP
   qp.title = Meta.displayName
+  qp.id = options.id
   const buttons: QuickInputButton[] = [
     {
       iconPath: new ThemeIcon('copilot'),
@@ -58,31 +62,42 @@ export function createCommonQuickPick(options: CreateQuickPickOptions & {
 
   qp.buttons = buttons
 
+  const back = (preValue: readonly QuickPickItem[] = []) => {
+    stack.pop()
+    const options: CreateQuickPickOptions = {
+      stack,
+      back: true,
+      preValue,
+    }
+
+    switch (stack[stack.length - 1]) {
+      case QuickPickId.providerToggle:
+        useProviderToggle(ProviderToggleMode.primaryProvider, {
+          ...options,
+        })
+        break
+      case QuickPickId.liveEdit:
+        liveEdit('', {
+          ...options,
+        })
+        break
+      case QuickPickId.magic:
+        useMagicQuickPick({
+          ...options,
+        })
+        break
+      case QuickPickId.editContext:
+        useEditContextQuickPick({
+          ...options,
+        })
+    }
+    qp.dispose()
+  }
+
   qp.onDidTriggerButton((e) => {
     switch (e.tooltip) {
       case QuickInputButtons.Back.tooltip: {
-        stack.pop()
-        qp.dispose()
-        switch (stack[stack.length - 1]) {
-          case QuickPickId.useProviderToggle:
-            useProviderToggle(ProviderToggleMode.primaryProvider, {
-              stack,
-              back: true,
-            })
-            break
-          case QuickPickId.liveEdit:
-            liveEdit('', {
-              stack,
-              back: true,
-            })
-            break
-          case QuickPickId.useMagicQuickPick:
-            useMagicQuickPick({
-              stack,
-              back: true,
-            })
-            break
-        }
+        back()
         break
       }
       case ButtonTooltip.ProviderToggle:
@@ -101,5 +116,5 @@ export function createCommonQuickPick(options: CreateQuickPickOptions & {
 
   qp.onDidHide(() => qp.dispose())
 
-  return { qp, stack }
+  return { qp, stack, back }
 }

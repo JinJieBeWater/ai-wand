@@ -67,9 +67,7 @@ function parseConfig(config: string) {
     window.showErrorMessage('解析失败: 请检查配置文件格式是否正确')
     logger.error(error)
     throw error
-    return defaultConfig as unknown as MagicWandConfig
   }
-  logger.info('解析成功')
   return value as MagicWandConfig
 }
 

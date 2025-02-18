@@ -4,9 +4,13 @@ export enum MagicMode {
   insert = 'insert',
 }
 
-interface MagicContext {
-  currentFile?: boolean
-  openTabs?: boolean
+export enum MagicContextMode {
+  currentFile = 'currentFile',
+  openTabs = 'openTabs',
+}
+
+type MagicContext = {
+  [key in MagicContextMode]?: boolean
 }
 
 export interface Magic {
