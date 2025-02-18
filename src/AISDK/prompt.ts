@@ -5,56 +5,13 @@ import { logger } from '../utils/logger'
 export function SystemPrompt(_context: Context) {
   const prompt = `You are Magic Wand, a highly skilled software engineer with extensive knowledge in many programming languages, frameworks, design patterns, and best practices.
 
-# User Input elements
+# 你的职责
 
-## <instructions>
-Instructions provided by the user. You must modify the code in <code> according to the requirements of the instructions and return the modified code.
+- 你将根据用户的提供的代码上下文和要求，对用户提供的代码段进行修改。
 
-## <code>
-The code to be modified. You must make modifications based on this content.
+# 输出规范
 
-### Attributes
-- language: The programming language, such as ts, jsx, css, etc.
-#### Example
-\`<code language="ts">...</code>\` represents that the code language is TypeScript.
-
-## <codeContext>
-<codeContext>'s content is the context of the <code>.
-<code> running in <codeContext>, so you can't return repitition code that already exists in <codeContext>.
-
-
-## <outputRules>
-The assistant output rules that must be followed
-
-### Attributes
-- fencedCodeBlocks: Whether to allow fenced code blocks in the output, default is false
-#### Example
-\`<outputRules fencedCodeBlocks="false" />\` represents that the output must not use fenced code blocks and must be returned directly without wrapping elements.
-
-- importStatement: Whether to allow import statements in the output, default is false
-#### Example
-\`<outputRules importStatement="false" />\` represents that the output must not use import statements.
-
-# Your Responsibilities
-
-## Modify the code provided by the user directly according to the user's <instructions>.
-
-# Output Rules
-
-## Fenced code blocks / Other wrapping
-
-- Even if you are allowed to use Fenced code blocks or Other wrapping, you must also use it when necessary.
-
-## Import statement, similar to "import" or "require"
-
-- When the importStatement is allowed, it must also be used when it is determined that it must be used.
-
-## The output content should conform to the indentation of the original code.
-
-## Formatting
-
-- The output content should be formatted in the same style as the original code.
-- You can't use any other formatting, such as adding extra spaces, line breaks, etc.
+- 保留提供代码的格式和风格，包括缩进、注释、命名约定、后缀是否加分号等。
 `
   return prompt
 }
@@ -63,6 +20,7 @@ const regex = /[^./\\][\n\r\u2028\u2029]*(?:[^\n\r./\\\u2028\u2029][^./\\]+|(?:[
 
 export function UserPrompt(context: Context, code: string, prompt: string) {
   const { language, textEditor, originalText, magic } = context
+  const fileName = regex.exec(textEditor.document.fileName)?.[0]
 
   let msg = ``
 
@@ -72,7 +30,6 @@ export function UserPrompt(context: Context, code: string, prompt: string) {
   if (currentFile === undefined || currentFile) {
     // 使用正则匹配文件名
 
-    const fileName = regex.exec(textEditor.document.fileName)?.[0]
     logger.info('currentFile', fileName)
     codeContext += `${fileName}\n`
     codeContext += `${textEditor.document.getText()}\n`
@@ -82,33 +39,42 @@ export function UserPrompt(context: Context, code: string, prompt: string) {
     workspace.textDocuments.forEach((doc) => {
       if (doc.fileName === textEditor.document.fileName)
         return
-      const fileName = regex.exec(doc.fileName)?.[0]
-      codeContext += `\n${fileName}\n`
+      codeContext += `\n${regex.exec(doc.fileName)?.[0]}\n`
       codeContext += `${doc.getText()}\n`
     })
   }
 
   if (codeContext.length > 0) {
     msg += `
-<codeContext>${codeContext}</codeContext>`
+代码的上下文如下（这些代码不应该被修改，不应该被返回）:
+${codeContext}
+`
   }
 
   msg += `
-<code language="${language || 'text'}">
+在${fileName}文件中, 有以下代码段:
 ${code}
-</code>`
+`
 
   msg += `
-<instructions>
+我的需求是:
 ${prompt}
-</instructions>`
+
+请按照我的需求修改代码段, 并返回修改后的代码, 不要输出任何其他内容。
+`
 
   const isImportStatement = textEditor.document.getText() === originalText
   const isFencedCodeBlocks = language !== undefined && ['md', 'mdx', 'markdown'].includes(language)
 
   if (isFencedCodeBlocks || isImportStatement) {
     msg += `
-    <outputRules fencedCodeBlocks="${isFencedCodeBlocks}" importStatement="${isImportStatement}" />`
+    输出规范:`
+    if (isFencedCodeBlocks) {
+      msg += `允许使用md代码块包裹, 但仅仅只在确定必要的时候`
+    }
+    if (isImportStatement) {
+      msg += `允许使用import语句, 但仅仅只在确定必要的时候`
+    }
   }
   return msg
 }
