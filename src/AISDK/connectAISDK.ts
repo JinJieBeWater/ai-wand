@@ -22,11 +22,6 @@ export async function connectAISDK({ context, messages, selection }: ConnectAISD
       messages,
       abortSignal: loadingCodelens.abortController.signal,
     })
-    messages.forEach((message) => {
-      if (message.role === 'user') {
-        logger.info(message.content)
-      }
-    })
     // 预防服务器没有响应
     if (result.text === '') {
       window.showErrorMessage('No response from the language model')
