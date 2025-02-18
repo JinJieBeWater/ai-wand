@@ -38,6 +38,10 @@ const sparkMagic: SparkMagic = async (magic: Magic, options) => {
   const msgButler = createMessageButler(context).addUser(originalText, magic.prompt)
   context.msgButler = msgButler
 
+  msgButler.messages.forEach((message) => {
+    logger.info(message.role, message.content)
+  })
+
   const replacement = await connectAISDK({
     context,
     messages: msgButler.messages,
