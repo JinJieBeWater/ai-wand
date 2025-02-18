@@ -52,14 +52,11 @@ const sparkMagic: SparkMagic = async (magic: Magic, options) => {
   })
 
   const instances = reactive(await diffEdit(textEditor, diff))
-
-  const setInstances = (isActive: boolean, targetInstances?: lifeCycleInstance[]) => {
-    const instancesToSet = targetInstances || instances
-    instancesToSet.forEach((instance) => {
+  const setInstances = (isActive: boolean, targetInstances: lifeCycleInstance[] = instances) => {
+    targetInstances.forEach((instance) => {
       instance.isActive = isActive
     })
   }
-
   const disposables: Disposable[] = []
 
   disposables.push(workspace.onDidSaveTextDocument((e) => {
