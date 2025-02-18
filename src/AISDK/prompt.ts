@@ -19,7 +19,9 @@ The code to be modified. You must make modifications based on this content.
 \`<code language="ts">...</code>\` represents that the code language is TypeScript.
 
 ## <codeContext>
-The relevant context of the provided code, which is used to refer to changes in <code>
+<codeContext>'s content is the context of the <code>.
+<code> running in <codeContext>, so you can't return repitition code that already exists in <codeContext>.
+
 
 ## <outputRules>
 The assistant output rules that must be followed
@@ -48,43 +50,58 @@ The assistant output rules that must be followed
 - When the importStatement is allowed, it must also be used when it is determined that it must be used.
 
 ## The output content should conform to the indentation of the original code.
+
+## Formatting
+
+- The output content should be formatted in the same style as the original code.
+- You can't use any other formatting, such as adding extra spaces, line breaks, etc.
 `
   return prompt
 }
 
+const regex = /[^./\\][\n\r\u2028\u2029]*(?:[^\n\r./\\\u2028\u2029][^./\\]+|(?:[^\n\r./\\\u2028\u2029][/\\]|(?:[./\\]|[^\n\r./\\\u2028\u2029]\.)[^.]|[^\n\r./\\\u2028\u2029][^./\\]+(?:[/\\]|\.[^.]))[^.]*)$/
+
 export function UserPrompt(context: Context, code: string, prompt: string) {
   const { language, textEditor, originalText, magic } = context
 
-  let msg = `
-<instructions>
-${prompt}
-</instructions>
+  let msg = ``
+
+  const { currentFile, openTabs } = magic.context ?? {}
+  let codeContext = ''
+  // currentFile 默认开启
+  if (currentFile === undefined || currentFile) {
+    // 使用正则匹配文件名
+
+    const fileName = regex.exec(textEditor.document.fileName)?.[0]
+    logger.info('currentFile', fileName)
+    codeContext += `${fileName}\n`
+    codeContext += `${textEditor.document.getText()}\n`
+  }
+
+  if (openTabs) {
+    workspace.textDocuments.forEach((doc) => {
+      if (doc.fileName === textEditor.document.fileName)
+        return
+      const fileName = regex.exec(doc.fileName)?.[0]
+      codeContext += `\n${fileName}\n`
+      codeContext += `${doc.getText()}\n`
+    })
+  }
+
+  if (codeContext.length > 0) {
+    msg += `
+<codeContext>${codeContext}</codeContext>`
+  }
+
+  msg += `
 <code language="${language || 'text'}">
 ${code}
 </code>`
 
-  if (magic.context) {
-    const { currentFile, openTabs } = magic.context
-    let codeContext = ''
-    // currentFile 默认开启
-    if (currentFile === undefined || currentFile) {
-      logger.info('currentFile', textEditor.document.fileName)
-      codeContext += `${textEditor.document.fileName}\n`
-      codeContext += `${textEditor.document.getText()}\n`
-    }
-
-    if (openTabs) {
-      workspace.textDocuments.forEach((doc) => {
-        if (doc.fileName === textEditor.document.fileName)
-          return
-        codeContext += `\n${doc.fileName}\n`
-        codeContext += `${doc.getText()}\n`
-      })
-    }
-
-    msg += `
-    <codeContext>${codeContext}</codeContext>`
-  }
+  msg += `
+<instructions>
+${prompt}
+</instructions>`
 
   const isImportStatement = textEditor.document.getText() === originalText
   const isFencedCodeBlocks = language !== undefined && ['md', 'mdx', 'markdown'].includes(language)

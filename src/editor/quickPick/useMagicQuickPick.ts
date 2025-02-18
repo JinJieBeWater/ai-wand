@@ -51,7 +51,7 @@ function createMagicQuickPick(options?: CreateQuickPickOptions) {
     items.push(...createMagicQuickPickGrp(key, magicGrp))
   })
   const { qp, stack } = createCommonQuickPick({
-    id: QuickPickId.useMagicQuickPick,
+    id: QuickPickId.magic,
     ...options,
   })
   qp.title = `${qp.title} SparkMagic`

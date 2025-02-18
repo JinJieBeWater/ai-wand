@@ -39,8 +39,8 @@ export function useProviderToggle(mode = ProviderToggleMode.primaryProvider, opt
       })
     })
   })
-  const { qp } = createCommonQuickPick({
-    id: QuickPickId.useProviderToggle,
+  const { qp, back } = createCommonQuickPick({
+    id: QuickPickId.providerToggle,
     ...options,
   })
 
@@ -67,7 +67,7 @@ export function useProviderToggle(mode = ProviderToggleMode.primaryProvider, opt
           break
       }
     }
-    qp.dispose()
+    back()
   })
 
   qp.show()
