@@ -14,7 +14,7 @@ export interface Context {
   magic: Magic
   textEditor: TextEditor
   /** 选中的原始文本 */
-  originalText: string
+  code: string
   language?: string
   msgButler?: ReturnType<typeof createMessageButler>
 }
@@ -27,15 +27,16 @@ type SparkMagic = (magic: Magic, options?: {
 const sparkMagic: SparkMagic = async (magic: Magic, options) => {
   const textEditor = options?.textEditor ?? window.activeTextEditor!
   const selection = options?.selection ?? textEditor.selection
-  const originalText = getSelectedText(textEditor!)
+  const code = getSelectedText(textEditor!)
   const language = textEditor.document.fileName.split('.').pop()
+  const originalText = textEditor.document.getText()
   const context: Context = {
     magic,
     textEditor,
-    originalText,
+    code,
     language,
   }
-  const msgButler = createMessageButler(context).addUser(originalText, magic.prompt)
+  const msgButler = createMessageButler(context).addUser(code, magic.prompt)
   context.msgButler = msgButler
 
   msgButler.messages.forEach((message) => {
@@ -51,7 +52,7 @@ const sparkMagic: SparkMagic = async (magic: Magic, options) => {
   if (replacement === undefined)
     return
 
-  const diff = computeDiff(replacement, originalText, selection, {
+  const diff = computeDiff(replacement, code, selection, {
     decorateDeletions: true,
   })
 
@@ -71,7 +72,6 @@ const sparkMagic: SparkMagic = async (magic: Magic, options) => {
   }))
 
   let preLineCount = textEditor.document.lineCount
-
   disposables.push(workspace.onDidChangeTextDocument((e) => {
     if (e.document.uri.toString() === textEditor.document.uri.toString()) {
       const lineCount = e.document.lineCount
@@ -81,61 +81,46 @@ const sparkMagic: SparkMagic = async (magic: Magic, options) => {
       const change = e.contentChanges[0]
       const changeStart = change.range.start.line
       const changeEnd = change.range.end.line
-
       if (e.document.isDirty) {
-        const targetInstances: lifeCycleInstance[] = []
-
         switch (e.reason) {
           case TextDocumentChangeReason.Undo:
             logger.info('Undo')
+            if (originalText === e.document.getText()) {
+              setInstances(false)
+              disposables.forEach(d => d.dispose())
+            }
             break
           case TextDocumentChangeReason.Redo:
-            logger.info('Redo')
             break
-          default:
-            // undo delete
-            logger.info('Default')
-            logger.info('变更的范围', JSON.stringify(change))
-            instances.forEach((instance) => {
+          default: {
+            const targetInstances: lifeCycleInstance[] = instances.filter((instance) => {
               const currentRange = instance.edit.range
               const currentRangeStart = currentRange.start.line
               const currentRangeEnd = currentRange.end.line
-              if (change.range.contains(instance.edit.range)) {
-                logger.info(`变更的范围包含实例的范围`, JSON.stringify(instance.edit.range))
-                targetInstances.push(instance)
-              }
-              else if (instance.edit.range.contains(change.range)) {
-                logger.info(`实例的范围包含变更的范围`, JSON.stringify(instance.edit.range))
-                targetInstances.push(instance)
-              }
-              else if (currentRangeStart >= changeStart && currentRangeStart < changeEnd) {
-                logger.info(`前沿重叠`, JSON.stringify(instance.edit.range))
-                targetInstances.push(instance)
-              }
-              else if (currentRangeEnd > changeStart && currentRangeEnd < changeEnd) {
-                logger.info(`后沿重叠`, JSON.stringify(instance.edit.range))
-                targetInstances.push(instance)
+
+              return (
+                change.range.contains(currentRange)
+                || currentRange.contains(change.range)
+                || (currentRangeStart >= changeStart && currentRangeStart < changeEnd)
+                || (currentRangeEnd > changeStart && currentRangeEnd < changeEnd)
+              )
+            })
+            setInstances(false, targetInstances)
+
+            // 使用map优化范围校准
+            instances.forEach((instance, index) => {
+              const range = instance.edit.range
+              if (range.end.line >= changeStart) {
+                instances[index].edit.range = new Range(
+                  range.start.line + offset,
+                  range.start.character,
+                  range.end.line + offset,
+                  range.end.character,
+                )
               }
             })
-            break
-        }
-        setInstances(false, targetInstances)
-
-        // 校准范围
-        // 修改受到影响的instance的range
-        instances.forEach((instance) => {
-          const range = instance.edit.range
-          // 在影响范围内
-          if (!(range.end.line < changeStart)) {
-            const currentRange = new Range(
-              range.start.line + offset,
-              range.start.character,
-              range.end.line + offset,
-              range.end.character,
-            )
-            instance.edit.range = currentRange
           }
-        })
+        }
       }
       else {
         setInstances(false)
