@@ -1,7 +1,6 @@
 import type { DocumentSymbol, Uri } from 'vscode'
 import { commands } from 'vscode'
 
-
 /**
  * 获取指定URI的文档符号。
  * @param uri 文档的URI。
@@ -14,7 +13,8 @@ export async function getSymbols(uri: Uri): Promise<DocumentSymbol[] | undefined
       uri,
     )
     return symbols
-  } catch (error) {
+  }
+  catch (error) {
     // 记录错误，以便调试
     console.error('Failed to get symbols:', error)
     return undefined

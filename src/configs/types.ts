@@ -2,7 +2,7 @@ import type { Magics } from '../types/magic'
 import type { ProviderOptions } from './constans'
 
 interface Provider {
-  apiKey: string
+  apiKey?: string
   modelList: string[]
   baseURL?: string
 }

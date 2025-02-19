@@ -9,6 +9,9 @@ export async function selectAtLine(line: number) {
 
   const symbols = await getSymbols(textEditor.document.uri)
 
+  if (!symbols)
+    return
+
   const symbol = findSymbolAtLine(symbols, line)
 
   if (!symbol)

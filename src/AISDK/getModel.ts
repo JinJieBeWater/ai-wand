@@ -3,6 +3,7 @@ import { createOpenAI } from '@ai-sdk/openai'
 import type { LanguageModelV1 } from 'ai'
 import { window } from 'vscode'
 import { createDeepSeek } from '@ai-sdk/deepseek'
+import { createOllama } from 'ollama-ai-provider'
 import { ProviderOptions, useConfig } from '../configs'
 
 export function getModel(): LanguageModelV1 {
@@ -38,9 +39,12 @@ export function getModel(): LanguageModelV1 {
       })
       return deepseek.chat(model)
     }
-    case ProviderOptions.ollama:
-      window.showInformationMessage('ollama is adapting')
-      throw new Error('ollama is adapting')
+    case ProviderOptions.ollama: {
+      const ollama = createOllama({
+        baseURL,
+      })
+      return ollama.chat(model)
+    }
     default:
       window.showErrorMessage('Invalid provider')
       throw new Error('Invalid provider')
