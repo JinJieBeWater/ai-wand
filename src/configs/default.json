@@ -1,12 +1,12 @@
 {
   "active": {
     "primaryProvider": {
-      "provider": "deepseek",
-      "model": "deepseek-chat"
+      "provider": "openRouter",
+      "model": "anthropic/claude-3.5-sonnet"
     },
     "editProvider": {
-      "provider": "deepseek",
-      "model": "deepseek-chat"
+      "provider": "openRouter",
+      "model": "google/gemini-2.0-flash-lite-preview-02-05:free"
     }
   },
   "providers": {
@@ -23,7 +23,11 @@
       "apiKey": "",
       "modelList": [
         "meta-llama/llama-3.3-70b-instruct:free",
-        "google/gemini-2.0-flash-lite-preview-02-05:free"
+        "microsoft/phi-3-mini-128k-instruct:free",
+        "google/gemini-2.0-flash-lite-preview-02-05:free",
+        "google/gemini-2.0-flash-001",
+        "openai/o3-mini-high",
+        "anthropic/claude-3.5-sonnet"
       ]
     },
     "deepseek": {
@@ -34,7 +38,10 @@
     },
     "ollama": {
       "apiKey": "",
-      "modelList": []
+      "modelList": [
+        "codellama:7b-instruct"
+      ],
+      "baseURL": ""
     }
   },
   "magics": {
@@ -54,10 +61,22 @@
     ],
     "Function": [
       {
+        "label": "Optimize",
+        "description": "优化代码",
+        "prompt": "优化代码结构, 提高代码质量, 找出隐藏的bug, 提高代码可读性",
+        "mode": "edit",
+        "context": {
+          "openTabs": true
+        }
+      },
+      {
         "label": "Implement",
         "description": "根据注释实现功能",
         "prompt": "根据代码中提供的注释要求, 修改代码实现功能",
-        "mode": "edit"
+        "mode": "edit",
+        "context": {
+          "openTabs": true
+        }
       },
       {
         "label": "if/else -> switch",
