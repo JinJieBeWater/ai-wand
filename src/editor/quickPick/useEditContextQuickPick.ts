@@ -1,11 +1,11 @@
 import type { QuickPickItem } from 'vscode'
 import { MagicContextMode } from '../../types/magic'
-import type { CreateQuickPickOptions } from '.'
-import { QuickPickId, createCommonQuickPick } from '.'
+import type { CreateComQPSMOpts } from './createComQPSM'
+import { createComQPSM } from './createComQPSM'
 
-function useEditContextQuickPick(options: CreateQuickPickOptions) {
-  const { qp, stack, back } = createCommonQuickPick({
-    id: QuickPickId.editContext,
+function useEditContextQuickPick(options: CreateComQPSMOpts) {
+  const { qp, stack, back } = createComQPSM({
+    id: 'useEditContextQuickPick',
     ...options,
   })
 
@@ -28,7 +28,7 @@ function useEditContextQuickPick(options: CreateQuickPickOptions) {
   qp.selectedItems = [items[0]]
 
   qp.onDidAccept(() => {
-    back(qp.selectedItems)
+    back()
   })
 
   qp.show()

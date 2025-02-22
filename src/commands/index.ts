@@ -1,7 +1,7 @@
 import { useCommand } from 'reactive-vscode'
 import * as Meta from '../generated/meta'
 import type { StatusCodelensProvider } from '../editor/codelens/StatusCodelensProvider'
-import { useProviderToggle } from '../editor/quickPick/useProviderToggle'
+import { usePrimaryProviderToggle } from '../editor/quickPick/useProviderToggle'
 import { showMagics } from './showMagics'
 import { openMagicWandConfig, openVscodeSettings } from './openSettings'
 
@@ -12,5 +12,5 @@ export function initCommands() {
   useCommand(Meta.commands.codelensStatusCancel, (that: StatusCodelensProvider) => {
     that.dispose()
   })
-  useCommand(Meta.commands.toggleProvider, useProviderToggle)
+  useCommand(Meta.commands.toggleProvider, usePrimaryProviderToggle)
 }

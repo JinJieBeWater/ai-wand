@@ -2,10 +2,10 @@ import type { QuickPick, QuickPickItem } from 'vscode'
 import { QuickPickItemKind, ThemeIcon, window } from 'vscode'
 import type { Magic } from '../../types/magic'
 import { sparkMagic } from '../../magic'
-import { liveEdit } from '../../magic/liveEdit'
 import { useConfig } from '../../configs'
-import type { CreateQuickPickOptions } from './createCommonQuickPick'
-import { QuickPickId, createCommonQuickPick } from './createCommonQuickPick'
+import { useLiveEditQuickPick } from './useLiveEditQuickPick'
+import type { CreateComQPSMOpts } from './createComQPSM'
+import { createComQPSM } from './createComQPSM'
 
 const config = useConfig()
 
@@ -35,7 +35,7 @@ function createMagicQuickPickGrp(key: string, magicGrp: Magic[]): QuickPickItem[
   return items
 }
 
-function createMagicQuickPick(options?: CreateQuickPickOptions) {
+function createMagicQuickPick(options?: CreateComQPSMOpts) {
   const items: QuickPickItem[] = []
   // 添加临场magic
   items.push({
@@ -50,8 +50,8 @@ function createMagicQuickPick(options?: CreateQuickPickOptions) {
     // 添加magic
     items.push(...createMagicQuickPickGrp(key, magicGrp))
   })
-  const { qp, stack } = createCommonQuickPick({
-    id: QuickPickId.magic,
+  const { qp, stack } = createComQPSM({
+    id: 'useMagicQuickPick',
     ...options,
   })
   qp.title = `${qp.title} SparkMagic`
@@ -61,14 +61,15 @@ function createMagicQuickPick(options?: CreateQuickPickOptions) {
   return { qp, stack }
 }
 
-function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>, options?: CreateQuickPickOptions) {
+function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>, options?: CreateComQPSMOpts) {
   // 获取选中的item
   const item = qp.selectedItems[0]
 
   switch (item.label) {
     case 'Edit':
-      liveEdit(qp.value, {
+      useLiveEditQuickPick({
         stack: options?.stack,
+        prevValue: qp.value,
       })
       break
     default: {
@@ -91,7 +92,7 @@ function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>, options?: CreateQu
   qp.hide()
 }
 
-function useMagicQuickPick(options?: CreateQuickPickOptions) {
+function useMagicQuickPick(options?: CreateComQPSMOpts) {
   const { qp, stack } = createMagicQuickPick(options)
 
   qp.onDidAccept(() => onMagicQuickPickAccept(qp, {

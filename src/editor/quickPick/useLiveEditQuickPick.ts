@@ -1,14 +1,13 @@
 import type { QuickPickItem } from 'vscode'
 import type { Ref } from 'reactive-vscode'
 import { computed } from 'reactive-vscode'
-import { type Magic, MagicContextMode, MagicMode } from '../types/magic'
-import { ProviderToggleMode, useProviderToggle } from '../editor/quickPick/useProviderToggle'
-import type { CreateQuickPickOptions } from '../editor/quickPick'
-import { QuickPickId, createCommonQuickPick } from '../editor/quickPick'
-
-import { useConfig } from '../configs'
-import { useEditContextQuickPick } from '../editor/quickPick/useEditContextQuickPick'
-import { sparkMagic } from '.'
+import { type Magic, MagicContextMode, MagicMode } from '../../types/magic'
+import { useConfig } from '../../configs'
+import { sparkMagic } from '../../magic'
+import { useEditContextQuickPick } from './useEditContextQuickPick'
+import type { CreateComQPSMOpts } from './createComQPSM'
+import { createComQPSM } from './createComQPSM'
+import { useEditProviderToggle } from './useProviderToggle'
 
 const config = useConfig()
 
@@ -17,10 +16,6 @@ enum QuickPickItemLabel {
   context = 'Context',
   editProvider = 'Edit Provider',
 }
-
-// enum QuickPickItemTooltip {
-//   toggleEditProvider = 'Toggle Edit Provider',
-// }
 
 const items: Ref<QuickPickItem[]> = computed(() => {
   return [
@@ -45,12 +40,12 @@ const items: Ref<QuickPickItem[]> = computed(() => {
   ]
 })
 
-function createLiveEditQP(options: CreateQuickPickOptions & {
+function createLiveEditQuickPick(options: CreateComQPSMOpts & {
   magic: Magic
 }) {
   const { magic } = options ?? {}
-  const { qp, stack } = createCommonQuickPick({
-    id: QuickPickId.liveEdit,
+  const { qp, stack } = createComQPSM({
+    id: 'useLiveEditQuickPick',
     ...options,
   })
 
@@ -66,21 +61,13 @@ function createLiveEditQP(options: CreateQuickPickOptions & {
   currentItems[1].detail = contextDetail
   qp.items = currentItems
 
-  // qp.onDidTriggerItemButton((item) => {
-  //   switch (item.button.tooltip) {
-  //     case QuickPickItemTooltip.toggleEditProvider:
-  //       useProviderToggle(ProviderToggleMode.editProvider)
-  //       break
-  //   }
-  // })
-
   qp.onDidHide(() => qp.dispose())
 
   return { qp, stack }
 }
 
-export function liveEdit(value?: string, options?: CreateQuickPickOptions) {
-  const preValue = options?.preValue
+export function useLiveEditQuickPick(options?: CreateComQPSMOpts) {
+  const preValue = options?.prevSelectedValue
   const magic: Magic = {
     prompt: '',
     mode: MagicMode.edit,
@@ -97,11 +84,11 @@ export function liveEdit(value?: string, options?: CreateQuickPickOptions) {
       }
     })
   }
-  const { qp, stack } = createLiveEditQP({
+  const { qp, stack } = createLiveEditQuickPick({
     magic,
     ...options,
   })
-  qp.value = value ?? magic.prompt
+  qp.value = options?.prevValue ?? magic.prompt
   qp.onDidAccept(() => {
     switch (qp.activeItems[0].label) {
       case QuickPickItemLabel.submit:
@@ -116,7 +103,7 @@ export function liveEdit(value?: string, options?: CreateQuickPickOptions) {
         })
         break
       case QuickPickItemLabel.editProvider:
-        useProviderToggle(ProviderToggleMode.editProvider, {
+        useEditProviderToggle({
           stack,
         })
         break

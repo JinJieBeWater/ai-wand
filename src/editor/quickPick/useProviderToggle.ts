@@ -1,8 +1,7 @@
 import { type QuickPickItem, QuickPickItemKind } from 'vscode'
 import type { ProviderOptions } from '../../configs'
 import { providerOptions, useConfig } from '../../configs'
-import type { CreateQuickPickOptions } from './createCommonQuickPick'
-import { QuickPickId, createCommonQuickPick } from './createCommonQuickPick'
+import { type CreateComQPSMOpts, createComQPSM } from './createComQPSM'
 
 const config = useConfig()
 
@@ -11,7 +10,7 @@ export enum ProviderToggleMode {
   editProvider,
 }
 
-export function useProviderToggle(mode = ProviderToggleMode.primaryProvider, options?: CreateQuickPickOptions) {
+function useProviderToggle(mode = ProviderToggleMode.primaryProvider, options?: CreateComQPSMOpts) {
   const items: QuickPickItem[] = []
 
   providerOptions.forEach((provider) => {
@@ -39,8 +38,8 @@ export function useProviderToggle(mode = ProviderToggleMode.primaryProvider, opt
       })
     })
   })
-  const { qp, back } = createCommonQuickPick({
-    id: QuickPickId.providerToggle,
+  const { qp, back } = createComQPSM({
+    id: mode === ProviderToggleMode.primaryProvider ? 'usePrimaryProviderToggle' : 'useEditProviderToggle',
     ...options,
   })
 
@@ -73,4 +72,16 @@ export function useProviderToggle(mode = ProviderToggleMode.primaryProvider, opt
   qp.show()
 
   return qp
+}
+
+export function usePrimaryProviderToggle(options?: CreateComQPSMOpts) {
+  useProviderToggle(ProviderToggleMode.primaryProvider, {
+    ...options,
+  })
+}
+
+export function useEditProviderToggle(options?: CreateComQPSMOpts) {
+  useProviderToggle(ProviderToggleMode.editProvider, {
+    ...options,
+  })
 }

@@ -1,6 +1,5 @@
 import { workspace } from 'vscode'
 import type { Context } from '../magic'
-import { logger } from '../utils/logger'
 
 export function SystemPrompt(_context: Context) {
   const prompt = `
