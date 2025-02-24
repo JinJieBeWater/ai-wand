@@ -1,6 +1,6 @@
+import { useEditContextQuickPick } from './useEditContextQuickPick'
 import { useLiveEditQuickPick } from './useLiveEditQuickPick'
 import useMagicQuickPick from './useMagicQuickPick'
-import { useEditContextQuickPick } from './useEditContextQuickPick'
 import { useEditProviderToggle, usePrimaryProviderToggle } from './useProviderToggle'
 import type { CreateCommonQuickPickOptions } from './useQuickPickFactory'
 import { useQuickPickFactory } from './useQuickPickFactory'

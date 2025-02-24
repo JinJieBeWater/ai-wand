@@ -1,7 +1,7 @@
 import { Position, Selection, window } from 'vscode'
-import useMagicQuickPick from '../editor/quickPick/useMagicQuickPick'
 import { getSymbols } from '../editor/getSymbols'
 import { findSymbolAtLine } from '../editor/findSymbolAtLine'
+import useMagicQuickPick from '../editor/quickPick/mainMenu/useMagicQuickPick'
 
 export function showMagics() {
   const textEditor = window.activeTextEditor!

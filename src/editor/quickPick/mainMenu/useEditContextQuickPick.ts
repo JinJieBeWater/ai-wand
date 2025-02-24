@@ -1,5 +1,5 @@
 import type { QuickPickItem } from 'vscode'
-import { MagicContextMode } from '../../types/magic'
+import { MagicContextMode } from '../../../types/magic'
 import type { CreateMainMenuItemOptions } from './mainMenu'
 import { createMainMenuItem } from './mainMenu'
 

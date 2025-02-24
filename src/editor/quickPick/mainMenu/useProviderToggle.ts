@@ -1,6 +1,6 @@
 import { type QuickPickItem, QuickPickItemKind } from 'vscode'
-import type { ProviderOptions } from '../../configs'
-import { providerOptions, useConfig } from '../../configs'
+import type { ProviderOptions } from '../../../configs'
+import { providerOptions, useConfig } from '../../../configs'
 import { type CreateMainMenuItemOptions, createMainMenuItem } from './mainMenu'
 
 const config = useConfig()

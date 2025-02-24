@@ -1,7 +1,7 @@
 import { useCommand } from 'reactive-vscode'
 import * as Meta from '../generated/meta'
 import type { StatusCodelensProvider } from '../editor/codelens/StatusCodelensProvider'
-import { usePrimaryProviderToggle } from '../editor/quickPick/useProviderToggle'
+import { usePrimaryProviderToggle } from '../editor/quickPick/mainMenu/useProviderToggle'
 import { showMagics } from './showMagics'
 import { openMagicWandConfig, openVscodeSettings } from './openSettings'
 

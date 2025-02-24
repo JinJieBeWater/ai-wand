@@ -1,7 +1,7 @@
 import type { QuickInputButton, QuickPick, QuickPickItem } from 'vscode'
 import { QuickInputButtons, ThemeIcon, window } from 'vscode'
-import * as Meta from '../../generated/meta'
-import { openMagicWandConfig, openVscodeSettings } from '../../commands/openSettings'
+import * as Meta from '../../../generated/meta'
+import { openMagicWandConfig, openVscodeSettings } from '../../../commands/openSettings'
 import { usePrimaryProviderToggle } from './useProviderToggle'
 
 enum ButtonTooltip {
