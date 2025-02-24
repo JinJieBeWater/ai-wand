@@ -5,6 +5,7 @@ import { useConfig } from '../../../configs'
 import { sparkMagic } from '../../../magic'
 import type { Magic } from '../../../types/magic'
 import { MagicContextMode, MagicMode } from '../../../types/magic'
+import { useSaveMagicMenu } from '../saveMagicMenu/saveMagicMenu'
 import { useEditContextQuickPick } from './useEditContextQuickPick'
 import type { CreateMainMenuItemOptions } from './mainMenu'
 import { createMainMenuItem } from './mainMenu'
@@ -97,6 +98,9 @@ export function useLiveEditQuickPick(options?: CreateMainMenuItemOptions) {
           return
         magic.prompt = qp.value
         sparkMagic(magic)
+        useSaveMagicMenu({
+          magic,
+        })
         break
       case QuickPickItemLabel.context:
         useEditContextQuickPick({
