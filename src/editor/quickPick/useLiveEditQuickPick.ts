@@ -5,8 +5,8 @@ import { type Magic, MagicContextMode, MagicMode } from '../../types/magic'
 import { useConfig } from '../../configs'
 import { sparkMagic } from '../../magic'
 import { useEditContextQuickPick } from './useEditContextQuickPick'
-import type { CreateComQPSMOpts } from './createComQPSM'
-import { createComQPSM } from './createComQPSM'
+import type { CreateMainMenuItemOptions } from './mainMenu'
+import { createMainMenuItem } from './mainMenu'
 import { useEditProviderToggle } from './useProviderToggle'
 
 const config = useConfig()
@@ -40,11 +40,11 @@ const items: Ref<QuickPickItem[]> = computed(() => {
   ]
 })
 
-function createLiveEditQuickPick(options: CreateComQPSMOpts & {
+function createLiveEditQuickPick(options: CreateMainMenuItemOptions & {
   magic: Magic
 }) {
   const { magic } = options ?? {}
-  const { qp, stack } = createComQPSM({
+  const { qp, stack } = createMainMenuItem({
     id: 'useLiveEditQuickPick',
     ...options,
   })
@@ -66,7 +66,7 @@ function createLiveEditQuickPick(options: CreateComQPSMOpts & {
   return { qp, stack }
 }
 
-export function useLiveEditQuickPick(options?: CreateComQPSMOpts) {
+export function useLiveEditQuickPick(options?: CreateMainMenuItemOptions) {
   const preValue = options?.prevSelectedValue
   const magic: Magic = {
     prompt: '',

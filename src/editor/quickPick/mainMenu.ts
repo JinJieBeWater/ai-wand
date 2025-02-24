@@ -13,10 +13,10 @@ const qps = {
   usePrimaryProviderToggle,
 }
 
-export type ShowMagicQPs = typeof qps
+export type MainMenuQuickPick = typeof qps
 
-export type CreateComQPSMOpts = CreateCommonQuickPickOptions<ShowMagicQPs>
+export type CreateMainMenuItemOptions = CreateCommonQuickPickOptions<MainMenuQuickPick>
 
-export const createComQPSM = useQuickPickFactory({
+export const createMainMenuItem = useQuickPickFactory({
   qps,
 })

@@ -4,8 +4,8 @@ import type { Magic } from '../../types/magic'
 import { sparkMagic } from '../../magic'
 import { useConfig } from '../../configs'
 import { useLiveEditQuickPick } from './useLiveEditQuickPick'
-import type { CreateComQPSMOpts } from './createComQPSM'
-import { createComQPSM } from './createComQPSM'
+import type { CreateMainMenuItemOptions } from './mainMenu'
+import { createMainMenuItem } from './mainMenu'
 
 const config = useConfig()
 
@@ -35,7 +35,7 @@ function createMagicQuickPickGrp(key: string, magicGrp: Magic[]): QuickPickItem[
   return items
 }
 
-function createMagicQuickPick(options?: CreateComQPSMOpts) {
+function createMagicQuickPick(options?: CreateMainMenuItemOptions) {
   const items: QuickPickItem[] = []
   // 添加临场magic
   items.push({
@@ -50,7 +50,7 @@ function createMagicQuickPick(options?: CreateComQPSMOpts) {
     // 添加magic
     items.push(...createMagicQuickPickGrp(key, magicGrp))
   })
-  const { qp, stack } = createComQPSM({
+  const { qp, stack } = createMainMenuItem({
     id: 'useMagicQuickPick',
     ...options,
   })
@@ -61,7 +61,7 @@ function createMagicQuickPick(options?: CreateComQPSMOpts) {
   return { qp, stack }
 }
 
-function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>, options?: CreateComQPSMOpts) {
+function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>, options?: CreateMainMenuItemOptions) {
   // 获取选中的item
   const item = qp.selectedItems[0]
 
@@ -92,7 +92,7 @@ function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>, options?: CreateCo
   qp.hide()
 }
 
-function useMagicQuickPick(options?: CreateComQPSMOpts) {
+function useMagicQuickPick(options?: CreateMainMenuItemOptions) {
   const { qp, stack } = createMagicQuickPick(options)
 
   qp.onDidAccept(() => onMagicQuickPickAccept(qp, {

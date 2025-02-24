@@ -1,10 +1,10 @@
 import type { QuickPickItem } from 'vscode'
 import { MagicContextMode } from '../../types/magic'
-import type { CreateComQPSMOpts } from './createComQPSM'
-import { createComQPSM } from './createComQPSM'
+import type { CreateMainMenuItemOptions } from './mainMenu'
+import { createMainMenuItem } from './mainMenu'
 
-function useEditContextQuickPick(options: CreateComQPSMOpts) {
-  const { qp, stack, back } = createComQPSM({
+function useEditContextQuickPick(options: CreateMainMenuItemOptions) {
+  const { qp, stack, back } = createMainMenuItem({
     id: 'useEditContextQuickPick',
     ...options,
   })
