@@ -11,7 +11,7 @@ import { settings } from '../../configs/settings'
 /**
  * CodelensProvider
  */
-export class MagicWandCodelensProvider implements CodeLensProvider {
+export class ActionCodelensProvider implements CodeLensProvider {
   private regex: RegExp
   private _disposables: Disposable[] = []
   private _onDidChangeCodeLenses: EventEmitter<void> = new EventEmitter<void>()
@@ -61,7 +61,7 @@ export class MagicWandCodelensProvider implements CodeLensProvider {
           else {
             codeLens.command = {
               title: '🪄',
-              tooltip: 'Magic Wand Show Magics',
+              tooltip: 'AI Wand Show Magics',
               command: Meta.commands.codelensClick,
               arguments: [codeLens],
             }

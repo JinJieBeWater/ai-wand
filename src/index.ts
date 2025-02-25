@@ -1,6 +1,6 @@
 import { defineExtension } from 'reactive-vscode'
 import { initCommands } from './commands'
-import { MagicWandCodelensProvider } from './editor/codelens/MagicWandCodelensProvider'
+import { ActionCodelensProvider } from './editor/codelens/ActionCodelensProvider'
 import { useProviderStatusBar } from './editor/statusBar/provider'
 import { logger } from './utils/logger'
 import { useConfig } from './configs'
@@ -12,7 +12,7 @@ const { activate, deactivate } = defineExtension(() => {
 
   useProviderStatusBar()
 
-  const _magicWandCodelens = new MagicWandCodelensProvider()
+  const _magicWandCodelens = new ActionCodelensProvider()
 
   if (import.meta.env.NODE_ENV === 'development') {
     logger.show()

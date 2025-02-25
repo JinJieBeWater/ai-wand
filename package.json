@@ -1,20 +1,20 @@
 {
   "publisher": "JinJieBeWater",
-  "name": "magic-wand",
-  "displayName": "Magic Wand 🪄✨🔮",
+  "name": "ai-wand",
+  "displayName": "AI Wand 🪄",
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.3.0",
   "description": "Customize your own prompt phrase, and then use the shortcut key to call out one key. Support optional model Provider and use your own api key",
   "author": "JinJieBeWater",
   "license": "MIT",
-  "homepage": "https://github.com/JinJieBeWater/magic-wand#readme",
+  "homepage": "https://github.com/JinJieBeWater/ai-wand#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JinJieBeWater/magic-wand"
+    "url": "https://github.com/JinJieBeWater/ai-wand"
   },
   "bugs": {
-    "url": "https://github.com/JinJieBeWater/magic-wand/issues"
+    "url": "https://github.com/JinJieBeWater/ai-wand/issues"
   },
   "categories": [
     "AI"
@@ -35,36 +35,36 @@
   "contributes": {
     "commands": [
       {
-        "command": "magic-wand.openVscodeSettings",
-        "title": "Magic Wand vscode Settings",
-        "category": "Magic Wand",
+        "command": "ai-wand.openVscodeSettings",
+        "title": "AI Wand vscode Settings",
+        "category": "AI Wand",
         "icon": "$(gear)"
       },
       {
-        "command": "magic-wand.openMagicWandConfig",
-        "title": "Magic Wand Config",
-        "category": "Magic Wand",
+        "command": "ai-wand.openMagicWandConfig",
+        "title": "AI Wand Config",
+        "category": "AI Wand",
         "icon": "$(json)"
       },
       {
-        "command": "magic-wand.showMagics",
+        "command": "ai-wand.showMagics",
         "title": "Spark a magic",
-        "category": "Magic Wand",
+        "category": "AI Wand",
         "icon": "$(tools)"
       },
       {
-        "command": "magic-wand.toggleProvider",
+        "command": "ai-wand.toggleProvider",
         "title": "Toggle Provider",
-        "category": "Magic Wand",
+        "category": "AI Wand",
         "icon": "$(toggle-preview)"
       },
       {
-        "command": "magic-wand.codelens.click",
+        "command": "ai-wand.codelens.click",
         "title": "Codelens Click",
         "enablement": "editorHasSelection"
       },
       {
-        "command": "magic-wand.codelens.status.cancel",
+        "command": "ai-wand.codelens.status.cancel",
         "title": "Codelens Click",
         "enablement": "editorHasSelection"
       }
@@ -72,26 +72,26 @@
     "menus": {
       "commandPalette": [
         {
-          "command": "magic-wand.codelens.click",
+          "command": "ai-wand.codelens.click",
           "when": "false"
         },
         {
-          "command": "magic-wand.codelens.status.cancel",
+          "command": "ai-wand.codelens.status.cancel",
           "when": "false"
         }
       ]
     },
     "keybindings": [
       {
-        "command": "magic-wand.showMagics",
+        "command": "ai-wand.showMagics",
         "key": "alt+`"
       }
     ],
     "configuration": {
-      "title": "Magic Wand",
+      "title": "AI Wand",
       "type": "object",
       "properties": {
-        "magic-wand.status.enableCodeLens": {
+        "ai-wand.status.enableCodeLens": {
           "type": "boolean",
           "default": true,
           "description": "Enable CodeLens"
