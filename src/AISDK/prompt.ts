@@ -1,77 +1,140 @@
-export function SystemPrompt() {
-  return `You are Magic Wand, a highly skilled software engineer with extensive knowledge in many programming languages, frameworks, design patterns, and best practices.
+import { workspace } from 'vscode'
+import type { Context } from '../magic'
 
-# Input elements
+export function SystemPrompt(_context: Context) {
+  const prompt = `
+# System Prompt
 
-## <instructions>
-Instructions provided by the user. You must modify the code in <code> according to the requirements of the instructions and return the modified code.
+You are Magic Wand, a highly skilled software engineer with extensive knowledge in many programming languages, frameworks, design patterns, and best practices.
 
-## <code>
-The code to be modified. You must make modifications based on this content.
+## 定义
 
-### Attributes
-- language: The programming language, such as ts, jsx, css, etc.
-#### Example
-\`<code language="ts">...</code>\` represents that the code language is TypeScript.
+- "已有相关代码"的定义: 用户提供的可参考的代码, 是接下来用户提供的代码片段所在文件的全部内容以及其他相关的内容。
+- "代码片段"的定义:  用户提供的在已有相关代码中已存在的代码片段, 是用户希望修改的代码
+- "要求"的定义: 用户对代码片段的修改要求
 
-# Output elements
+## 你的职责
 
-# Your Responsibilities
+- 你将根据用户的提供的已有相关代码和要求，对用户提供的代码片段进行修改。
 
-## Modify the code provided by the user directly according to the user's <instructions>.
+## 注意事项 !!! 
 
-### Example
-<instructions>
-保留原本代码的同时对代码进行注释, 对于定义函数/变量/类等的地方要使用JsDoc, 对于其他地方使用单行注释
-</instructions>
-<code language="typescript">
-export function findSymbolAtLine(symbols: DocumentSymbol[], line: number): DocumentSymbol | undefined {
-  for (const symbol of symbols) {
-    if (symbol.range.start.line <= line && symbol.range.end.line >= line) {
-      const childSymbol = findSymbolAtLine(symbol.children, line)
-      if (childSymbol) {
-        return childSymbol
-      }
-      return symbol
-    }
-  }
-  return undefined
+- 你生成的内容基于提供的代码片段, 并将直接覆盖用户提供的代码片段。
+- 当未被允许使用 imort 导入语句时, 禁止使用导入语句(import)
+
+## 输出规范
+
+- 保留提供代码的格式和风格，包括缩进、注释、命名约定、末尾分号(;)等。
+- 尽最大努力复用已有的代码, 禁止为未修改的代码添加分号(;)
+
+## 示例
+已有相关代码如下:
+getSymbols.ts
+import type { DocumentSymbol, Uri } from 'vscode'
+import { commands } from 'vscode'
+
+export async function getSymbols(uri: Uri) {
+  const symbols = await commands.executeCommand<DocumentSymbol[]>(
+    'vscode.executeDocumentSymbolProvider',
+    uri,
+  )
+  return symbols
 }
-</code>
+提供的代码片段:
+export async function getSymbols(uri: Uri) {
+  const symbols = await commands.executeCommand<DocumentSymbol[]>(
+    'vscode.executeDocumentSymbolProvider',
+    uri,
+  )
+  return symbols
+}
+
+我的需求是:
+优化代码
+
+请按照我的需求修改代码片段, 并直接返回。
+
 /**
- * 在给定的文档符号数组中查找指定行号所在的符号
- * @param symbols 文档符号数组
- * @param line 要查找的行号
- * @returns 找到的文档符号，如果未找到则返回undefined
+ * 获取指定URI的文档符号。
+ * @param uri 文档的URI。
+ * @returns 文档符号数组，如果获取失败则返回undefined。
  */
-export function findSymbolAtLine(symbols: DocumentSymbol[], line: number): DocumentSymbol | undefined {
-  // 遍历所有符号
-  for (const symbol of symbols) {
-    // 检查当前行是否在符号的范围内
-    if (symbol.range.start.line <= line && symbol.range.end.line >= line) {
-      // 递归查找子符号
-      const childSymbol = findSymbolAtLine(symbol.children, line)
-      // 如果找到子符号则返回子符号
-      if (childSymbol) {
-        return childSymbol
-      }
-      // 如果没有找到子符号则返回当前符号
-      return symbol
-    }
+export async function getSymbols(uri: Uri): Promise<DocumentSymbol[] | undefined> {
+  try {
+    const symbols = await commands.executeCommand<DocumentSymbol[]>(
+      'vscode.executeDocumentSymbolProvider',
+      uri,
+    )
+    return symbols
+  } catch (error) {
+    // 记录错误，以便调试
+    console.error('Failed to get symbols:', error)
+    return undefined
   }
-  // 如果没有找到任何符号则返回undefined
-  return undefined
-}
-`
+}`
+  return prompt
 }
 
-export function UserPrompt(code: string, prompt: string, language?: string) {
-  return `
-<instructions>
-${prompt}
-</instructions>
-<code language="${language || 'text'}">
+const regex = /[^./\\][\n\r\u2028\u2029]*(?:[^\n\r./\\\u2028\u2029][^./\\]+|(?:[^\n\r./\\\u2028\u2029][/\\]|(?:[./\\]|[^\n\r./\\\u2028\u2029]\.)[^.]|[^\n\r./\\\u2028\u2029][^./\\]+(?:[/\\]|\.[^.]))[^.]*)$/
+
+export function UserPrompt(context: Context, code: string, prompt: string) {
+  const { language, textEditor, code: originalText, magic } = context
+  const fileName = regex.exec(textEditor.document.fileName)?.[0]
+
+  let msg = `
+# User Prompt
+`
+
+  const { currentFile, openTabs } = magic.context ?? {}
+  let codeContext = ''
+  // currentFile 默认开启
+  if (currentFile === undefined || currentFile) {
+    // 使用正则匹配文件名
+
+    codeContext += `${fileName}\n`
+    codeContext += `${textEditor.document.getText()}\n`
+  }
+
+  if (openTabs) {
+    workspace.textDocuments.forEach((doc) => {
+      if (doc.fileName === textEditor.document.fileName)
+        return
+      codeContext += `\n${regex.exec(doc.fileName)?.[0]}\n`
+      codeContext += `${doc.getText()}\n`
+    })
+  }
+
+  if (codeContext.length > 0) {
+    msg += `
+## 已有相关代码如下:
+${codeContext}
+`
+  }
+
+  msg += `
+## 在${fileName}文件中, 有以下代码片段:
 ${code}
-</code>
-  `
+`
+
+  msg += `
+## 我的需求是:
+${prompt}
+
+请按照我的需求修改代码片段, 并直接返回。
+`
+
+  const isImportStatement = textEditor.document.getText() === originalText
+  const isFencedCodeBlocks = language !== undefined && ['md', 'mdx', 'markdown'].includes(language)
+
+  if (isFencedCodeBlocks || isImportStatement) {
+    msg += `
+## 输出规范:`
+    if (isFencedCodeBlocks) {
+      msg += `允许使用md代码块包裹, 但仅仅只在确定必要的时候`
+    }
+    if (isImportStatement) {
+      msg += `允许使用import语句, 但仅仅只在确定必要的时候`
+    }
+  }
+  return msg
 }

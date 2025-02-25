@@ -1,20 +1,20 @@
 {
   "publisher": "JinJieBeWater",
-  "name": "magic-wand",
-  "displayName": "Magic Wand 🪄✨🔮",
-  "version": "0.0.1",
+  "name": "ai-wand",
+  "displayName": "AI Wand 🪄",
+  "version": "0.2.0",
   "private": true,
-  "packageManager": "pnpm@10.2.1",
+  "packageManager": "pnpm@10.3.0",
   "description": "Customize your own prompt phrase, and then use the shortcut key to call out one key. Support optional model Provider and use your own api key",
   "author": "JinJieBeWater",
   "license": "MIT",
-  "homepage": "https://github.com/JinJieBeWater/magic-wand#readme",
+  "homepage": "https://github.com/JinJieBeWater/ai-wand#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JinJieBeWater/magic-wand"
+    "url": "https://github.com/JinJieBeWater/ai-wand"
   },
   "bugs": {
-    "url": "https://github.com/JinJieBeWater/magic-wand/issues"
+    "url": "https://github.com/JinJieBeWater/ai-wand/issues"
   },
   "categories": [
     "AI"
@@ -35,30 +35,36 @@
   "contributes": {
     "commands": [
       {
-        "command": "magic-wand.magics-settings",
-        "title": "Customize magic wand",
-        "category": "Magic Wand",
+        "command": "ai-wand.openVscodeSettings",
+        "title": "AI Wand vscode Settings",
+        "category": "AI Wand",
         "icon": "$(gear)"
       },
       {
-        "command": "magic-wand.showMagics",
+        "command": "ai-wand.openMagicWandConfig",
+        "title": "AI Wand Config",
+        "category": "AI Wand",
+        "icon": "$(json)"
+      },
+      {
+        "command": "ai-wand.showMagics",
         "title": "Spark a magic",
-        "category": "Magic Wand",
+        "category": "AI Wand",
         "icon": "$(tools)"
       },
       {
-        "command": "magic-wand.toggleProvider",
+        "command": "ai-wand.toggleProvider",
         "title": "Toggle Provider",
-        "category": "Magic Wand",
+        "category": "AI Wand",
         "icon": "$(toggle-preview)"
       },
       {
-        "command": "magic-wand.codelens.click",
+        "command": "ai-wand.codelens.click",
         "title": "Codelens Click",
         "enablement": "editorHasSelection"
       },
       {
-        "command": "magic-wand.codelens.status.cancel",
+        "command": "ai-wand.codelens.status.cancel",
         "title": "Codelens Click",
         "enablement": "editorHasSelection"
       }
@@ -66,143 +72,36 @@
     "menus": {
       "commandPalette": [
         {
-          "command": "magic-wand.codelens.click",
+          "command": "ai-wand.codelens.click",
           "when": "false"
         },
         {
-          "command": "magic-wand.codelens.status.cancel",
+          "command": "ai-wand.codelens.status.cancel",
           "when": "false"
         }
       ]
     },
     "keybindings": [
       {
-        "command": "magic-wand.showMagics",
+        "command": "ai-wand.showMagics",
         "key": "alt+`"
       }
     ],
     "configuration": {
-      "title": "Magic Wand",
+      "title": "AI Wand",
       "type": "object",
       "properties": {
-        "magic-wand.magics": {
-          "type": "object",
-          "default": {
-            "Information": [
-              {
-                "label": "docs",
-                "description": "使用注释",
-                "prompt": "保留原本代码的同时对代码进行注释, 对于定义函数/变量/类等的地方要使用JsDoc, 对于其他地方使用单行注释",
-                "mode": "edit"
-              },
-              {
-                "label": "Log",
-                "description": "打印日志",
-                "prompt": "根据选中的代码打印日志",
-                "mode": "edit"
-              }
-            ],
-            "Typescript": [
-              {
-                "label": "typed",
-                "description": "为代码补全类型",
-                "prompt": "为代码补全类型",
-                "mode": "edit"
-              }
-            ],
-            "Kit": [
-              {
-                "label": "Mermaid",
-                "description": "将代码逻辑转换为Mermaid",
-                "prompt": "将代码逻辑转换为Mermaid",
-                "mode": "edit"
-              }
-            ]
-          },
-          "description": "Use the object's first-level property for group setting and the second for Magic setting."
-        },
-        "magic-wand.status.enableCodeLens": {
+        "ai-wand.status.enableCodeLens": {
           "type": "boolean",
           "default": true,
           "description": "Enable CodeLens"
-        },
-        "magic-wand.status.activeProvider": {
-          "type": "string",
-          "default": "openRouter",
-          "description": "Active AI provider",
-          "enum": [
-            "openRouter",
-            "ollama",
-            "deepseek",
-            "openai",
-            "proxyServer"
-          ],
-          "enumDescriptions": [
-            "A unified interface for LLMs. Find the best models & prices for your prompts.",
-            "Get up and running with large language models. "
-          ]
-        },
-        "magic-wand.provider.openRouterApiKey": {
-          "type": "string",
-          "default": "",
-          "description": "OpenRouter ApiKey"
-        },
-        "magic-wand.provider.openRouterModel": {
-          "type": "string",
-          "default": "meta-llama/llama-3.1-405b-instruct:free",
-          "description": "OpenRouter Model"
-        },
-        "magic-wand.provider.deepseekApiKey": {
-          "type": "string",
-          "default": "",
-          "description": "Deepseek ApiKey"
-        },
-        "magic-wand.provider.deepseekModel": {
-          "type": "string",
-          "default": "deepseek-chat",
-          "description": "Deepseek Model"
-        },
-        "magic-wand.provider.ollamaApiKey": {
-          "type": "string",
-          "default": "",
-          "description": "Ollama ApiKey"
-        },
-        "magic-wand.provider.ollamaModel": {
-          "type": "string",
-          "default": "",
-          "description": "Ollama Model"
-        },
-        "magic-wand.provider.openaiApiKey": {
-          "type": "string",
-          "default": "",
-          "description": "OpenAI ApiKey"
-        },
-        "magic-wand.provider.openaiModel": {
-          "type": "string",
-          "default": "",
-          "description": "OpenAI Model"
-        },
-        "magic-wand.provider.proxyServerApiKey": {
-          "type": "string",
-          "default": "",
-          "description": "ProxyServer ApiKey"
-        },
-        "magic-wand.provider.proxyServerModel": {
-          "type": "string",
-          "default": "",
-          "description": "ProxyServer Model"
-        },
-        "magic-wand.provider.proxyServerUrl": {
-          "type": "string",
-          "default": "",
-          "description": "ProxyServer Url"
         }
       }
     }
   },
   "scripts": {
     "build": "tsup src/index.ts --external vscode --env.NODE_ENV production",
-    "watch": "nr build --watch --sourcemap --env.NODE_ENV development",
+    "watch": "tsup src/index.ts --external vscode --watch --sourcemap --env.NODE_ENV development",
     "prepare": "nr update",
     "update": "vscode-ext-gen --output src/generated/meta.ts",
     "lint": "eslint .",
@@ -223,7 +122,7 @@
     "@types/diff": "^7.0.1",
     "@types/node": "^22.13.1",
     "@types/vscode": "^1.92.0",
-    "@vscode/vsce": "^3.2.1",
+    "@vscode/vsce": "^3.2.2",
     "ai": "^4.1.26",
     "bumpp": "^9.11.1",
     "diff": "^7.0.0",

@@ -1,11 +1,13 @@
 import type { QuickPick, QuickPickItem } from 'vscode'
 import { QuickPickItemKind, ThemeIcon, window } from 'vscode'
-import type { Magic } from '../types/magic'
-import { sparkMagic } from '../magic'
-import * as Meta from '../generated/meta'
-import { openMagicsSettings } from '../commands/openSettings'
-import { config } from '../config'
-import { useProviderToggle } from './useProviderToggle'
+import { useConfig } from '../../../configs'
+import { sparkMagic } from '../../../magic'
+import type { Magic } from '../../../types/magic'
+import { useLiveEditQuickPick } from './useLiveEditQuickPick'
+import type { CreateMainMenuItemOptions } from './mainMenu'
+import { createMainMenuItem } from './mainMenu'
+
+const config = useConfig()
 
 function createMagicQuickPickItemSperator(key: string) {
   return {
@@ -16,7 +18,7 @@ function createMagicQuickPickItemSperator(key: string) {
 
 function createMagicQuickPickItem(magic: Magic): QuickPickItem {
   return {
-    label: magic.label,
+    label: magic.label ?? '',
     description: magic.description,
     iconPath: new ThemeIcon('sparkle'),
   }
@@ -33,49 +35,47 @@ function createMagicQuickPickGrp(key: string, magicGrp: Magic[]): QuickPickItem[
   return items
 }
 
-function createMagicQuickPick() {
+function createMagicQuickPick(options?: CreateMainMenuItemOptions) {
   const items: QuickPickItem[] = []
   // 添加临场magic
-  // items.push({
-  //   label: 'edit',
-  //   description: 'On-site creation',
-  //   iconPath: new ThemeIcon('edit'),
-  // })
+  items.push({
+    label: 'Edit',
+    iconPath: new ThemeIcon('zap'),
+    description: 'built-in',
+    alwaysShow: true,
+    picked: true,
+  })
   // 组遍历
-  Object.entries(config.magics).forEach(([key, magicGrp]) => {
+  Object.entries(config.value.magics).forEach(([key, magicGrp]) => {
     // 添加magic
     items.push(...createMagicQuickPickGrp(key, magicGrp))
   })
-  // 添加自定义按钮
-  items.push({
-    label: 'Customize',
-    description: 'Jump to the magic settings',
-    iconPath: new ThemeIcon('gear'),
+  const { qp, stack } = createMainMenuItem({
+    id: 'useMagicQuickPick',
+    ...options,
   })
-  const qp = window.createQuickPick()
-  qp.title = Meta.displayName
-  qp.placeholder = 'Spark a magic or customize new magic'
+  qp.title = `${qp.title} SparkMagic`
+  qp.placeholder = 'Spark a magic or execute live edit'
   qp.items = items
-  return qp
+
+  return { qp, stack }
 }
 
-function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>) {
+function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>, options?: CreateMainMenuItemOptions) {
   // 获取选中的item
   const item = qp.selectedItems[0]
 
   switch (item.label) {
-    case 'edit':
-      break
-    case 'Customize':
-      openMagicsSettings()
-      break
-    case 'Provider':
-      useProviderToggle()
+    case 'Edit':
+      useLiveEditQuickPick({
+        stack: options?.stack,
+        prevValue: qp.value,
+      })
       break
     default: {
       // 构造magic列表
       const magicList: Magic[] = []
-      Object.entries(config.magics).forEach(([, magicGrp]) => {
+      Object.entries(config.value.magics).forEach(([, magicGrp]) => {
         magicGrp.forEach((magic) => {
           magicList.push(magic)
         })
@@ -92,13 +92,13 @@ function onMagicQuickPickAccept(qp: QuickPick<QuickPickItem>) {
   qp.hide()
 }
 
-function useMagicQuickPick() {
-  const qp = createMagicQuickPick()
+function useMagicQuickPick(options?: CreateMainMenuItemOptions) {
+  const { qp, stack } = createMagicQuickPick(options)
 
-  qp.onDidAccept(() => onMagicQuickPickAccept(qp))
-
-  qp.onDidHide(() => qp.dispose())
-
+  qp.onDidAccept(() => onMagicQuickPickAccept(qp, {
+    stack,
+  }))
+  qp.show()
   return qp
 }
 

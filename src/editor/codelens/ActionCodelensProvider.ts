@@ -1,17 +1,17 @@
 import type { CancellationToken, CodeLensProvider, Disposable, Event, TextDocument } from 'vscode'
 import { CodeLens, EventEmitter, Position, commands, languages, workspace } from 'vscode'
 
-import { useCommand, useDisposable } from 'reactive-vscode'
+import { useCommand } from 'reactive-vscode'
 import { getRegex } from '../../regex'
 import * as Meta from '../../generated/meta'
-import { selectAiLine } from '../selectAiLine'
+import { selectAtLine } from '../selectAiLine'
 import { logger } from '../../utils/logger'
-import { config } from '../../config'
+import { settings } from '../../configs/settings'
 
 /**
  * CodelensProvider
  */
-export class MagicWandCodelensProvider implements CodeLensProvider {
+export class ActionCodelensProvider implements CodeLensProvider {
   private regex: RegExp
   private _disposables: Disposable[] = []
   private _onDidChangeCodeLenses: EventEmitter<void> = new EventEmitter<void>()
@@ -32,9 +32,9 @@ export class MagicWandCodelensProvider implements CodeLensProvider {
    * init
    */
   private init(): void {
-    this._disposables.push(useDisposable(languages.registerCodeLensProvider({ scheme: 'file' }, this)))
+    this._disposables.push(languages.registerCodeLensProvider({ scheme: 'file' }, this))
     useCommand(Meta.commands.codelensClick, (lens: CodeLens) => {
-      selectAiLine(lens.range.start.line)
+      selectAtLine(lens.range.start.line)
       commands.executeCommand(Meta.commands.showMagics)
       this.fire()
     })
@@ -42,7 +42,7 @@ export class MagicWandCodelensProvider implements CodeLensProvider {
 
   public provideCodeLenses(document: TextDocument, _token: CancellationToken): CodeLens[] | Thenable<CodeLens[]> {
     const codeLenses: CodeLens[] = []
-    if (config['status.enableCodeLens']) {
+    if (settings['status.enableCodeLens']) {
       const regex = new RegExp(this.regex)
       const text = document.getText()
       let matches = regex.exec(text)
@@ -61,7 +61,7 @@ export class MagicWandCodelensProvider implements CodeLensProvider {
           else {
             codeLens.command = {
               title: '🪄',
-              tooltip: 'Magic Wand Show Magics',
+              tooltip: 'AI Wand Show Magics',
               command: Meta.commands.codelensClick,
               arguments: [codeLens],
             }
@@ -81,7 +81,7 @@ export class MagicWandCodelensProvider implements CodeLensProvider {
   }
 
   public fire(): void {
-    if (config['status.enableCodeLens']) {
+    if (settings['status.enableCodeLens']) {
       this._onDidChangeCodeLenses.fire()
     }
   }
