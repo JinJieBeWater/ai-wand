@@ -16,7 +16,7 @@ const config = useConfig()
 enum QuickPickItemLabel {
   submit = 'Submit',
   context = 'Context',
-  editProvider = 'Edit Provider',
+  editProvider = 'Toggle Edit Provider',
 }
 
 const items: Ref<QuickPickItem[]> = computed(() => {
