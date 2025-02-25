@@ -1,7 +1,7 @@
 import { useConfig } from '../../../configs'
 import type { Magic } from '../../../types/magic'
-import type { CreateCommonQuickPickOptions } from '../mainMenu/useQuickPickFactory'
-import { useQuickPickFactory } from '../mainMenu/useQuickPickFactory'
+import type { CreateCommonQuickPickOptions } from '../useQuickPickFactory'
+import { useQuickPickFactory } from '../useQuickPickFactory'
 
 const qps = {
   confirmSave,
@@ -31,8 +31,6 @@ function confirmSave(options: CreateSaveMagicItemOptions) {
     id: 'confirmSave',
   })
   qp.title = 'Whether to save the current magic?'
-
-  qp.placeholder = 'Please select the save option'
 
   enum QPITEM {
     SAVE = 'Save',
@@ -69,11 +67,13 @@ function confirmSave(options: CreateSaveMagicItemOptions) {
 
 function inputMagicGroup(options: CreateSaveMagicItemOptions) {
   const magic = options.magic
-  const { qp } = createSaveMagicItem({
+  const { qp, stack } = createSaveMagicItem({
     id: 'inputMagicGroup',
   })
   qp.title = 'Please input the magic group'
   qp.placeholder = 'Please input the magic group'
+
+  qp.value = magic?.group ?? ''
 
   qp.items = [
     {
@@ -97,6 +97,7 @@ function inputMagicGroup(options: CreateSaveMagicItemOptions) {
         magic!.group = group
         inputMagicLabel({
           magic,
+          stack,
         })
         qp.dispose()
         break
@@ -112,11 +113,14 @@ function inputMagicGroup(options: CreateSaveMagicItemOptions) {
 
 function inputMagicLabel(options: CreateSaveMagicItemOptions) {
   const magic = options.magic
-  const { qp } = createSaveMagicItem({
+  const { qp, stack } = createSaveMagicItem({
     id: 'inputMagicLabel',
+    stack: options.stack,
   })
   qp.title = 'Please input the magic label'
   qp.placeholder = 'Please input the magic label'
+
+  qp.value = magic?.label ?? ''
 
   qp.items = [
     {
@@ -140,6 +144,7 @@ function inputMagicLabel(options: CreateSaveMagicItemOptions) {
         magic!.label = label
         inputMagicDescription({
           magic,
+          stack,
         })
         qp.dispose()
         break
@@ -157,9 +162,12 @@ function inputMagicDescription(options: CreateSaveMagicItemOptions) {
   const magic = options.magic
   const { qp } = createSaveMagicItem({
     id: 'inputMagicDescription',
+    stack: options.stack,
   })
   qp.title = 'Please input the magic description'
   qp.placeholder = 'Please input the magic description'
+
+  qp.value = magic?.description ?? ''
 
   qp.items = [
     {
