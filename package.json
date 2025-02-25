@@ -2,7 +2,7 @@
   "publisher": "JinJieBeWater",
   "name": "ai-wand",
   "displayName": "AI Wand 🪄",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "packageManager": "pnpm@10.3.0",
   "description": "Customize your own prompt phrase, and then use the shortcut key to call out one key. Support optional model Provider and use your own api key",
